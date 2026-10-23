@@ -18,7 +18,8 @@
       "!docs/CHALLENGE.md",
       "!pnpm-lock.yaml",
       "!src/assets/**/*.svg",
-      "!public/**/*.svg"
+      "!public/**/*.svg",
+      "!docs/tools"
     ]
   },
   "formatter": {

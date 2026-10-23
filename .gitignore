@@ -30,3 +30,6 @@ Thumbs.db
 *.log
 !.env.development
 !.env.production
+
+# tanstack router plugin cache
+.tanstack
