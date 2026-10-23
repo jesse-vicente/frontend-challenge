@@ -28,6 +28,9 @@ export function MobileTabBar() {
   const [searchOpen, setSearchOpen] = useState(false)
   const current = (path: string) => (pathname === path ? 'page' : undefined)
 
+  // Detail pages show their own buy bar in place of the tab bar (mobile frame).
+  if (pathname.startsWith('/nfts/')) return null
+
   return (
     <nav aria-label="Navegação inferior" className="fixed inset-x-0 bottom-0 z-40 h-[126px] md:hidden">
       <div aria-hidden="true" className="pointer-events-none absolute inset-[24.6%_0_0.04%_0]">
