@@ -73,6 +73,7 @@ export function toCartDto(cart: CartRecord): CartDto {
       maxPerOrder: edition.maxPerOrder,
       name: nft.name,
       editionLabel: edition.label,
+      tokenId: nft.tokenId,
       creatorName: nft.creator.name,
       image: nft.image,
       addedAt: item.addedAt,

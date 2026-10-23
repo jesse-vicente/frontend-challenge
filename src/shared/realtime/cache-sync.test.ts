@@ -49,6 +49,7 @@ const cart: CartDto = {
       maxPerOrder: edition.maxPerOrder,
       name: nft.name,
       editionLabel: edition.label,
+      tokenId: nft.tokenId,
       creatorName: nft.creator.name,
       image: nft.image,
       addedAt: '2026-01-01T00:00:00.000Z',

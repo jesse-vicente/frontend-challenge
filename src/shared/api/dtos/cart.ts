@@ -12,6 +12,7 @@ export const cartItemSchema = z.object({
   maxPerOrder: z.int().min(1),
   name: z.string(),
   editionLabel: z.string(),
+  tokenId: z.string(),
   creatorName: z.string(),
   image: imageSchema,
   addedAt: isoDateTimeSchema,
