@@ -1,13 +1,23 @@
 import { z } from 'zod'
-import { PASSWORD_MAX_LENGTH, USERNAME_PATTERN } from '@/domain/account'
+import { ENS_LABEL_PATTERN, PASSWORD_MAX_LENGTH, USERNAME_PATTERN } from '@/domain/account'
 import { idSchema, isoDateTimeSchema } from './common'
+
+/** Full ENS name, e.g. "nova.kurio.eth". */
+export const ensNameSchema = z
+  .string()
+  .trim()
+  .toLowerCase()
+  .refine((value) => value.endsWith('.eth') && ENS_LABEL_PATTERN.test(value.slice(0, -4)), {
+    message: 'Invalid ENS name',
+  })
 
 export const profileSchema = z.object({
   id: idSchema,
   email: z.email(),
   username: z.string(),
   displayName: z.string(),
-  bio: z.string(),
+  ensName: z.string().nullable(),
+  walletNickname: z.string(),
   avatarUrl: z.string().nullable(),
   updatedAt: isoDateTimeSchema,
 })
@@ -17,7 +27,8 @@ export const updateProfileRequestSchema = z.object({
   displayName: z.string().trim().min(2).max(40),
   username: z.string().regex(USERNAME_PATTERN),
   email: z.email(),
-  bio: z.string().max(280),
+  ensName: ensNameSchema,
+  walletNickname: z.string().trim().min(2).max(32),
 })
 export type UpdateProfileRequest = z.infer<typeof updateProfileRequestSchema>
 

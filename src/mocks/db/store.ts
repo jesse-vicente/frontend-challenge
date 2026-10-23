@@ -2,7 +2,7 @@ import { buildCoupons, buildFavorites, buildUsers, buildWallets } from '../fixtu
 import { buildCatalog } from '../fixtures/catalog'
 import { type MockDb } from './types'
 
-export const DB_SCHEMA_VERSION = 1
+export const DB_SCHEMA_VERSION = 2
 const STORAGE_KEY = 'nft-mock:db'
 
 let db: MockDb | null = null

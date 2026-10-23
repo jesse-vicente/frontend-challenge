@@ -1,6 +1,11 @@
 import { HttpResponse, http } from 'msw'
 import { walletConflict } from '@/domain/wallet'
-import { type UpsertWalletRequest, upsertWalletRequestSchema, type WalletDto } from '@/shared/api/dtos/wallet'
+import {
+  connectWalletRequestSchema,
+  type UpsertWalletRequest,
+  upsertWalletRequestSchema,
+  type WalletDto,
+} from '@/shared/api/dtos/wallet'
 import { getDb, mutate, nextId } from '../db/store'
 import { type WalletRecord } from '../db/types'
 import { apiPath, MockHttpError, notFound, readJson, route } from '../http/respond'
@@ -74,14 +79,16 @@ export const walletHandlers = [
 
   http.post<{ walletId: string }>(
     apiPath('/me/wallets/:walletId/connect'),
-    route<{ walletId: string }>(({ request, params }) => {
+    route<{ walletId: string }>(async ({ request, params }) => {
       const { user } = requireAuth(request)
       if (!walletsOf(user.id).some((wallet) => wallet.id === params.walletId)) {
         throw notFound('Carteira não encontrada.')
       }
+      const { provider } = await readJson(request, connectWalletRequestSchema)
       const approved = behavior().walletConnection === 'approve'
       return HttpResponse.json({
         walletId: params.walletId,
+        provider,
         status: approved ? 'connected' : 'rejected',
         connectedAt: approved ? new Date().toISOString() : null,
       })

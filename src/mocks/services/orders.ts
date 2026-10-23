@@ -88,7 +88,7 @@ export function createOrder(input: {
     version: 1,
     network: body.network,
     quoteId: quote.quoteId,
-    wallet: { id: wallet.id, label: wallet.label, address: wallet.address },
+    wallet: { id: wallet.id, label: wallet.label, address: wallet.address, provider: body.provider },
     collector: body.collector,
     items,
     subtotal: quote.subtotal,

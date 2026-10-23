@@ -1,18 +1,18 @@
 import { type OrderStatus } from '@/domain/order'
 import { type Coupon } from '@/domain/quote'
-import { type WalletRole } from '@/domain/wallet'
 import { type Network } from '@/shared/api/dtos/network'
 import { type NftDetailDto } from '@/shared/api/dtos/nft'
 import { type CollectorDto, type OrderItemDto } from '@/shared/api/dtos/order'
 import { type QuoteDto } from '@/shared/api/dtos/quote'
-import { type WalletProvider } from '@/shared/api/dtos/wallet'
+import { type WalletDto, type WalletProvider } from '@/shared/api/dtos/wallet'
 
 export interface UserRecord {
   id: string
   email: string
   username: string
   displayName: string
-  bio: string
+  ensName: string | null
+  walletNickname: string
   avatarUrl: string | null
   passwordSalt: string
   passwordHash: string
@@ -56,14 +56,8 @@ export interface QuoteRecord extends QuoteDto {
   userId: string | null
 }
 
-export interface WalletRecord {
-  id: string
+export interface WalletRecord extends WalletDto {
   userId: string
-  role: WalletRole
-  label: string
-  provider: WalletProvider
-  address: string
-  updatedAt: string
 }
 
 export interface OrderRecord {
@@ -73,7 +67,7 @@ export interface OrderRecord {
   version: number
   network: Network
   quoteId: string
-  wallet: { id: string; label: string; address: string }
+  wallet: { id: string; label: string; address: string; provider: WalletProvider }
   collector: CollectorDto
   items: OrderItemDto[]
   subtotal: string

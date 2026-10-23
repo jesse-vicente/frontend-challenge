@@ -64,7 +64,16 @@ const addItem = (nftId: string, editionId: string, quantity = 1) =>
   apiRequest(cartSchema, { method: 'POST', url: '/cart/items', data: { nftId, editionId, quantity } })
 const createQuote = () => apiRequest(quoteSchema, { method: 'POST', url: '/quote', data: { network: 'ethereum' } })
 
-const collector = { fullName: 'Alice Martins', email: 'alice@nft.test', country: 'Brasil' }
+const collector = {
+  displayName: 'Alice Martins',
+  username: 'alice',
+  profileName: 'alice',
+  email: 'alice@nft.test',
+  referralCode: 'KURIO2026',
+  ensName: 'alice.kurio.eth',
+  secondaryAddress: null,
+  note: null,
+}
 
 describe('catalog', () => {
   it('filters, sorts and paginates', async () => {
@@ -162,7 +171,7 @@ describe('orders', () => {
       method: 'POST',
       url: '/orders',
       headers: { 'Idempotency-Key': key },
-      data: { quoteId, walletId, network: 'ethereum', collector },
+      data: { quoteId, walletId, provider: 'metamask', network: 'ethereum', collector },
     })
 
   it('replays the same order for the same key and rejects different content', async () => {

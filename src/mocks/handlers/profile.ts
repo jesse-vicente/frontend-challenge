@@ -20,7 +20,8 @@ function toProfile(user: UserRecord): ProfileDto {
     email: user.email,
     username: user.username,
     displayName: user.displayName,
-    bio: user.bio,
+    ensName: user.ensName,
+    walletNickname: user.walletNickname,
     avatarUrl: user.avatarUrl,
     updatedAt: user.updatedAt,
   }
@@ -65,7 +66,8 @@ export const profileHandlers = [
         draft.displayName = body.displayName
         draft.username = body.username
         draft.email = email
-        draft.bio = body.bio
+        draft.ensName = body.ensName
+        draft.walletNickname = body.walletNickname
       })
       return HttpResponse.json(toProfile(updated))
     }),
