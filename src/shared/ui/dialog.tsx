@@ -2,7 +2,7 @@
 
 import { XIcon } from 'lucide-react'
 import { Dialog as DialogPrimitive } from 'radix-ui'
-import type * as React from 'react'
+import * as React from 'react'
 import { cn } from '@/shared/lib/cn'
 
 import { Button } from '@/shared/ui/button'
@@ -41,11 +41,16 @@ function DialogContent({
   children,
   showCloseButton = true,
   overlayClassName,
+  onOpenAutoFocus,
+  onCloseAutoFocus,
   ...props
 }: React.ComponentProps<typeof DialogPrimitive.Content> & {
   showCloseButton?: boolean
   overlayClassName?: string
 }) {
+  // Controlled dialogs have no DialogTrigger, and Radix only returns focus to a trigger:
+  // remember the element that opened the dialog and focus it again on close.
+  const opener = React.useRef<HTMLElement | null>(null)
   return (
     <DialogPortal data-slot="dialog-portal">
       <DialogOverlay className={overlayClassName} />
@@ -55,6 +60,17 @@ function DialogContent({
           'fixed top-[50%] left-[50%] z-50 grid w-full max-w-[calc(100%-2rem)] translate-x-[-50%] translate-y-[-50%] gap-4 rounded-lg border bg-background p-6 shadow-lg duration-200 outline-none data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 sm:max-w-lg',
           className,
         )}
+        onOpenAutoFocus={(event) => {
+          const active = document.activeElement
+          opener.current = active instanceof HTMLElement && active !== document.body ? active : null
+          onOpenAutoFocus?.(event)
+        }}
+        onCloseAutoFocus={(event) => {
+          onCloseAutoFocus?.(event)
+          if (event.defaultPrevented || !opener.current?.isConnected) return
+          event.preventDefault()
+          opener.current.focus()
+        }}
         {...props}
       >
         {children}
