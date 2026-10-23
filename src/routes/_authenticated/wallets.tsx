@@ -1,14 +1,9 @@
 import { createFileRoute } from '@tanstack/react-router'
+import { WalletsView } from '@/features/wallets/components/wallets-view'
 
 export const Route = createFileRoute('/_authenticated/wallets')({
-  head: () => ({ meta: [{ title: 'Carteiras | NFT Marketplace' }] }),
-  component: WalletsPage,
+  head: () => ({
+    meta: [{ title: 'Carteiras | Kurio' }, { name: 'robots', content: 'noindex' }],
+  }),
+  component: WalletsView,
 })
-
-function WalletsPage() {
-  return (
-    <main id="main">
-      <h1>Carteiras</h1>
-    </main>
-  )
-}
