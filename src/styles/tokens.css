@@ -1,0 +1,27 @@
+/*
+ * Design tokens. Values must mirror the Figma variables (get_variable_defs).
+ * Until the Figma sync runs, these hold neutral placeholders so components render.
+ */
+:root {
+  --radius: 0.625rem;
+  --background: #ffffff;
+  --foreground: #111111;
+  --card: #ffffff;
+  --card-foreground: #111111;
+  --popover: #ffffff;
+  --popover-foreground: #111111;
+  --primary: #111111;
+  --primary-foreground: #ffffff;
+  --secondary: #f2f2f2;
+  --secondary-foreground: #111111;
+  --muted: #f2f2f2;
+  --muted-foreground: #5c5c5c;
+  --accent: #f2f2f2;
+  --accent-foreground: #111111;
+  --destructive: #c62828;
+  --success: #2e7d32;
+  --warning: #b26a00;
+  --border: #e0e0e0;
+  --input: #e0e0e0;
+  --ring: #111111;
+}
