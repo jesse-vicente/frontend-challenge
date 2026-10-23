@@ -46,7 +46,10 @@ export function useToggleFavorite() {
       return { previous }
     },
     onError: (_error, { name }, context) => {
-      queryClient.setQueryData(key, context?.previous)
+      // Clicked before the list loaded: there is nothing to restore (setQueryData ignores
+      // undefined), so drop the optimistic value and fetch the server list again.
+      if (context?.previous) queryClient.setQueryData(key, context.previous)
+      else void queryClient.resetQueries({ queryKey: key })
       toast.error(`Não foi possível atualizar os favoritos de ${name}. Tente novamente.`)
       announce('Falha ao atualizar favoritos. A alteração foi desfeita.', 'assertive')
     },
