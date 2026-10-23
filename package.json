@@ -19,6 +19,9 @@
     "check:fix": "biome check --write .",
     "test:unit": "vitest run",
     "test:unit:watch": "vitest",
+    "test:e2e": "playwright test",
+    "test:e2e:update": "playwright test --update-snapshots",
+    "test:e2e:report": "playwright show-report",
     "images:optimize": "node scripts/optimize-images.mjs"
   },
   "dependencies": {
