@@ -36,7 +36,7 @@ function RootLayout() {
         Pular para o conteúdo
       </a>
       <SiteHeader />
-      <div id="conteudo" tabIndex={-1} className="outline-none">
+      <div id="conteudo" tabIndex={-1} className="min-h-dvh outline-none">
         <Outlet />
       </div>
       <SiteFooter />
