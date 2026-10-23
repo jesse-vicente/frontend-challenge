@@ -67,8 +67,13 @@ export const sessionStore = {
   },
 
   getGuestCartId: () => readStored('local', GUEST_CART_KEY, z.string()),
-  setGuestCartId(cartId: string): void {
-    writeStored('local', GUEST_CART_KEY, cartId)
+  /** Guests get a client-generated cart id; the API creates the cart on first use. */
+  ensureGuestCartId(): string {
+    const existing = readStored('local', GUEST_CART_KEY, z.string())
+    if (existing) return existing
+    const created = crypto.randomUUID()
+    writeStored('local', GUEST_CART_KEY, created)
+    return created
   },
 }
 

@@ -6,7 +6,7 @@ export function installAuthBridge(): () => void {
   return registerAuthBridge({
     getAccessToken: sessionStore.getToken,
     // Guests are identified by their cart; authenticated users never send it.
-    getGuestCartId: () => (sessionStore.getToken() ? null : sessionStore.getGuestCartId()),
+    getGuestCartId: () => (sessionStore.getToken() ? null : sessionStore.ensureGuestCartId()),
     onSessionInvalid: (reason) => sessionStore.end(reason === 'SESSION_EXPIRED' ? 'expired' : 'unauthenticated'),
   })
 }

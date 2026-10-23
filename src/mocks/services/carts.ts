@@ -6,9 +6,11 @@ import { MockHttpError } from '../http/respond'
 import { findEdition, findNft } from './catalog'
 import { type AuthContext } from './sessions'
 
-function createCart(userId: string | null): CartRecord {
+const CLIENT_CART_ID = /^[\w-]{8,64}$/
+
+function createCart(userId: string | null, id = nextId('cart')): CartRecord {
   const cart: CartRecord = {
-    id: nextId('cart'),
+    id,
     userId,
     items: [],
     couponCode: null,
@@ -37,6 +39,8 @@ export function resolveCart(request: Request, auth: AuthContext | null): CartRec
     const cart = db.carts.find((item) => item.id === cartId)
     if (cart?.userId) throw new MockHttpError('FORBIDDEN', 'Este carrinho pertence a outra conta.')
     if (cart) return cart
+    // Guests name their cart: it is created on first use with the client id.
+    if (CLIENT_CART_ID.test(cartId)) return createCart(null, cartId)
   }
   return createCart(null)
 }
