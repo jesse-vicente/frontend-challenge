@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import { type EditionAvailability } from '@/domain/nft'
-import { ethAmountSchema, idSchema, imageSchema, isoDateTimeSchema } from './common'
+import { ethAmountSchema, idSchema, imageSchema, isoDateTimeSchema, paginatedSchema } from './common'
 
 export const nftCategorySchema = z.enum([
   'art',
@@ -50,6 +50,12 @@ export const nftSummarySchema = z.object({
   version: z.int().min(0),
 })
 export type NftSummaryDto = z.infer<typeof nftSummarySchema>
+
+export const nftListResponseSchema = paginatedSchema(nftSummarySchema)
+export type NftListResponse = z.infer<typeof nftListResponseSchema>
+
+export const nftHighlightsSchema = z.object({ items: z.array(nftSummarySchema) })
+export type NftHighlightsDto = z.infer<typeof nftHighlightsSchema>
 
 export const nftDetailSchema = nftSummarySchema.extend({
   description: z.string(),
