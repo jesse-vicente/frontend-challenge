@@ -29,7 +29,7 @@ export function QuantityStepper({
 }: QuantityStepperProps) {
   const buttonClass = cn(
     'grid place-items-center rounded-full bg-primary text-ink transition-colors hover:bg-amber disabled:cursor-not-allowed disabled:opacity-40',
-    size === 'md' ? 'h-[50px] w-[30px]' : 'h-7 w-[18px] rounded-md',
+    size === 'md' ? 'h-[50px] w-[30px]' : 'size-[22px] md:h-7 md:w-[18px] md:rounded-md',
   )
   const iconClass = size === 'md' ? 'size-5 stroke-[2.5]' : 'size-3.5 stroke-[2.5]'
 

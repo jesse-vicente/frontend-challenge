@@ -1,19 +1,21 @@
 import { useQuery } from '@tanstack/react-query'
-import { useEffect, useRef, useState } from 'react'
-import { NftCard, NftCardSkeleton } from '@/features/catalog/components/nft-card'
-import { nftListQuery } from '@/features/catalog/queries'
+import { useEffect, useId, useRef, useState } from 'react'
+import { type NftListParams } from '@/shared/api/dtos/nft'
 import { cn } from '@/shared/lib/cn'
+import { nftListQuery } from '../queries'
+import { NftCard, NftCardSkeleton } from './nft-card'
 
 const PAGE_SIZE = 5
-const PAGES = 3
 const SKELETON_KEYS = ['a', 'b', 'c', 'd', 'e']
 
-/** "Related Products": NFTs of the same collection in a snap carousel with page dots. */
-export function RelatedCarousel({ nftId, collectionId }: { nftId: string; collectionId: string }) {
-  const { data, isPending } = useQuery(
-    nftListQuery({ collectionId, excludeId: nftId, pageSize: PAGE_SIZE * PAGES, page: 1 }),
-  )
+/**
+ * Horizontal product carousel ("Mais desta coleção", "Colecionadores também viram"):
+ * scroll-snap track with page dots, five cards per page on desktop.
+ */
+export function NftCarousel({ title, params }: { title: string; params: NftListParams }) {
+  const { data, isPending } = useQuery(nftListQuery({ pageSize: PAGE_SIZE * 3, page: 1, ...params }))
   const trackRef = useRef<HTMLUListElement>(null)
+  const titleId = useId()
   const [page, setPage] = useState(0)
   const items = data?.items ?? []
   const pages = Math.max(1, Math.ceil(items.length / PAGE_SIZE))
@@ -34,9 +36,9 @@ export function RelatedCarousel({ nftId, collectionId }: { nftId: string; collec
   if (!isPending && items.length === 0) return null
 
   return (
-    <section aria-labelledby="related-title" className="flex flex-col gap-8">
-      <h2 id="related-title" className="border-b border-border pb-2 text-lg leading-7 font-bold text-amber">
-        Mais desta coleção
+    <section aria-labelledby={titleId} className="flex flex-col gap-8">
+      <h2 id={titleId} className="border-b border-border pb-2 text-lg leading-7 font-bold text-amber">
+        {title}
       </h2>
       <ul
         ref={trackRef}

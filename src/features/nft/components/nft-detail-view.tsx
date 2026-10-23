@@ -2,6 +2,7 @@ import { Link, useNavigate, useRouter } from '@tanstack/react-router'
 import { ChevronLeft, Mail, ShoppingCart, Star } from 'lucide-react'
 import linkedinIcon from '@/assets/icons/social-linkedin.svg'
 import twitterIcon from '@/assets/icons/social-twitter.svg'
+import { NftCarousel } from '@/features/catalog/components/nft-carousel'
 import { type NftDetailDto } from '@/shared/api/dtos/nft'
 import { NftImage } from '@/shared/components/nft-image'
 import { QuantityStepper } from '@/shared/components/quantity-stepper'
@@ -13,7 +14,6 @@ import { EditionChips } from './edition-chips'
 import { FavoriteButton, FavoriteIconButton } from './favorite-button'
 import { NftGallery } from './nft-gallery'
 import { NftInfoTabs } from './nft-info-tabs'
-import { RelatedCarousel } from './related-carousel'
 
 function ShareLinks({ nft }: { nft: NftDetailDto }) {
   const url = typeof window === 'undefined' ? '' : window.location.href
@@ -260,7 +260,7 @@ export function NftDetailView({
           </div>
         </div>
         <NftInfoTabs nft={nft} />
-        <RelatedCarousel nftId={nft.id} collectionId={nft.collection.id} />
+        <NftCarousel title="Mais desta coleção" params={{ collectionId: nft.collection.id, excludeId: nft.id }} />
       </main>
     </>
   )
