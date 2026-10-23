@@ -1,14 +1,12 @@
 import { createFileRoute } from '@tanstack/react-router'
+import { OrderView } from '@/features/orders/components/order-view'
 
 export const Route = createFileRoute('/_authenticated/orders/$orderId')({
-  head: () => ({ meta: [{ title: 'Pedido | NFT Marketplace' }] }),
+  head: () => ({ meta: [{ title: 'Pedido | Kurio' }, { name: 'robots', content: 'noindex' }] }),
   component: OrderPage,
 })
 
 function OrderPage() {
-  return (
-    <main id="main">
-      <h1>Pedido</h1>
-    </main>
-  )
+  const { orderId } = Route.useParams()
+  return <OrderView orderId={orderId} />
 }
