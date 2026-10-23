@@ -15,6 +15,8 @@ import { useCacheOwner } from '@/shared/session/cache-owner'
 import { useSessionUser } from '@/shared/session/session-store'
 import { SearchDialog } from './search-dialog'
 
+const PURCHASE_FLOW = /^\/(nfts\/|cart|checkout)/
+
 const tabClass =
   'grid size-11 place-items-center rounded-md text-sand transition-colors hover:text-amber aria-[current=page]:text-amber'
 
@@ -28,8 +30,8 @@ export function MobileTabBar() {
   const [searchOpen, setSearchOpen] = useState(false)
   const current = (path: string) => (pathname === path ? 'page' : undefined)
 
-  // Detail pages show their own buy bar in place of the tab bar (mobile frame).
-  if (pathname.startsWith('/nfts/')) return null
+  // Purchase-flow frames (detail, cart, payment) replace the tab bar with their own actions.
+  if (PURCHASE_FLOW.test(pathname)) return null
 
   return (
     <nav aria-label="Navegação inferior" className="fixed inset-x-0 bottom-0 z-40 h-[126px] md:hidden">

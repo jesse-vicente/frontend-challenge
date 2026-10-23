@@ -7,6 +7,12 @@ import { quoteSchema } from '@/shared/api/dtos/quote'
 import { type CacheOwner, queryKeys } from '@/shared/api/query-keys'
 import { useCacheOwner } from '@/shared/session/cache-owner'
 
+/** Cart mutations run one at a time, so rapid clicks never apply out of order. */
+const CART_MUTATION_SCOPE = { id: 'cart' }
+
+/** Network used to estimate fees before the collector picks one at checkout. */
+export const ESTIMATE_NETWORK = 'ethereum' as const
+
 export const cartQuery = (owner: CacheOwner) =>
   queryOptions({
     queryKey: queryKeys.private.cart(owner),
@@ -43,6 +49,7 @@ function useCartMutationSync() {
 export function useAddToCart() {
   const { sync } = useCartMutationSync()
   return useMutation({
+    scope: CART_MUTATION_SCOPE,
     mutationFn: (item: AddCartItemRequest) =>
       apiRequest(cartSchema, { method: 'POST', url: '/cart/items', data: item }),
     onSuccess: (cart) => {
@@ -57,6 +64,7 @@ export function useUpdateCartItem() {
   const { owner, queryClient, sync } = useCartMutationSync()
   const key = queryKeys.private.cart(owner)
   return useMutation({
+    scope: CART_MUTATION_SCOPE,
     mutationFn: ({ itemId, quantity }: { itemId: string; quantity: number }) =>
       apiRequest(cartSchema, { method: 'PATCH', url: `/cart/items/${itemId}`, data: { quantity } }),
     onMutate: async ({ itemId, quantity }) => {
@@ -81,6 +89,7 @@ export function useUpdateCartItem() {
 export function useRemoveCartItem() {
   const { sync } = useCartMutationSync()
   return useMutation({
+    scope: CART_MUTATION_SCOPE,
     mutationFn: (itemId: string) => apiRequest(cartSchema, { method: 'DELETE', url: `/cart/items/${itemId}` }),
     onSuccess: (cart) => {
       sync(cart)
@@ -92,6 +101,7 @@ export function useRemoveCartItem() {
 export function useApplyCoupon() {
   const { sync } = useCartMutationSync()
   return useMutation({
+    scope: CART_MUTATION_SCOPE,
     mutationFn: (code: string) => apiRequest(cartSchema, { method: 'PUT', url: '/cart/coupon', data: { code } }),
     onSuccess: (cart) => {
       sync(cart)
@@ -103,6 +113,7 @@ export function useApplyCoupon() {
 export function useRemoveCoupon() {
   const { sync } = useCartMutationSync()
   return useMutation({
+    scope: CART_MUTATION_SCOPE,
     mutationFn: () => apiRequest(cartSchema, { method: 'DELETE', url: '/cart/coupon' }),
     onSuccess: (cart) => {
       sync(cart)
