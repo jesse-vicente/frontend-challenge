@@ -1,0 +1,30 @@
+node_modules
+dist
+dist-ssr
+*.local
+.env
+.env.*
+!.env.example
+
+# tooling
+node_modules/.tmp
+.eslintcache
+coverage
+.vercel
+
+# playwright
+test-results
+playwright-report
+blob-report
+playwright/.cache
+
+# lighthouse temp
+.lighthouseci
+
+# editor / os
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+Thumbs.db
+*.log
