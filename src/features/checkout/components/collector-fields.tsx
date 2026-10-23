@@ -9,7 +9,7 @@ import { cn } from '@/shared/lib/cn'
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/shared/ui/form'
 import { type CheckoutFormValues } from '../schema'
 
-const labelClass = 'text-[15px] font-normal text-foreground'
+const labelClass = 'text-[15px] leading-4 font-normal text-foreground'
 
 function Required() {
   return (
@@ -73,7 +73,7 @@ export function CollectorFields({
   hasSecondary: boolean
 }) {
   return (
-    <div className="grid grid-cols-1 gap-x-5 gap-y-6 md:grid-cols-2">
+    <div className="grid grid-cols-1 gap-x-6 gap-y-6 md:grid-cols-2 md:gap-y-[17px]">
       <TextInputField control={control} name="displayName" label="Nome de exibição" autoComplete="name" />
       <TextInputField control={control} name="username" label="Nome de usuário" autoComplete="username" />
       <FormField
@@ -113,11 +113,11 @@ export function CollectorFields({
           aria-describedby="checkout-wallet-address-hint"
           className={cn(textFieldClass, 'text-sand')}
         />
-        <p id="checkout-wallet-address-hint" className="text-xs text-sand">
+        <p id="checkout-wallet-address-hint" className="sr-only">
           Definido pela carteira cadastrada selecionada.
         </p>
       </div>
-      <div className="flex flex-col gap-2 md:pt-[30px]">
+      <div className="flex flex-col gap-2 md:pt-6">
         <TextInputField
           control={control}
           name="secondaryAddress"

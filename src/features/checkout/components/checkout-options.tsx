@@ -28,18 +28,25 @@ export function OrderItems({ quote, items }: { quote: QuoteDto | undefined; item
         <span>NFTs</span>
         <span>Subtotal</span>
       </div>
-      <ul className="flex flex-col gap-2">
+      <ul className="flex flex-col gap-3">
         {lines.map((line) => {
           const item = byId.get(line.cartItemId)
           return (
-            <li key={line.cartItemId} className="flex items-center gap-2 bg-surface pr-3">
-              {item ? <NftImage image={item.image} decorative sizes="52px" className="size-[52px] shrink-0" /> : null}
+            <li key={line.cartItemId} className="flex min-h-[70px] items-center gap-2.5 bg-surface p-1 pr-4">
+              {item ? (
+                <NftImage
+                  image={item.image}
+                  decorative
+                  sizes="62px"
+                  className="size-[62px] shrink-0 overflow-hidden rounded-md"
+                />
+              ) : null}
               <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-bold text-foreground">{line.name}</p>
-                <p className="truncate text-xs text-sand">ID do token: {item?.tokenId ?? '—'}</p>
+                <p className="truncate text-[15px] font-bold text-foreground">{line.name}</p>
+                <p className="truncate text-sm text-sand">ID do token: {item?.tokenId ?? '—'}</p>
               </div>
-              <span className="text-xs text-sand">(x {line.effectiveQuantity})</span>
-              <span className="text-sm font-bold text-amber">{formatEth(line.lineTotal)}</span>
+              <span className="text-sm text-sand">(x {line.effectiveQuantity})</span>
+              <span className="text-lg font-bold text-amber">{formatEth(line.lineTotal)}</span>
             </li>
           )
         })}

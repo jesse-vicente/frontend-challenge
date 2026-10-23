@@ -14,6 +14,7 @@ import { type Network } from '@/shared/api/dtos/network'
 import { EmptyState, ErrorState } from '@/shared/components/feedback-states'
 import { MobilePageHeader } from '@/shared/components/mobile-page-header'
 import { formatEth } from '@/shared/lib/format'
+import { useIsDesktop } from '@/shared/lib/use-media-query'
 import { useCacheOwner } from '@/shared/session/cache-owner'
 import { useSessionUser } from '@/shared/session/session-store'
 import { Button } from '@/shared/ui/button'
@@ -63,6 +64,7 @@ export function CheckoutView() {
   const wallets = useQuery(walletsQuery(owner))
   const profile = useQuery(profileQuery(owner))
   const flow = useCheckoutFlow()
+  const isDesktop = useIsDesktop()
   const prefilled = useRef(false)
 
   const form = useForm<CheckoutFormValues>({
@@ -175,6 +177,15 @@ export function CheckoutView() {
     </Button>
   )
 
+  const collectorFields = (
+    <div>
+      <h2 id="collector-title" className="mb-3.5 text-lg font-bold text-foreground max-md:sr-only">
+        Perfil do colecionador
+      </h2>
+      <CollectorFields control={form.control} wallet={selectedWallet} hasSecondary={Boolean(secondary)} />
+    </div>
+  )
+
   return (
     <main className="page-container pt-6 pb-10 md:pt-8">
       <MobilePageHeader title="Pagamento com carteira" fallback="/cart" />
@@ -207,15 +218,18 @@ export function CheckoutView() {
                 onChange={(id) => form.setValue('useOtherWallet', id === secondary?.id, { shouldDirty: true })}
               />
             </div>
-            <details className="group md:contents" open={Object.keys(form.formState.errors).length > 0 || undefined}>
-              <summary className="cursor-pointer list-none text-sm font-bold text-amber md:hidden">
-                Dados do colecionador
-              </summary>
-              <h2 id="collector-title" className="mb-4 text-lg font-bold text-foreground max-md:sr-only">
-                Perfil do colecionador
-              </h2>
-              <CollectorFields control={form.control} wallet={selectedWallet} hasSecondary={Boolean(secondary)} />
-            </details>
+            {isDesktop ? (
+              collectorFields
+            ) : (
+              // A closed <details> hides its content even with display: contents, so
+              // the collapsible wrapper exists only on mobile.
+              <details open={Object.keys(form.formState.errors).length > 0 || undefined}>
+                <summary className="cursor-pointer list-none text-sm font-bold text-amber">
+                  Dados do colecionador
+                </summary>
+                <div className="mt-4">{collectorFields}</div>
+              </details>
+            )}
           </section>
 
           <aside aria-label="Resumo do pagamento" className="flex flex-col gap-5 lg:w-[404px]">
