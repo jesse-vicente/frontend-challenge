@@ -1,14 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
+import { CheckoutView } from '@/features/checkout/components/checkout-view'
 
 export const Route = createFileRoute('/_authenticated/checkout')({
-  head: () => ({ meta: [{ title: 'Pagamento | NFT Marketplace' }] }),
-  component: CheckoutPage,
+  head: () => ({ meta: [{ title: 'Pagamento | Kurio' }, { name: 'robots', content: 'noindex' }] }),
+  component: CheckoutView,
 })
-
-function CheckoutPage() {
-  return (
-    <main id="main">
-      <h1>Pagamento</h1>
-    </main>
-  )
-}
