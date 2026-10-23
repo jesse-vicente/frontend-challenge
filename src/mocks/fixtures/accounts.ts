@@ -81,5 +81,5 @@ export function buildCoupons(): Coupon[] {
 }
 
 export function buildFavorites(): Record<string, string[]> {
-  return { user_alice: ['nft_003', 'nft_011'], user_bob: [] }
+  return { user_alice: ['nft_001', 'nft_011'], user_bob: [] }
 }

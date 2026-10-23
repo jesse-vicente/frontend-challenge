@@ -1,7 +1,7 @@
 import { percentOf } from '@/domain/money'
 import { availabilityOf } from '@/domain/nft'
 import { type Network } from '@/shared/api/dtos/network'
-import { type NftCategory } from '@/shared/api/dtos/nft'
+import { type NftCategory, type Rarity } from '@/shared/api/dtos/nft'
 import { type NftRecord } from '../db/types'
 import { createRandom, type Random } from '../lib/random'
 
@@ -57,8 +57,13 @@ const CATEGORIES: readonly NftCategory[] = [
   'subscriptions',
   'utility',
 ]
+/** Uneven weights so facet counts vary like in the layout (Música largest, Fotografia smallest). */
+const WEIGHTED_CATEGORIES: readonly NftCategory[] = CATEGORIES.flatMap((category, index) =>
+  Array.from({ length: [4, 2, 6, 4, 3, 2, 2, 2, 2][index] ?? 1 }, () => category),
+)
 const NETWORKS: readonly Network[] = ['ethereum', 'ethereum', 'polygon', 'solana']
-const RARITY = ['Comum', 'Raro', 'Épico', 'Lendário'] as const
+const RARITIES: readonly Rarity[] = ['common', 'common', 'common', 'rare', 'rare', 'epic', 'legendary']
+const RARITY_LABELS: Record<Rarity, string> = { common: 'Comum', rare: 'Raro', epic: 'Épico', legendary: 'Lendário' }
 
 const NETWORK_LABELS: Record<Network, string> = { ethereum: 'Ethereum', polygon: 'Polygon', solana: 'Solana' }
 
@@ -75,7 +80,7 @@ const DEFAULT_TIER = '1-50'
 const FIGMA_GRID = [
   { family: 0, name: 'Emerald Ape', number: 42, price: '1.19', compareAt: null },
   { family: 2, name: 'Sage Nomad', number: 9, price: '1.69', compareAt: null },
-  { family: 1, name: 'Neon Vessel', number: 552, price: '1.99', compareAt: '2.29' },
+  { family: 1, name: 'Neon Vessel', number: 552, price: '1.99', compareAt: '2.29', rarity: 'rare' },
   { family: 2, name: 'Cosmic Bloom', number: 118, price: '1.29', compareAt: null },
   { family: 2, name: 'Violet Nomad', number: 314, price: '1.39', compareAt: null },
   { family: 1, name: 'Ivory Baron', number: 88, price: '1.79', compareAt: null },
@@ -155,14 +160,14 @@ export function buildCatalog(seed = 2026): NftRecord[] {
       height: 800,
     }
     const royaltyPercent = 5
-    const rarity = RARITY[Math.min(Math.floor(Number(basePrice)), RARITY.length - 1)] ?? 'Comum'
+    const rarity: Rarity = grid ? ('rarity' in grid ? grid.rarity : 'common') : random.pick(RARITIES)
     const contractAddress = `0x7a42${(index + 1).toString(16).padStart(32, '0')}19e8`
 
     nfts.push({
       id,
       name,
       creator: family.creator,
-      category: CATEGORIES[index % CATEGORIES.length] ?? 'digital-art',
+      category: index < FIGMA_GRID.length ? 'digital-art' : random.pick(WEIGHTED_CATEGORIES),
       network,
       image,
       gallery: [0, 1, 2, 3].map((view) => ({ ...image, alt: `${name}, visualização ${view + 1} de 4` })),
@@ -180,7 +185,8 @@ export function buildCatalog(seed = 2026): NftRecord[] {
       defaultEditionId: defaultEdition.id,
       tokenId: `#${String(number).padStart(4, '0')}`,
       collection: family.collection,
-      attributes: [...family.attributes.slice(0, 2), rarity],
+      rarity,
+      attributes: [...family.attributes.slice(0, 2), RARITY_LABELS[rarity]],
       royaltyPercent,
       rating: { average: Math.round(average * 10) / 10, count: reviews.length },
       reviews,

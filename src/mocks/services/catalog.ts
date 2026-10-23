@@ -27,6 +27,7 @@ export function toSummary(nft: NftRecord): NftSummaryDto {
     creator: nft.creator,
     category: nft.category,
     network: nft.network,
+    rarity: nft.rarity,
     image: nft.image,
     price: nft.price,
     compareAtPrice: nft.compareAtPrice,

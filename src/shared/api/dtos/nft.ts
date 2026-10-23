@@ -23,6 +23,9 @@ export const availabilitySchema = z.enum([
   'sold-out',
 ] as const satisfies readonly EditionAvailability[])
 
+export const raritySchema = z.enum(['common', 'rare', 'epic', 'legendary'])
+export type Rarity = z.infer<typeof raritySchema>
+
 export const creatorSchema = z.object({
   id: idSchema,
   name: z.string(),
@@ -48,6 +51,7 @@ export const nftSummarySchema = z.object({
   creator: creatorSchema,
   category: nftCategorySchema,
   network: networkSchema,
+  rarity: raritySchema,
   image: imageSchema,
   /** Listing price: price of the default edition, and its previous price when on sale. */
   price: ethAmountSchema,
