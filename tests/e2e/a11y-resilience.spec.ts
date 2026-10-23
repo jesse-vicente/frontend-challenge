@@ -68,8 +68,15 @@ test.describe('teclado e foco', () => {
 
 test.describe('carregamento, falha e recuperação', () => {
   test('rede lenta mostra skeletons até os dados chegarem @mobile', async ({ app, page }) => {
-    await app.open('/', { scenario: 'slow' })
-    await expect(page.locator('#mercado [aria-busy=true]').first()).toBeVisible()
+    // Start elsewhere, then make the catalog requests slow enough to observe the loading state.
+    await app.open('/nfts/nft_001', { scenario: 'slow' })
+    await app.mock('setLatency', 4000)
+    // Client-side navigation keeps the in-memory latency override (a reload would reset it).
+    await page.evaluate(() => {
+      window.history.pushState({}, '', '/')
+      window.dispatchEvent(new PopStateEvent('popstate'))
+    })
+    await expect(page.locator('#mercado [aria-busy=true]').first()).toBeAttached()
     await expect(page.locator('#mercado .skeleton').filter({ visible: true }).first()).toBeVisible()
     await expect(cards(page).first()).toBeVisible({ timeout: 15_000 })
   })
