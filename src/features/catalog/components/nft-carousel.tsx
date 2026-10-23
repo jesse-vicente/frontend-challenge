@@ -57,8 +57,9 @@ export function NftCarousel({ title, params }: { title: string; params: NftListP
             ))}
       </ul>
       {pages > 1 ? (
-        <div className="flex justify-center gap-2">
+        <div className="flex justify-center">
           {Array.from({ length: pages }, (_, index) => (
+            // 12px dot of the layout inside a 24px target (WCAG 2.5.8).
             <button
               // biome-ignore lint/suspicious/noArrayIndexKey: dots are positional
               key={index}
@@ -66,8 +67,13 @@ export function NftCarousel({ title, params }: { title: string; params: NftListP
               onClick={() => goTo(index)}
               aria-label={`Ir para o grupo ${index + 1} de ${pages}`}
               aria-current={index === page ? 'true' : undefined}
-              className={cn('size-3 rounded-full border-[1.5px] border-primary', index === page && 'bg-primary')}
-            />
+              className="grid size-6 place-items-center rounded-full"
+            >
+              <span
+                aria-hidden="true"
+                className={cn('size-3 rounded-full border-[1.5px] border-primary', index === page && 'bg-primary')}
+              />
+            </button>
           ))}
         </div>
       ) : null}

@@ -95,7 +95,7 @@ function PriceFilter({ search, facets, onChange }: Omit<CatalogFiltersProps, 'cl
           value={range}
           onValueChange={(value) => setRange([value[0] ?? bounds[0], value[1] ?? bounds[1]])}
           thumbLabels={['Preço mínimo', 'Preço máximo']}
-          aria-valuetext={`${formatPrice(range[0])} a ${formatPrice(range[1])} ETH`}
+          thumbValueTexts={[`${formatPrice(range[0])} ETH`, `${formatPrice(range[1])} ETH`]}
         />
         <p className="text-[15px] text-foreground" aria-live="polite">
           Preço: {formatPrice(range[0])} - {formatPrice(range[1])} ETH

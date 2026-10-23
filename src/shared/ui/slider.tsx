@@ -13,8 +13,13 @@ function Slider({
   min = 0,
   max = 100,
   thumbLabels,
+  thumbValueTexts,
   ...props
-}: React.ComponentProps<typeof SliderPrimitive.Root> & { thumbLabels?: readonly string[] }) {
+}: React.ComponentProps<typeof SliderPrimitive.Root> & {
+  thumbLabels?: readonly string[]
+  /** Spoken value of each thumb (aria-valuetext belongs to the sliders, not the root). */
+  thumbValueTexts?: readonly string[]
+}) {
   const values = React.useMemo(
     () => (Array.isArray(value) ? value : Array.isArray(defaultValue) ? defaultValue : [min, max]),
     [value, defaultValue, min, max],
@@ -23,6 +28,8 @@ function Slider({
   return (
     <SliderPrimitive.Root
       data-slot="slider"
+      // Radix sets aria-disabled on the root, which needs a role that allows it.
+      role="group"
       defaultValue={defaultValue}
       value={value}
       min={min}
@@ -43,6 +50,7 @@ function Slider({
           // biome-ignore lint/suspicious/noArrayIndexKey: thumbs are positional and never reorder
           key={index}
           aria-label={thumbLabels?.[index]}
+          aria-valuetext={thumbValueTexts?.[index]}
           className="block size-[15px] shrink-0 cursor-grab rounded-full border-[3px] border-ink bg-primary outline-offset-2 transition-transform hover:scale-110 focus-visible:outline-2 focus-visible:outline-ring active:cursor-grabbing"
         />
       ))}

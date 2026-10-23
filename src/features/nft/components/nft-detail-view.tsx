@@ -235,9 +235,10 @@ export function NftDetailView({
   const props = { nft, purchase, onSelectEdition }
 
   return (
-    <>
+    // One main landmark for both frames: the mobile one lives outside the page container.
+    <main>
       <MobileDetails {...props} />
-      <main className="page-container hidden flex-col gap-24 pt-8 md:flex">
+      <div className="page-container hidden flex-col gap-24 pt-8 md:flex">
         <div className="flex flex-col gap-3">
           <nav aria-label="Trilha de navegação">
             <ol className="flex gap-1 text-sm leading-4 font-bold text-foreground">
@@ -261,8 +262,8 @@ export function NftDetailView({
         </div>
         <NftInfoTabs nft={nft} />
         <NftCarousel title="Mais desta coleção" params={{ collectionId: nft.collection.id, excludeId: nft.id }} />
-      </main>
-    </>
+      </div>
+    </main>
   )
 }
 
