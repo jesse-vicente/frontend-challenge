@@ -1,6 +1,7 @@
 import { type EthAmount } from '@/domain/money'
 
-const ethFormatter = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 4 })
+// The layout writes amounts as "1.19 ETH" (dot decimal, crypto convention), not pt-BR currency.
+const ethFormatter = new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 4 })
 const dateTimeFormatter = new Intl.DateTimeFormat('pt-BR', { dateStyle: 'medium', timeStyle: 'short' })
 
 /**
