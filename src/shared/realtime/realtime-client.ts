@@ -22,6 +22,8 @@ export function startRealtime(queryClient: QueryClient): () => void {
 
     const next = io(SOCKET_URL, {
       transports: ['websocket'],
+      // Each session gets its own Manager: no multiplexing across users.
+      forceNew: true,
       auth: token ? { token } : {},
       reconnectionDelay: 1000,
       reconnectionDelayMax: 5000,
