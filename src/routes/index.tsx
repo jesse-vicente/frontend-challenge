@@ -1,9 +1,6 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useCallback } from 'react'
-import { CatalogSection } from '@/features/catalog/components/catalog-section'
-import { HomeJournal, HomePromos } from '@/features/catalog/components/home-editorial'
-import { HomeHero } from '@/features/catalog/components/home-hero'
-import { MobileCatalogBar } from '@/features/catalog/components/mobile-catalog-bar'
+import { HomePageContent } from '@/features/catalog/components/home-page-content'
 import { nftHighlightsQuery, nftListQuery } from '@/features/catalog/queries'
 import { type CatalogSearch, catalogSearchSchema, toListParams } from '@/features/catalog/search'
 
@@ -44,15 +41,5 @@ function HomePage() {
     [navigate],
   )
 
-  return (
-    <main className="page-container flex flex-col gap-6 pt-10 md:gap-24 md:pt-8">
-      <MobileCatalogBar search={search} onSearchChange={onSearchChange} />
-      <HomeHero />
-      <CatalogSection search={search} onSearchChange={onSearchChange} />
-      <div className="hidden flex-col gap-24 md:flex">
-        <HomePromos />
-        <HomeJournal />
-      </div>
-    </main>
-  )
+  return <HomePageContent search={search} onSearchChange={onSearchChange} />
 }
