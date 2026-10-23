@@ -157,7 +157,9 @@ export function SiteFooter() {
             <ComingSoonLink label="Minha coleção" />
             <ComingSoonLink label="Atividade" />
             <ComingSoonLink label="Estúdio do criador" />
-            <ComingSoonLink label="Lista de interesse" />
+            <Link to="/profile" hash="favoritos" className={linkClass}>
+              Lista de interesse
+            </Link>
           </FooterColumn>
           <FooterColumn title="Central de ajuda">
             <ComingSoonLink label="Central de ajuda" />

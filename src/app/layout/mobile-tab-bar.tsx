@@ -58,7 +58,13 @@ export function MobileTabBar() {
           </Link>
         </li>
         <li className="mr-auto ml-7">
-          <Link to="/profile" hash="favoritos" aria-label="Favoritos" className={tabClass}>
+          <Link
+            to="/profile"
+            hash="favoritos"
+            activeOptions={{ includeHash: true }}
+            aria-label="Favoritos"
+            className={tabClass}
+          >
             <MaskIcon src={heartIcon} className="h-[17.8px] w-5" />
           </Link>
         </li>
