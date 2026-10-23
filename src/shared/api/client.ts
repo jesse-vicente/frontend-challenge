@@ -1,5 +1,6 @@
 import axios, { type AxiosRequestConfig, isAxiosError } from 'axios'
 import { type z } from 'zod'
+import { backendReady } from './backend-ready'
 import { ApiError, toApiError } from './errors'
 
 export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api'
@@ -33,7 +34,8 @@ export const http = axios.create({
   paramsSerializer: { indexes: null },
 })
 
-http.interceptors.request.use((config) => {
+http.interceptors.request.use(async (config) => {
+  await backendReady()
   const token = authBridge?.getAccessToken()
   if (token) config.headers.set('Authorization', `Bearer ${token}`)
   const guestCartId = authBridge?.getGuestCartId()

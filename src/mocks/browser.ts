@@ -1,4 +1,5 @@
 import { setupWorker } from 'msw/browser'
+import { type MockBootParams } from './boot-params'
 import { installControl } from './control'
 import { initDb, resetDb } from './db/store'
 import { restHandlers } from './handlers'
@@ -8,18 +9,13 @@ import { initScenario } from './scenarios/runtime'
 import { resumePendingOrders } from './services/orders'
 import { isTokenActiveFor, userIdForToken } from './services/sessions'
 
-/** Query params read once at boot: `?scenario=<name>` and `?mock-reset`. */
-const SCENARIO_PARAM = 'scenario'
-const RESET_PARAM = 'mock-reset'
-
 /**
  * Starts the simulated backend (REST via service worker, Socket.IO via
  * WebSocket interception). Must resolve before the app issues any request.
  */
-export async function startMocks(): Promise<void> {
-  const url = new URL(window.location.href)
-  initScenario(url.searchParams.get(SCENARIO_PARAM))
-  if (url.searchParams.has(RESET_PARAM)) await resetDb()
+export async function startMocks(params: MockBootParams): Promise<void> {
+  initScenario(params.scenario)
+  if (params.reset) await resetDb()
   else await initDb()
 
   setTokenResolver(userIdForToken)
@@ -34,11 +30,4 @@ export async function startMocks(): Promise<void> {
 
   resumePendingOrders()
   installControl()
-
-  // Keep the app URL clean: scenario params are not part of the router state.
-  if (url.searchParams.has(SCENARIO_PARAM) || url.searchParams.has(RESET_PARAM)) {
-    url.searchParams.delete(SCENARIO_PARAM)
-    url.searchParams.delete(RESET_PARAM)
-    window.history.replaceState(window.history.state, '', url)
-  }
 }

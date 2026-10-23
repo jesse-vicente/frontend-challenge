@@ -1,5 +1,7 @@
 import { type QueryClient } from '@tanstack/react-query'
-import { io, type Socket } from 'socket.io-client'
+// biome-ignore lint/style/useImportType: `import { type … }` keeps a side-effect import under verbatimModuleSyntax, which would evaluate engine.io before the mocks patch WebSocket.
+import type { io as connect, Socket } from 'socket.io-client'
+import { backendReady } from '../api/backend-ready'
 import { nftUpdatedEventSchema, orderUpdatedEventSchema, REALTIME_EVENTS } from '../api/dtos/events'
 import { sessionStore } from '../session/session-store'
 import { applyNftUpdated, applyOrderUpdated } from './cache-sync'
@@ -9,13 +11,18 @@ const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || window.location.origin
 
 /**
  * Owns the Socket.IO connection for the current session.
+ * socket.io-client is loaded only once the backend is ready: engine.io captures the
+ * WebSocket constructor when evaluated, and the mocks must have patched it by then.
  * A new session (login, logout, user switch) tears the socket down and opens a
  * new one, so listeners and events of a previous user never leak into the next.
  */
 export function startRealtime(queryClient: QueryClient): () => void {
   let socket: Socket | null = null
+  let io: typeof connect | null = null
+  let stopped = false
 
   const open = () => {
+    if (!io || stopped) return
     const token = sessionStore.getToken()
     const userId = sessionStore.getUser()?.id ?? null
     let disconnected = false
@@ -64,7 +71,12 @@ export function startRealtime(queryClient: QueryClient): () => void {
     socket = null
   }
 
-  open()
+  void backendReady()
+    .then(() => import('socket.io-client'))
+    .then((client) => {
+      io = client.io
+      open()
+    })
   const unsubscribe = sessionStore.subscribe((nextState, previous) => {
     if (nextState.session?.token === previous.session?.token) return
     close()
@@ -73,6 +85,7 @@ export function startRealtime(queryClient: QueryClient): () => void {
   })
 
   return () => {
+    stopped = true
     unsubscribe()
     close()
     realtimeStore.reset()

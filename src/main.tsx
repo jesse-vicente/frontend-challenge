@@ -1,16 +1,17 @@
 import '@/styles/globals.css'
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
+import { setBackendReady } from '@/shared/api/backend-ready'
 
 async function bootstrap() {
-  // The simulated backend must be ready before the first request or socket.
+  // The simulated backend starts in parallel with the first render: requests and the
+  // socket wait for it (backendReady), so static content paints without waiting for MSW.
   if (import.meta.env.VITE_ENABLE_MOCKS === 'true') {
-    const { startMocks } = await import('@/mocks/browser')
-    await startMocks()
+    const { takeMockBootParams } = await import('@/mocks/boot-params')
+    const params = takeMockBootParams()
+    setBackendReady(import('@/mocks/browser').then(({ startMocks }) => startMocks(params)))
   }
 
-  // Loaded only after the mocks: engine.io-client captures `WebSocket` when its
-  // module is evaluated, so it must see the intercepted constructor.
   const [{ App }, { installAuthBridge }] = await Promise.all([import('@/app/app'), import('@/app/auth-bridge')])
 
   // Before the first render: route loaders may request private data immediately.
