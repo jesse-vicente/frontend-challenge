@@ -19,6 +19,6 @@ describe('catalog fixtures', () => {
     expect(new Set(catalog.map((nft) => nft.category)).size).toBeGreaterThanOrEqual(8)
     expect(catalog.some((nft) => nft.availability === 'sold-out')).toBe(true)
     expect(catalog.some((nft) => nft.editions.some((edition) => edition.available === 0))).toBe(true)
-    expect(catalog.every((nft) => isEthAmount(nft.priceFrom))).toBe(true)
+    expect(catalog.every((nft) => isEthAmount(nft.price))).toBe(true)
   })
 })

@@ -63,10 +63,11 @@ export const mockControl: MockControl = {
       occurredAt: new Date(Date.now() - 60_000).toISOString(),
       userId: null,
       data: {
-        priceFrom: '999',
+        price: '999',
+        compareAtPrice: null,
         available: 0,
         availability: 'sold-out',
-        editions: nft.editions.map((edition) => ({ id: edition.id, price: '999', available: 0 })),
+        editions: nft.editions.map((edition) => ({ id: edition.id, price: '999', compareAtPrice: null, available: 0 })),
       },
     })
   },

@@ -27,7 +27,11 @@ export interface SessionRecord {
   revoked: boolean
 }
 
-export type NftRecord = NftDetailDto
+/** Catalog record: the public detail plus ranking data that never leaves the API. */
+export interface NftRecord extends NftDetailDto {
+  isNew: boolean
+  trendingScore: number
+}
 
 export interface CartItemRecord {
   id: string

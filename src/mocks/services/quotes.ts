@@ -9,7 +9,7 @@ import { findEdition, findNft } from './catalog'
 export const NETWORK_FEES: Record<Network, string> = {
   ethereum: '0.0042',
   polygon: '0.0004',
-  arbitrum: '0.0011',
+  solana: '0.0002',
 }
 
 export const QUOTE_TTL_MS = 5 * 60 * 1000

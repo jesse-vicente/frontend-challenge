@@ -14,7 +14,7 @@ import { type EditionPatch, findEdition, requireNft, updateNft } from './catalog
 const EXPLORERS: Record<Network, string> = {
   ethereum: 'https://etherscan.io/tx/',
   polygon: 'https://polygonscan.com/tx/',
-  arbitrum: 'https://arbiscan.io/tx/',
+  solana: 'https://solscan.io/tx/',
 }
 
 const timers = new Map<string, ReturnType<typeof setTimeout>>()

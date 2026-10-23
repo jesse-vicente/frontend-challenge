@@ -12,8 +12,8 @@ import { type PriceChangeNotice, realtimeStore } from './realtime-store'
 
 function patchSummary<T extends NftSummaryDto>(item: T, event: NftUpdatedEvent): T {
   if (item.id !== event.resource.id || item.version >= event.version) return item
-  const { priceFrom, available, availability } = event.data
-  return { ...item, priceFrom, available, availability, version: event.version }
+  const { price, compareAtPrice, available, availability } = event.data
+  return { ...item, price, compareAtPrice, available, availability, version: event.version }
 }
 
 /** Applies `nft.updated` to catalog, detail and cart caches without refetching. */
@@ -22,7 +22,9 @@ export function applyNftUpdated(queryClient: QueryClient, event: NftUpdatedEvent
     if (!detail || detail.version >= event.version) return detail
     const editions = detail.editions.map((edition) => {
       const patch = event.data.editions.find((item) => item.id === edition.id)
-      return patch ? { ...edition, price: patch.price, available: patch.available } : edition
+      return patch
+        ? { ...edition, price: patch.price, compareAtPrice: patch.compareAtPrice, available: patch.available }
+        : edition
     })
     return { ...patchSummary(detail, event), editions }
   })
@@ -31,7 +33,12 @@ export function applyNftUpdated(queryClient: QueryClient, event: NftUpdatedEvent
     page ? { ...page, items: page.items.map((item) => patchSummary(item, event)) } : page,
   )
   queryClient.setQueryData<NftHighlightsDto>(queryKeys.nfts.highlights(), (highlights) =>
-    highlights ? { items: highlights.items.map((item) => patchSummary(item, event)) } : highlights,
+    highlights
+      ? {
+          featured: highlights.featured && patchSummary(highlights.featured, event),
+          items: highlights.items.map((item) => patchSummary(item, event)),
+        }
+      : highlights,
   )
 
   const owner = currentCacheOwner()

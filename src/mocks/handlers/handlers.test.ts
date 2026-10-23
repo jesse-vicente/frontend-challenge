@@ -70,11 +70,11 @@ describe('catalog', () => {
   it('filters, sorts and paginates', async () => {
     const page = await apiRequest(nftListResponseSchema, {
       url: '/nfts',
-      params: { categories: ['art', 'music'], availability: 'available', sort: 'price-asc', pageSize: 5 },
+      params: { categories: ['digital-art', 'music'], availability: 'available', sort: 'price-asc', pageSize: 5 },
     })
     expect(page.items.length).toBeLessThanOrEqual(5)
-    expect(page.items.every((nft) => ['art', 'music'].includes(nft.category) && nft.available > 0)).toBe(true)
-    const prices = page.items.map((nft) => Number(nft.priceFrom))
+    expect(page.items.every((nft) => ['digital-art', 'music'].includes(nft.category) && nft.available > 0)).toBe(true)
+    const prices = page.items.map((nft) => Number(nft.price))
     expect(prices).toEqual([...prices].sort((a, b) => a - b))
   })
 
@@ -125,21 +125,21 @@ describe('cart', () => {
   it('keeps the guest cart and merges it on login', async () => {
     const guest = await getCart()
     guestCartId = guest.id
-    await addItem('nft_001', 'nft_001_standard')
+    await addItem('nft_001', 'nft_001_1-50')
     await login('alice@nft.test')
     guestCartId = null
     const cart = await getCart()
-    expect(cart.items.map((item) => item.editionId)).toContain('nft_001_standard')
+    expect(cart.items.map((item) => item.editionId)).toContain('nft_001_1-50')
   })
 
   it('rejects quantities above stock', async () => {
-    const error = await expectApiError(addItem('nft_001', 'nft_001_standard', 999))
+    const error = await expectApiError(addItem('nft_001', 'nft_001_1-50', 999))
     expect(error.code).toBe('OUT_OF_STOCK')
   })
 
   it('validates coupons', async () => {
     await login('alice@nft.test')
-    await addItem('nft_001', 'nft_001_standard')
+    await addItem('nft_001', 'nft_001_1-50')
     const apply = (code: string) => apiRequest(cartSchema, { method: 'PUT', url: '/cart/coupon', data: { code } })
     expect((await expectApiError(apply('NOPE'))).code).toBe('COUPON_INVALID')
     expect((await expectApiError(apply('EXPIRED20'))).code).toBe('COUPON_EXPIRED')
@@ -153,7 +153,7 @@ describe('cart', () => {
 describe('orders', () => {
   async function prepareCheckout() {
     await login('alice@nft.test')
-    await addItem('nft_001', 'nft_001_standard')
+    await addItem('nft_001', 'nft_001_1-50')
     return createQuote()
   }
 
@@ -187,7 +187,7 @@ describe('orders', () => {
 
   it('rejects a stale quote after a price change', async () => {
     const quote = await prepareCheckout()
-    mockControl.updateNft('nft_001', [{ editionId: 'nft_001_standard', price: '9.99' }])
+    mockControl.updateNft('nft_001', [{ editionId: 'nft_001_1-50', price: '9.99' }])
     const error = await expectApiError(submit(quote.quoteId, 'key-3'))
     expect(error.code).toBe('QUOTE_STALE')
     expect(quoteSchema.parse((error.details as { quote: unknown }).quote).lines[0]?.unitPrice).toBe('9.99')

@@ -1,7 +1,6 @@
-import { min } from '@/domain/money'
 import { availabilityOf } from '@/domain/nft'
 import { type NftUpdatedEvent } from '@/shared/api/dtos/events'
-import { type NftSummaryDto } from '@/shared/api/dtos/nft'
+import { type NftDetailDto, type NftSummaryDto } from '@/shared/api/dtos/nft'
 import { getDb, mutate } from '../db/store'
 import { type NftRecord } from '../db/types'
 import { notFound } from '../http/respond'
@@ -27,18 +26,26 @@ export function toSummary(nft: NftRecord): NftSummaryDto {
     name: nft.name,
     creator: nft.creator,
     category: nft.category,
+    network: nft.network,
     image: nft.image,
-    priceFrom: nft.priceFrom,
+    price: nft.price,
+    compareAtPrice: nft.compareAtPrice,
     available: nft.available,
     availability: nft.availability,
     version: nft.version,
   }
 }
 
+export function toDetail({ isNew: _isNew, trendingScore: _trendingScore, ...detail }: NftRecord): NftDetailDto {
+  return detail
+}
+
 function recomputeDerived(nft: NftRecord): void {
   nft.available = nft.editions.reduce((total, edition) => total + Math.max(edition.available, 0), 0)
   nft.availability = availabilityOf({ available: nft.available })
-  nft.priceFrom = nft.editions.reduce((lowest, edition) => min(lowest, edition.price), nft.editions[0]?.price ?? '0')
+  const listed = nft.editions.find((edition) => edition.id === nft.defaultEditionId) ?? nft.editions[0]
+  nft.price = listed?.price ?? '0'
+  nft.compareAtPrice = listed?.compareAtPrice ?? null
 }
 
 export interface EditionPatch {
@@ -76,12 +83,14 @@ export function updateNft(nftId: string, patches: readonly EditionPatch[]): NftR
       version: updated.version,
       userId: null,
       data: {
-        priceFrom: updated.priceFrom,
+        price: updated.price,
+        compareAtPrice: updated.compareAtPrice,
         available: updated.available,
         availability: updated.availability,
         editions: updated.editions.map((edition) => ({
           id: edition.id,
           price: edition.price,
+          compareAtPrice: edition.compareAtPrice,
           available: edition.available,
         })),
       },

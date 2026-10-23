@@ -24,10 +24,11 @@ function nftEvent(version: number, price: string, available = edition?.available
     occurredAt: '2026-01-01T00:00:00.000Z',
     userId: null,
     data: {
-      priceFrom: price,
+      price,
+      compareAtPrice: null,
       available,
       availability: available > 0 ? 'available' : 'sold-out',
-      editions: [{ id: edition?.id ?? '', price, available }],
+      editions: [{ id: edition?.id ?? '', price, compareAtPrice: null, available }],
     },
   }
 }
@@ -82,9 +83,9 @@ describe('applyNftUpdated', () => {
     applyNftUpdated(queryClient, nftEvent(nft.version + 1, '7.77'))
 
     expect(queryClient.getQueryData<typeof nft>(queryKeys.nfts.detail(nft.id))?.editions[0]?.price).toBe('7.77')
-    expect(
-      queryClient.getQueryData<{ items: (typeof nft)[] }>(queryKeys.nfts.list({ page: 1 }))?.items[0]?.priceFrom,
-    ).toBe('7.77')
+    expect(queryClient.getQueryData<{ items: (typeof nft)[] }>(queryKeys.nfts.list({ page: 1 }))?.items[0]?.price).toBe(
+      '7.77',
+    )
     expect(queryClient.getQueryData<CartDto>(queryKeys.private.cart(owner))?.items[0]?.unitPrice).toBe('7.77')
     expect(realtimeStore.getState().cartNotices).toMatchObject([{ previousPrice: edition.price, price: '7.77' }])
   })
@@ -92,7 +93,7 @@ describe('applyNftUpdated', () => {
   it('never regresses a newer cached version', () => {
     queryClient.setQueryData(queryKeys.nfts.detail(nft.id), { ...nft, version: 10 })
     applyNftUpdated(queryClient, nftEvent(9, '1.23'))
-    expect(queryClient.getQueryData<typeof nft>(queryKeys.nfts.detail(nft.id))?.priceFrom).toBe(nft.priceFrom)
+    expect(queryClient.getQueryData<typeof nft>(queryKeys.nfts.detail(nft.id))?.price).toBe(nft.price)
   })
 })
 
