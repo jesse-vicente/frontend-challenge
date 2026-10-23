@@ -66,6 +66,7 @@ export function CheckoutView() {
   const flow = useCheckoutFlow()
   const isDesktop = useIsDesktop()
   const prefilled = useRef(false)
+  const confirmRef = useRef<HTMLButtonElement>(null)
 
   const form = useForm<CheckoutFormValues>({
     resolver: zodResolver(checkoutFormSchema),
@@ -81,16 +82,18 @@ export function CheckoutView() {
   const network = form.watch('network')
   const selectedWallet = wallets.data?.find((wallet) => wallet.id === walletId)
 
-  // Prefill once from the primary wallet unless a draft already chose one.
+  // Prefill once from the primary wallet (and the profile, once settled) unless a draft already chose one.
   useEffect(() => {
-    if (prefilled.current || !primary || !profile.isSuccess) return
+    if (prefilled.current || !primary || profile.isPending) return
     prefilled.current = true
     const current = form.getValues()
     if (!current.walletId) form.reset(valuesFromWallet(primary, profile.data, current))
-  }, [primary, profile.isSuccess, profile.data, form])
+  }, [primary, profile.isPending, profile.data, form])
 
   // "Usar outra carteira?" switches between the registered primary and secondary wallets.
+  // It waits for the prefill, otherwise wallets loading before the profile would skip it.
   useEffect(() => {
+    if (!prefilled.current) return
     const target = useOther ? secondary : primary
     if (!target || target.id === form.getValues('walletId')) return
     form.reset(valuesFromWallet(target, profile.data, { ...form.getValues(), useOtherWallet: useOther }))
@@ -169,6 +172,7 @@ export function CheckoutView() {
 
   const confirmButton = (
     <Button
+      ref={confirmRef}
       type="submit"
       className="h-[45px] w-full max-md:h-[60px] max-md:rounded-[30px] max-md:bg-[linear-gradient(90deg,#d28a4c,#a86d3b)]"
       disabled={form.formState.isSubmitting || flow.connection.status === 'connecting' || !quote.data?.purchasable}
@@ -277,6 +281,7 @@ export function CheckoutView() {
         error={flow.orderError}
         onConfirm={() => void flow.confirm()}
         onClose={flow.closeReview}
+        returnFocusTo={confirmRef}
       />
     </main>
   )

@@ -1,4 +1,5 @@
 import { Link } from '@tanstack/react-router'
+import { type RefObject } from 'react'
 import { type QuoteChange } from '@/domain/quote'
 import { QuoteSummary } from '@/features/cart/components/quote-summary'
 import { NETWORK_LABELS } from '@/features/catalog/labels'
@@ -47,6 +48,8 @@ interface ReviewDialogProps {
   error: string | null
   onConfirm: () => void
   onClose: () => void
+  /** The confirm button is disabled while the review loads, so focus returns to it explicitly. */
+  returnFocusTo: RefObject<HTMLElement | null>
 }
 
 /** Review step before the order is sent; prices and fees come from a fresh quote. */
@@ -59,6 +62,7 @@ export function ReviewDialog({
   error,
   onConfirm,
   onClose,
+  returnFocusTo,
 }: ReviewDialogProps) {
   const quote = review?.quote
   const changed = (review?.changes.length ?? 0) > 0
@@ -66,7 +70,14 @@ export function ReviewDialog({
 
   return (
     <Dialog open={review !== null} onOpenChange={(open) => !open && !submitting && onClose()}>
-      <DialogContent className="max-h-[90dvh] w-[560px] max-w-[calc(100vw-2rem)] gap-5 overflow-y-auto border-border bg-surface sm:max-w-[560px]">
+      <DialogContent
+        onCloseAutoFocus={(event) => {
+          if (!returnFocusTo.current) return
+          event.preventDefault()
+          returnFocusTo.current.focus()
+        }}
+        className="max-h-[90dvh] w-[560px] max-w-[calc(100vw-2rem)] gap-5 overflow-y-auto border-border bg-surface sm:max-w-[560px]"
+      >
         <DialogTitle className="text-lg font-bold text-foreground">Revise seu pedido</DialogTitle>
         <DialogDescription className="text-sm text-sand">
           Valores recalculados agora pela Kurio. Confirme para enviar o pagamento.
