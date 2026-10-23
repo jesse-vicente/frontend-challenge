@@ -1,16 +1,19 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, redirect } from '@tanstack/react-router'
+import { AuthScreen } from '@/features/auth/components/auth-screen'
 import { redirectSearchSchema } from '@/features/auth/redirect'
+import { sessionStore } from '@/shared/session/session-store'
 
 export const Route = createFileRoute('/login')({
   validateSearch: redirectSearchSchema,
-  head: () => ({ meta: [{ title: 'Entrar | NFT Marketplace' }] }),
+  // Already signed in: go straight to the requested page.
+  beforeLoad: ({ search }) => {
+    if (sessionStore.getToken()) throw redirect({ to: search.redirect ?? '/' })
+  },
+  head: () => ({ meta: [{ title: 'Entrar | Kurio' }, { name: 'robots', content: 'noindex' }] }),
   component: LoginPage,
 })
 
 function LoginPage() {
-  return (
-    <main id="main">
-      <h1>Entrar</h1>
-    </main>
-  )
+  const { redirect: target } = Route.useSearch()
+  return <AuthScreen mode="login" redirect={target} />
 }

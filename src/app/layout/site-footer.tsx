@@ -1,4 +1,4 @@
-import { Link } from '@tanstack/react-router'
+import { Link, useRouterState } from '@tanstack/react-router'
 import { type FormEvent, useId } from 'react'
 import facebookIcon from '@/assets/icons/social-facebook.svg'
 import instagramIcon from '@/assets/icons/social-instagram.svg'
@@ -6,6 +6,7 @@ import linkedinIcon from '@/assets/icons/social-linkedin.svg'
 import twitterIcon from '@/assets/icons/social-twitter.svg'
 import youtubeIcon from '@/assets/icons/social-youtube.svg'
 import { type NftCategory } from '@/shared/api/dtos/nft'
+import { cn } from '@/shared/lib/cn'
 import { notifyComingSoon } from '@/shared/lib/coming-soon'
 
 const FEATURES = [
@@ -106,8 +107,11 @@ function Newsletter() {
 
 /** Desktop footer component of the layout; stacks into a single column on small screens. */
 export function SiteFooter() {
+  const pathname = useRouterState({ select: (state) => state.location.pathname })
+  // Mobile auth frames are full-screen, without footer.
+  const hideOnMobile = /^\/(login|register)/.test(pathname)
   return (
-    <footer className="page-container mt-16 pb-28 md:mt-24 md:pb-6">
+    <footer className={cn('page-container mt-16 pb-28 md:mt-24 md:pb-6', hideOnMobile && 'max-md:hidden')}>
       <div className="flex flex-col gap-8 bg-surface p-6 md:p-8 lg:h-[250px] lg:flex-row lg:items-end lg:justify-between lg:gap-0">
         <div className="grid gap-8 sm:grid-cols-3 lg:contents">
           {FEATURES.map((feature, index) => (

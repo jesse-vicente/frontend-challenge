@@ -3,6 +3,7 @@ import { MobileTabBar } from '@/app/layout/mobile-tab-bar'
 import { SiteFooter } from '@/app/layout/site-footer'
 import { SiteHeader } from '@/app/layout/site-header'
 import { type RouterContext } from '@/app/router'
+import { useSessionRestore } from '@/features/auth/queries'
 import { LiveRegion } from '@/shared/components/live-region'
 import { Button } from '@/shared/ui/button'
 import { Toaster } from '@/shared/ui/sonner'
@@ -24,6 +25,7 @@ export const Route = createRootRouteWithContext<RouterContext>()({
 })
 
 function RootLayout() {
+  useSessionRestore()
   return (
     <TooltipProvider>
       <HeadContent />

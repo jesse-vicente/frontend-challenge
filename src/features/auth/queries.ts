@@ -1,8 +1,8 @@
-import { queryOptions, useMutation, useQueryClient } from '@tanstack/react-query'
+import { queryOptions, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { apiCommand, apiRequest } from '@/shared/api/client'
 import { type LoginRequest, type RegisterRequest, type Session, sessionSchema } from '@/shared/api/dtos/auth'
 import { queryKeys } from '@/shared/api/query-keys'
-import { sessionStore } from '@/shared/session/session-store'
+import { sessionStore, useSession } from '@/shared/session/session-store'
 
 /** Restores the stored session after a refresh; an invalid token ends it via the auth bridge. */
 export const sessionQuery = () =>
@@ -54,4 +54,10 @@ export function useLogout() {
     // The local session ends even if the API is unreachable.
     onSettled: () => sessionStore.end('logout'),
   })
+}
+
+/** Validates the persisted session on boot; an expired token ends it through the auth bridge. */
+export function useSessionRestore() {
+  const token = useSession().session?.token
+  useQuery({ ...sessionQuery(), enabled: Boolean(token) })
 }

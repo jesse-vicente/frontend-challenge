@@ -15,7 +15,7 @@ import { useCacheOwner } from '@/shared/session/cache-owner'
 import { useSessionUser } from '@/shared/session/session-store'
 import { SearchDialog } from './search-dialog'
 
-const PURCHASE_FLOW = /^\/(nfts\/|cart|checkout)/
+const PURCHASE_FLOW = /^\/(nfts\/|cart|checkout|login|register)/
 
 const tabClass =
   'grid size-11 place-items-center rounded-md text-sand transition-colors hover:text-amber aria-[current=page]:text-amber'
@@ -30,7 +30,7 @@ export function MobileTabBar() {
   const [searchOpen, setSearchOpen] = useState(false)
   const current = (path: string) => (pathname === path ? 'page' : undefined)
 
-  // Purchase-flow frames (detail, cart, payment) replace the tab bar with their own actions.
+  // Purchase-flow and auth frames replace the tab bar with their own actions.
   if (PURCHASE_FLOW.test(pathname)) return null
 
   return (
