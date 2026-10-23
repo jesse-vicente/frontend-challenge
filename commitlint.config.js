@@ -1,0 +1,33 @@
+export default {
+  extends: ['@commitlint/config-conventional'],
+  rules: {
+    'scope-enum': [
+      1,
+      'always',
+      [
+        'app',
+        'ui',
+        'layout',
+        'domain',
+        'api',
+        'mocks',
+        'realtime',
+        'auth',
+        'catalog',
+        'nft',
+        'favorites',
+        'cart',
+        'checkout',
+        'orders',
+        'profile',
+        'wallets',
+        'a11y',
+        'e2e',
+        'visual',
+        'lighthouse',
+        'deps',
+      ],
+    ],
+    'subject-case': [2, 'always', 'lower-case'],
+  },
+}
