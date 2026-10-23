@@ -1,27 +1,54 @@
 /*
- * Design tokens. Values must mirror the Figma variables (get_variable_defs).
- * Until the Figma sync runs, these hold neutral placeholders so components render.
+ * Design tokens synced from the Figma variables (get_variable_defs on
+ * "Marketplace de NFTs GreenMint"). Names mirror the Figma collection.
  */
+@font-face {
+  font-family: "Roboto Mono";
+  font-style: normal;
+  font-weight: 100 700;
+  font-display: swap;
+  src: url("/fonts/roboto-mono-latin.woff2") format("woff2-variations");
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
+    U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
 :root {
-  --radius: 0.625rem;
-  --background: #ffffff;
-  --foreground: #111111;
-  --card: #ffffff;
-  --card-foreground: #111111;
-  --popover: #ffffff;
-  --popover-foreground: #111111;
-  --primary: #111111;
-  --primary-foreground: #ffffff;
-  --secondary: #f2f2f2;
-  --secondary-foreground: #111111;
-  --muted: #f2f2f2;
-  --muted-foreground: #5c5c5c;
-  --accent: #f2f2f2;
-  --accent-foreground: #111111;
-  --destructive: #c62828;
-  --success: #2e7d32;
-  --warning: #b26a00;
-  --border: #e0e0e0;
-  --input: #e0e0e0;
-  --ring: #111111;
+  /* Figma: color/* (raw values) */
+  --kurio-ink: #140d0a;
+  --kurio-foreground: #f5f1eb;
+  --kurio-text-primary: #f7f3ec;
+  --kurio-text-secondary: #cfb28c;
+  --kurio-text-accent: #e89b55;
+  --kurio-primary: #d28a4c;
+  --kurio-secondary: #b39463;
+  --kurio-surface-card: #241612;
+  --kurio-surface-dark: #38220f;
+  --kurio-border: #3f2319;
+  --kurio-border-soft: #55321f;
+  --kurio-background-elevated: #fbfbfb;
+
+  /* Semantic aliases consumed by shadcn/ui components */
+  --radius: 0.375rem;
+  --background: var(--kurio-ink);
+  --foreground: var(--kurio-foreground);
+  --card: var(--kurio-surface-card);
+  --card-foreground: var(--kurio-foreground);
+  --popover: var(--kurio-surface-card);
+  --popover-foreground: var(--kurio-foreground);
+  --primary: var(--kurio-primary);
+  --primary-foreground: var(--kurio-ink);
+  --secondary: var(--kurio-surface-dark);
+  --secondary-foreground: var(--kurio-foreground);
+  --muted: var(--kurio-surface-dark);
+  --muted-foreground: var(--kurio-text-secondary);
+  --accent: var(--kurio-surface-dark);
+  --accent-foreground: var(--kurio-text-accent);
+  /* Not in Figma: error/success tones tuned for AA contrast on the dark surfaces. */
+  --destructive: #ff8a7a;
+  --success: #8fd19e;
+  --warning: #f2c46d;
+  --border: var(--kurio-border);
+  --input: var(--kurio-border-soft);
+  --ring: var(--kurio-text-accent);
 }

@@ -5,10 +5,23 @@
 @custom-variant dark (&:is(.dark *));
 
 /*
- * Semantic tokens consumed by shadcn/ui components.
- * Raw values live in tokens.css (synced from Figma variables).
+ * Utility names for the Kurio tokens (tokens.css) plus the semantic aliases
+ * consumed by shadcn/ui components.
  */
 @theme inline {
+  --font-sans: "Roboto Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  --font-mono: "Roboto Mono", ui-monospace, monospace;
+
+  --color-ink: var(--kurio-ink);
+  --color-cream: var(--kurio-text-primary);
+  --color-sand: var(--kurio-text-secondary);
+  --color-amber: var(--kurio-text-accent);
+  --color-tan: var(--kurio-secondary);
+  --color-surface: var(--kurio-surface-card);
+  --color-surface-dark: var(--kurio-surface-dark);
+  --color-border-soft: var(--kurio-border-soft);
+  --color-elevated: var(--kurio-background-elevated);
+
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -29,24 +42,41 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
+
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 15px;
+  --radius-2xl: 24px;
+
+  /* Figma frame content width (1200) and side gutter at 1440. */
+  --container-page: 1200px;
+
+  --animate-shimmer: shimmer 1.6s linear infinite;
+
+  @keyframes shimmer {
+    from {
+      background-position: 200% 0;
+    }
+    to {
+      background-position: -200% 0;
+    }
+  }
 }
 
 @layer base {
   * {
-    @apply border-border outline-ring/50;
+    @apply border-border outline-ring/60;
   }
 
   html {
     -webkit-text-size-adjust: 100%;
     text-rendering: optimizeLegibility;
+    color-scheme: dark;
   }
 
   body {
-    @apply bg-background text-foreground antialiased;
+    @apply min-h-dvh bg-background font-sans text-foreground antialiased;
   }
 
   :focus-visible {
@@ -64,5 +94,25 @@
       transition-duration: 0.01ms !important;
       /* biome-ignore-end lint/complexity/noImportantStyles: reduced-motion override must beat component styles */
     }
+  }
+}
+
+@layer components {
+  /* Page frame: 1200px content with the Figma side gutters. */
+  .page-container {
+    @apply mx-auto w-full max-w-[calc(var(--container-page)+2rem)] px-4 md:px-6 xl:px-0 xl:max-w-(--container-page);
+  }
+
+  /* Skeleton shimmer; reduced motion keeps a static placeholder. */
+  .skeleton {
+    background-color: var(--kurio-surface-card);
+    background-image: linear-gradient(
+      90deg,
+      var(--kurio-surface-card) 0%,
+      var(--kurio-surface-dark) 50%,
+      var(--kurio-surface-card) 100%
+    );
+    background-size: 200% 100%;
+    @apply animate-shimmer motion-reduce:animate-none;
   }
 }
