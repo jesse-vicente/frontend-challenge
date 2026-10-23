@@ -8,6 +8,8 @@ export interface SocketConnection {
   userId: string | null
   emit(event: string, payload: unknown): void
   close(): void
+  /** False once the client side went away (it may close without a close event). */
+  isOpen(): boolean
 }
 
 const connections = new Map<string, SocketConnection>()
@@ -29,7 +31,12 @@ export function unregisterConnection(id: string): void {
   connections.delete(id)
 }
 
+function pruneClosed(): void {
+  for (const [id, connection] of connections) if (!connection.isOpen()) connections.delete(id)
+}
+
 export function connectionCount(): number {
+  pruneClosed()
   return connections.size
 }
 
@@ -45,6 +52,7 @@ export function buildEvent<TEvent extends DomainEvent>(
 }
 
 function deliver(event: DomainEvent): number {
+  pruneClosed()
   let delivered = 0
   for (const connection of connections.values()) {
     if (event.userId !== null) {

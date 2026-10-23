@@ -23,9 +23,12 @@ export function isRealtimeOffline(): boolean {
   return offline
 }
 
+/**
+ * MSW strips the default "/socket.io/" path before matching, so the link is the
+ * server origin itself.
+ */
 function socketUrlPattern(): string {
-  const origin = (import.meta.env.VITE_SOCKET_URL || window.location.origin).replace(/^http/, 'ws')
-  return `${origin}/socket.io/*`
+  return (import.meta.env.VITE_SOCKET_URL || window.location.origin).replace(/^http/, 'ws')
 }
 
 /** Reads the token from the Socket.IO CONNECT packet ("40{...auth}"). */
@@ -56,6 +59,10 @@ export function createSocketHandler() {
       userId: null,
       emit: (event, payload) => io.client.emit(event, payload),
       close: () => connection.client.close(),
+      isOpen: () => {
+        const raw = (connection.client as { socket?: WebSocket }).socket
+        return raw === undefined || raw.readyState <= WebSocket.OPEN
+      },
     }
     registerConnection(socket)
 
