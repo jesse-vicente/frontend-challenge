@@ -22,6 +22,7 @@
     "test:e2e": "playwright test",
     "test:e2e:update": "playwright test --update-snapshots",
     "test:e2e:report": "playwright show-report",
+    "lighthouse": "pnpm build && node lighthouse/run.mjs",
     "images:optimize": "node scripts/optimize-images.mjs"
   },
   "dependencies": {
@@ -60,8 +61,10 @@
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "@vitejs/plugin-react": "^6.1.2",
+    "chrome-launcher": "^1.2.2",
     "happy-dom": "^21.0.4",
     "husky": "^9.1.7",
+    "lighthouse": "^13.5.0",
     "lint-staged": "^17.6.0",
     "msw": "^2.15.0",
     "sharp": "^0.35.5",

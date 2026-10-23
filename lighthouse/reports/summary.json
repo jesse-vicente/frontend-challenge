@@ -1,0 +1,193 @@
+{
+  "environment": {
+    "date": "2026-10-23T23:50:51.630Z",
+    "lighthouse": "13.5.0",
+    "browser": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
+    "node": "v24.9.0",
+    "os": "Windows_NT 10.0.26200 (x64)",
+    "cpu": "Intel(R) Core(TM) i7-8750H CPU @ 2.20GHz",
+    "baseUrl": "http://localhost:4173",
+    "runsPerPage": 3,
+    "conditions": "Build de produção (vite build + vite preview), cenário padrão dos mocks (MSW + Socket.IO simulado), perfil limpo a cada execução. Mobile: emulação padrão do Lighthouse com throttling simulado; desktop: preset desktop."
+  },
+  "targets": {
+    "performance": 90,
+    "accessibility": 95,
+    "best-practices": 95,
+    "seo": 90
+  },
+  "rows": [
+    {
+      "page": "inicio",
+      "path": "/",
+      "profile": "mobile",
+      "runs": [
+        {
+          "performance": 66,
+          "accessibility": 100,
+          "best-practices": 100,
+          "seo": 100,
+          "lcp": 5191.943499999999,
+          "cls": 0,
+          "tbt": 246.3889999999999
+        },
+        {
+          "performance": 64,
+          "accessibility": 100,
+          "best-practices": 100,
+          "seo": 100,
+          "lcp": 4780.28175,
+          "cls": 0,
+          "tbt": 367
+        },
+        {
+          "performance": 70,
+          "accessibility": 100,
+          "best-practices": 100,
+          "seo": 100,
+          "lcp": 4766.901750000001,
+          "cls": 0,
+          "tbt": 208.58690000000092
+        }
+      ],
+      "median": {
+        "performance": 66,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100,
+        "lcp": 4780.28175,
+        "cls": 0,
+        "tbt": 246.3889999999999
+      }
+    },
+    {
+      "page": "inicio",
+      "path": "/",
+      "profile": "desktop",
+      "runs": [
+        {
+          "performance": 98,
+          "accessibility": 100,
+          "best-practices": 100,
+          "seo": 100,
+          "lcp": 988.5120000000001,
+          "cls": 0.00001590171023968068,
+          "tbt": 2.5
+        },
+        {
+          "performance": 98,
+          "accessibility": 100,
+          "best-practices": 100,
+          "seo": 100,
+          "lcp": 988.3968,
+          "cls": 0.00001590171023968068,
+          "tbt": 4
+        },
+        {
+          "performance": 98,
+          "accessibility": 100,
+          "best-practices": 100,
+          "seo": 100,
+          "lcp": 985.9536000000002,
+          "cls": 0.00001590171023968068,
+          "tbt": 2.000000000000057
+        }
+      ],
+      "median": {
+        "performance": 98,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100,
+        "lcp": 988.3968,
+        "cls": 0.00001590171023968068,
+        "tbt": 2.5
+      }
+    },
+    {
+      "page": "detalhe",
+      "path": "/nfts/nft_001",
+      "profile": "mobile",
+      "runs": [
+        {
+          "performance": 74,
+          "accessibility": 100,
+          "best-practices": 100,
+          "seo": 100,
+          "lcp": 4479.682999999999,
+          "cls": 0,
+          "tbt": 96.5
+        },
+        {
+          "performance": 75,
+          "accessibility": 100,
+          "best-practices": 100,
+          "seo": 100,
+          "lcp": 4484.8315,
+          "cls": 0,
+          "tbt": 86.5
+        },
+        {
+          "performance": 74,
+          "accessibility": 100,
+          "best-practices": 100,
+          "seo": 100,
+          "lcp": 4494.7264000000005,
+          "cls": 0,
+          "tbt": 100.5
+        }
+      ],
+      "median": {
+        "performance": 74,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100,
+        "lcp": 4484.8315,
+        "cls": 0,
+        "tbt": 96.5
+      }
+    },
+    {
+      "page": "detalhe",
+      "path": "/nfts/nft_001",
+      "profile": "desktop",
+      "runs": [
+        {
+          "performance": 98,
+          "accessibility": 100,
+          "best-practices": 100,
+          "seo": 100,
+          "lcp": 947.1158999999999,
+          "cls": 0,
+          "tbt": 0
+        },
+        {
+          "performance": 98,
+          "accessibility": 100,
+          "best-practices": 100,
+          "seo": 100,
+          "lcp": 926.9135500000001,
+          "cls": 0,
+          "tbt": 0
+        },
+        {
+          "performance": 98,
+          "accessibility": 100,
+          "best-practices": 100,
+          "seo": 100,
+          "lcp": 945.0486500000001,
+          "cls": 0,
+          "tbt": 0
+        }
+      ],
+      "median": {
+        "performance": 98,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100,
+        "lcp": 945.0486500000001,
+        "cls": 0,
+        "tbt": 0
+      }
+    }
+  ]
+}
