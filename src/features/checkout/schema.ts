@@ -1,40 +1,23 @@
 import { z } from 'zod'
-import {
-  ENS_LABEL_PATTERN,
-  ENS_SUFFIXES,
-  REFERRAL_CODE_PATTERN,
-  splitEnsName,
-  USERNAME_PATTERN,
-} from '@/domain/account'
-import { networkSchema } from '@/shared/api/dtos/network'
+import { splitEnsName } from '@/domain/account'
+import { accountFields } from '@/features/wallets/schemas'
 import { type CollectorDto } from '@/shared/api/dtos/order'
 import { type ProfileDto } from '@/shared/api/dtos/profile'
-import { type WalletDto, walletProviderSchema } from '@/shared/api/dtos/wallet'
-
-const required = (message: string) => z.string().trim().min(1, message)
+import { type WalletDto } from '@/shared/api/dtos/wallet'
 
 /** Fields of the "Perfil do colecionador" payment form, with the layout's required marks. */
 export const checkoutFormSchema = z.object({
-  walletId: required('Selecione uma carteira cadastrada.'),
-  displayName: required('Informe o nome de exibição.').max(40, 'Use até 40 caracteres.'),
-  username: required('Informe o nome de usuário.').regex(
-    USERNAME_PATTERN,
-    'Use 3 a 20 letras minúsculas, números ou _.',
-  ),
-  network: networkSchema.or(z.literal('')).refine((value) => value !== '', 'Selecione uma rede.'),
-  profileName: required('Informe o nome do perfil.').regex(
-    USERNAME_PATTERN,
-    'Use 3 a 20 letras minúsculas, números ou _.',
-  ),
-  secondaryAddress: z.string().trim().max(64, 'Use até 64 caracteres.'),
-  provider: walletProviderSchema.or(z.literal('')).refine((value) => value !== '', 'Selecione o tipo de carteira.'),
-  referralCode: required('Informe o código de indicação.').regex(
-    REFERRAL_CODE_PATTERN,
-    'Use de 4 a 12 letras ou números.',
-  ),
-  email: required('Informe o e-mail.').pipe(z.email('Informe um e-mail válido.')),
-  ensLabel: required('Informe o nome ENS.').regex(ENS_LABEL_PATTERN, 'Use letras minúsculas, números, hífen ou ponto.'),
-  ensSuffix: z.enum(ENS_SUFFIXES),
+  walletId: z.string().trim().min(1, 'Selecione uma carteira cadastrada.'),
+  displayName: accountFields.displayName,
+  username: accountFields.username,
+  network: accountFields.network,
+  profileName: accountFields.profileName,
+  secondaryAddress: accountFields.secondaryAddress,
+  provider: accountFields.provider,
+  referralCode: accountFields.referralCode,
+  email: accountFields.email,
+  ensLabel: accountFields.ensLabel,
+  ensSuffix: accountFields.ensSuffix,
   useOtherWallet: z.boolean(),
   note: z.string().trim().max(500, 'Use até 500 caracteres.'),
 })
