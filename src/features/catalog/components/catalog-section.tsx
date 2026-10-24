@@ -121,7 +121,7 @@ export function CatalogSection({ search, onSearchChange }: CatalogSectionProps) 
         <FeaturedBanner nft={highlights.data?.featured} />
       </aside>
 
-      <div className="flex min-w-0 flex-1 flex-col items-end gap-14 lg:gap-[88px]">
+      <div className="flex min-w-0 flex-1 flex-col items-center gap-14 md:items-end lg:gap-[88px]">
         <div className="flex w-full flex-col gap-4 md:gap-8">
           <div className="flex w-full flex-wrap items-center justify-between gap-x-6 gap-y-3">
             <SegmentTabs
