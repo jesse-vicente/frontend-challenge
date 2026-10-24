@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { Link } from '@tanstack/react-router'
-import { useState } from 'react'
+import { type ReactNode, useLayoutEffect, useRef, useState } from 'react'
 import cartIcon from '@/assets/icons/cart.svg'
 import cartBadge from '@/assets/icons/cart-badge.svg'
 import headerDivider from '@/assets/icons/header-divider.svg'
@@ -23,22 +23,45 @@ import {
   DropdownMenuTrigger,
 } from '@/shared/ui/dropdown-menu'
 import { SearchDialog } from './search-dialog'
-import { type Section, useSection } from './use-section'
+import { type Section, useScrolled, useSection } from './use-section'
 
 const navItemClass = 'font-normal text-base text-foreground leading-[normal] transition-colors hover:text-amber'
 
-function NavItem({ active, children }: { active: boolean; children: React.ReactNode }) {
+function NavItem({ compact, children }: { compact: boolean; children: ReactNode }) {
   return (
-    <div className="flex flex-col items-start gap-6">
+    <div data-nav-item className={cn('flex transition-[padding] duration-300', compact ? 'pb-3' : 'pb-[21px]')}>
       {children}
-      <img
-        src={navUnderline}
-        alt=""
-        aria-hidden="true"
-        height={3}
-        className={cn('-mt-[3px] h-[3px] w-full', !active && 'invisible')}
-      />
     </div>
+  )
+}
+
+/** One underline for the whole menu: it slides to the item of the current section. */
+function NavUnderline({ navRef, activeIndex }: { navRef: React.RefObject<HTMLElement | null>; activeIndex: number }) {
+  const [box, setBox] = useState<{ left: number; width: number } | null>(null)
+
+  useLayoutEffect(() => {
+    const nav = navRef.current
+    if (!nav) return
+    const measure = () => {
+      const item = nav.querySelectorAll<HTMLElement>('[data-nav-item]')[activeIndex]
+      setBox(item ? { left: item.offsetLeft, width: item.offsetWidth } : null)
+    }
+    measure()
+    const observer = new ResizeObserver(measure)
+    observer.observe(nav)
+    return () => observer.disconnect()
+  }, [navRef, activeIndex])
+
+  if (!box) return null
+  return (
+    <img
+      src={navUnderline}
+      alt=""
+      aria-hidden="true"
+      height={3}
+      className="absolute bottom-0 h-[3px] transition-[left,width] duration-300 ease-out motion-reduce:transition-none"
+      style={{ left: box.left, width: box.width }}
+    />
   )
 }
 
@@ -101,63 +124,84 @@ function AccountButton() {
   )
 }
 
-/** Desktop/tablet header ("Header With Divider" / "Header Row" components). */
+/**
+ * Desktop/tablet header ("Header With Divider" / "Header Row" components). It sticks to the top:
+ * once the page scrolls it turns into a compact bar with a glass background.
+ */
 export function SiteHeader() {
-  const section: Section = useSection()
+  const { route, current } = useSection()
+  const scrolled = useScrolled()
   const [searchOpen, setSearchOpen] = useState(false)
+  const navRef = useRef<HTMLElement>(null)
+  const activeIndex = (['home', 'market'] satisfies Section[]).indexOf(current)
 
   return (
-    <header className="page-container hidden pt-6 md:block">
-      <div className="flex items-start justify-between gap-6">
-        <Link to="/" aria-label="Kurio, página inicial" className="h-[34px] shrink-0 pt-2 lg:w-[160px]">
-          <span className="text-sm font-bold tracking-[1.4px] text-foreground">KURIO</span>
-        </Link>
-
-        <nav aria-label="Principal" className="hidden items-start gap-6 md:flex lg:gap-10">
-          <NavItem active={section === 'home'}>
-            <Link
-              to="/"
-              aria-current={section === 'home' ? 'page' : undefined}
-              className={cn(navItemClass, section === 'home' && 'font-bold text-amber')}
-            >
-              Início
-            </Link>
-          </NavItem>
-          <NavItem active={section === 'market'}>
-            <Link
-              to="/"
-              hash="mercado"
-              aria-current={section === 'market' ? 'page' : undefined}
-              className={cn(navItemClass, section === 'market' && 'font-bold text-amber')}
-            >
-              Mercado
-            </Link>
-          </NavItem>
-          {['Criadores', 'Aprenda'].map((label) => (
-            <NavItem key={label} active={false}>
-              <button type="button" className={navItemClass} onClick={() => notifyComingSoon(label)}>
-                {label}
-              </button>
-            </NavItem>
-          ))}
-        </nav>
-
-        <div className="flex items-center gap-7">
-          <button
-            type="button"
-            onClick={() => setSearchOpen(true)}
-            aria-label="Buscar NFTs"
-            className="grid size-6 place-items-center rounded-sm"
+    <header
+      className={cn(
+        'sticky top-0 z-40 hidden transition-[background-color,box-shadow,backdrop-filter] duration-300 md:block',
+        scrolled && 'bg-ink/70 shadow-[0_10px_30px_rgba(10,6,4,0.45)] backdrop-blur-md backdrop-saturate-150',
+      )}
+    >
+      <div className={cn('page-container transition-[padding] duration-300', scrolled ? 'pt-3' : 'pt-6')}>
+        <div className="flex items-start justify-between gap-6">
+          <Link
+            to="/"
+            aria-label="Kurio, página inicial"
+            className={cn(
+              'h-[34px] shrink-0 pt-2 transition-transform duration-300 lg:w-[160px]',
+              scrolled && 'scale-95',
+            )}
           >
-            <img src={searchIcon} alt="" width={20} height={20} className="size-5" />
-          </button>
-          <CartLink />
-          <AccountButton />
+            <span className="text-sm font-bold tracking-[1.4px] text-foreground">KURIO</span>
+          </Link>
+
+          <nav ref={navRef} aria-label="Principal" className="relative hidden items-start gap-6 md:flex lg:gap-10">
+            <NavItem compact={scrolled}>
+              <Link
+                to="/"
+                aria-current={current === 'home' ? 'page' : undefined}
+                className={cn(navItemClass, current === 'home' && 'font-bold text-amber')}
+              >
+                Início
+              </Link>
+            </NavItem>
+            <NavItem compact={scrolled}>
+              <Link
+                to="/"
+                hash="mercado"
+                aria-current={current === 'market' ? 'page' : undefined}
+                className={cn(navItemClass, current === 'market' && 'font-bold text-amber')}
+              >
+                Mercado
+              </Link>
+            </NavItem>
+            {['Criadores', 'Aprenda'].map((label) => (
+              <NavItem key={label} compact={scrolled}>
+                <button type="button" className={navItemClass} onClick={() => notifyComingSoon(label)}>
+                  {label}
+                </button>
+              </NavItem>
+            ))}
+            <NavUnderline navRef={navRef} activeIndex={activeIndex} />
+          </nav>
+
+          <div className={cn('flex items-center gap-7 transition-transform duration-300', scrolled && 'scale-95')}>
+            <button
+              type="button"
+              onClick={() => setSearchOpen(true)}
+              aria-label="Buscar NFTs"
+              className="grid size-6 place-items-center rounded-sm"
+            >
+              <img src={searchIcon} alt="" width={20} height={20} className="size-5" />
+            </button>
+            <CartLink />
+            <AccountButton />
+          </div>
         </div>
+        {route === 'home' ? (
+          <img src={headerDivider} alt="" aria-hidden="true" height={1} className="h-px w-full" />
+        ) : null}
       </div>
-      {section === 'home' ? (
-        <img src={headerDivider} alt="" aria-hidden="true" height={1} className="h-px w-full" />
-      ) : null}
       <SearchDialog open={searchOpen} onOpenChange={setSearchOpen} />
     </header>
   )
