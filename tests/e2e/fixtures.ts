@@ -11,6 +11,7 @@ type MockMethod =
   | 'reset'
   | 'setScenario'
   | 'setLatency'
+  | 'setSettlementDelay'
   | 'failNext'
   | 'clearFailures'
   | 'updateNft'

@@ -81,3 +81,4 @@ Respostas REST também registram as versões que trazem (`eventGuard.observe`), 
 | `replayEvent(eventId)` / `recentEvents()`     | reenvia um evento já publicado (duplicata)   |
 | `dropRealtime()` / `setRealtimeOffline(bool)` | derruba as conexões / recusa reconexões      |
 | `settleOrder(orderId, outcome)`               | liquida um pedido pendente                   |
+| `setSettlementDelay(ms)`                      | prazo de liquidação dos próximos pedidos     |

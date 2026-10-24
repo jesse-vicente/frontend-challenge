@@ -23,6 +23,7 @@ interface RuntimeState {
   /** One-shot behaviors already consumed in this scenario run. */
   consumed: Set<string>
   latencyOverride: number | null
+  settlementDelayOverride: number | null
 }
 
 function readPersistedScenario(): ScenarioName {
@@ -42,6 +43,7 @@ function createState(name: ScenarioName): RuntimeState {
     ruleUses: new Map(),
     consumed: new Set(),
     latencyOverride: null,
+    settlementDelayOverride: null,
   }
 }
 
@@ -68,7 +70,10 @@ export function getScenario(): ScenarioDefinition {
 }
 
 export function behavior(): ScenarioBehavior {
-  return { ...DEFAULT_BEHAVIOR, ...state.scenario.behavior }
+  const current = { ...DEFAULT_BEHAVIOR, ...state.scenario.behavior }
+  return state.settlementDelayOverride === null
+    ? current
+    : { ...current, settlementDelayMs: state.settlementDelayOverride }
 }
 
 /** Returns true the first time it is called for a key within the scenario run. */
@@ -80,6 +85,11 @@ export function consumeOnce(key: string): boolean {
 
 export function setLatencyOverride(ms: number | null): void {
   state.latencyOverride = ms
+}
+
+/** Delay before new orders settle (null restores the scenario value). */
+export function setSettlementDelayOverride(ms: number | null): void {
+  state.settlementDelayOverride = ms
 }
 
 export function addRule(rule: NetworkRule): void {
