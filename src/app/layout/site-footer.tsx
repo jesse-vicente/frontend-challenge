@@ -92,7 +92,7 @@ function Newsletter() {
           />
           <button
             type="submit"
-            className="flex h-10 w-[85px] items-center justify-center rounded-r-md bg-primary pr-1 pl-4 text-lg leading-4 font-bold text-ink hover:bg-amber"
+            className="flex h-10 w-[85px] items-center justify-center rounded-r-md bg-primary px-3 text-lg leading-4 font-bold text-ink hover:bg-amber"
           >
             Enviar
           </button>
@@ -209,14 +209,14 @@ export function SiteFooter() {
           </div>
           <div className="flex flex-col gap-3">
             <h2 className="text-lg leading-4 font-bold text-foreground">Carteiras compatíveis</h2>
-            <p className="flex h-[26px] items-center justify-center rounded-md border border-border-soft bg-surface-dark pl-2 text-[9px] font-bold tracking-[0.1px] whitespace-pre text-amber">
+            <p className="flex h-[26px] items-center justify-center rounded-md border border-border-soft bg-surface-dark px-2 text-[9px] font-bold tracking-[0.1px] whitespace-pre text-amber">
               {'METAMASK  •  WALLETCONNECT  •  COINBASE'}
             </p>
           </div>
         </div>
       </div>
 
-      <p className="text-center text-sm leading-[30px] text-foreground">
+      <p className="mt-6 text-center text-sm leading-[30px] text-foreground">
         © 2026 Kurio. Propriedade digital para todos.
       </p>
     </footer>
