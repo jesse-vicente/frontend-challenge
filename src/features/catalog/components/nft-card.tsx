@@ -48,16 +48,20 @@ export function NftCard({
           'md:h-[300px] md:rounded-none md:bg-surface md:bg-none md:px-1',
         )}
       >
-        <NftImage
-          image={nft.image}
-          decorative
-          sizes="(min-width: 768px) 250px, 168px"
-          priority={priority}
-          className={cn(
-            'size-[168px] rounded-2xl transition-transform duration-300 group-hover:scale-[1.02] md:size-[250px] md:rounded-[15px]',
-            soldOut && 'opacity-60 grayscale-[40%]',
-          )}
-        />
+        {/* Hover zooms the art inside a fixed frame, towards the face. `sizes` accounts for the
+            zoom, so the browser picks a rendition that stays sharp while it scales. */}
+        <div className="size-[168px] [transform:translateZ(0)] overflow-hidden rounded-2xl md:size-[250px] md:rounded-[15px]">
+          <NftImage
+            image={nft.image}
+            decorative
+            sizes="(min-width: 768px) 270px, 182px"
+            priority={priority}
+            className={cn(
+              'size-full origin-[50%_35%] transition-[scale] duration-500 ease-out [backface-visibility:hidden] group-hover:scale-[1.08]',
+              soldOut && 'opacity-60 grayscale-[40%]',
+            )}
+          />
+        </div>
         {nft.rarity !== 'common' ? (
           <span
             className={cn(
