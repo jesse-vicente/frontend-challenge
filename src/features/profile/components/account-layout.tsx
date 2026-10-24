@@ -73,7 +73,7 @@ function AccountNav({ current }: { current: AccountSection }) {
     return (
       <Link
         to="/profile"
-        hash={section === 'favorites' ? 'favoritos' : undefined}
+        hash={section === 'favorites' ? 'favorites' : undefined}
         activeOptions={{ includeHash: true }}
         {...props}
       >
@@ -144,7 +144,7 @@ export function AccountLayout({
   )
 }
 
-/** Active sidebar entry of /profile: "Lista de interesse" is the #favoritos section. */
+/** Active sidebar entry of /profile: "Lista de interesse" is the #favorites section. */
 export function useProfileSection(): AccountSection {
-  return useLocation({ select: (location) => (location.hash === 'favoritos' ? 'favorites' : 'profile') })
+  return useLocation({ select: (location) => (location.hash === 'favorites' ? 'favorites' : 'profile') })
 }

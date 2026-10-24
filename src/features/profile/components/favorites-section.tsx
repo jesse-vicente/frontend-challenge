@@ -14,7 +14,7 @@ export function FavoritesSection() {
   const nfts = useQueries({ queries: ids.map((id) => nftDetailQuery(id)) })
   const loaded = favorites.isSuccess && nfts.every((query) => !query.isPending)
   const section = useRef<HTMLElement>(null)
-  const targeted = useLocation({ select: (location) => location.hash === 'favoritos' })
+  const targeted = useLocation({ select: (location) => location.hash === 'favorites' })
 
   // The list loads after navigation, so the hash target is scrolled to once it has its final height.
   useEffect(() => {
@@ -28,7 +28,7 @@ export function FavoritesSection() {
   return (
     <section
       ref={section}
-      id="favoritos"
+      id="favorites"
       aria-labelledby="favorites-title"
       className="mt-16 scroll-mt-6 border-t border-border pt-10 md:scroll-mt-24"
     >
@@ -48,7 +48,7 @@ export function FavoritesSection() {
           description="Toque no coração de um NFT para acompanhá-lo aqui."
           action={
             <Button asChild>
-              <Link to="/" hash="mercado">
+              <Link to="/" hash="market">
                 Explorar NFTs
               </Link>
             </Button>

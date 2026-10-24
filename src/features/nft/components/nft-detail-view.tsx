@@ -249,7 +249,7 @@ export function NftDetailView({
               </li>
               <li aria-hidden="true">/</li>
               <li>
-                <Link to="/" hash="mercado" className="hover:text-amber">
+                <Link to="/" hash="market" className="hover:text-amber">
                   Mercado
                 </Link>
               </li>

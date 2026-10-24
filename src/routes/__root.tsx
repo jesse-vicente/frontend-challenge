@@ -30,13 +30,13 @@ function RootLayout() {
     <TooltipProvider>
       <HeadContent />
       <a
-        href="#conteudo"
+        href="#content"
         className="sr-only z-50 rounded-md bg-primary px-4 py-2 font-bold text-ink focus:not-sr-only focus:fixed focus:top-4 focus:left-4"
       >
         Pular para o conteúdo
       </a>
       <SiteHeader />
-      <div id="conteudo" tabIndex={-1} className="min-h-dvh outline-none">
+      <div id="content" tabIndex={-1} className="min-h-dvh outline-none">
         <Outlet />
       </div>
       <SiteFooter />

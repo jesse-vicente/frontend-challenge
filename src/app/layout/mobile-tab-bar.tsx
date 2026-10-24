@@ -60,7 +60,7 @@ export function MobileTabBar() {
         <li className="mr-auto ml-7">
           <Link
             to="/profile"
-            hash="favoritos"
+            hash="favorites"
             activeOptions={{ includeHash: true }}
             aria-label="Favoritos"
             className={tabClass}

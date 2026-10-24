@@ -79,7 +79,7 @@ function DesktopSlide({ slide, first }: { slide: HeroSlide; first: boolean }) {
           <p className="max-w-[557px] text-sm leading-6 text-sand">{slide.text}</p>
         </div>
         <Button asChild className="min-w-[140px] pr-9 pl-7">
-          <Link to="/" search={slide.segment ? { segment: slide.segment } : {}} hash="mercado">
+          <Link to="/" search={slide.segment ? { segment: slide.segment } : {}} hash="market">
             {slide.cta}
           </Link>
         </Button>
@@ -118,7 +118,7 @@ function MobileSlide({ slide, first }: { slide: HeroSlide; first: boolean }) {
         <Link
           to="/"
           search={slide.segment ? { segment: slide.segment } : {}}
-          hash="mercado"
+          hash="market"
           className="flex items-center gap-2 py-1"
         >
           <span className="text-xs leading-[14px] font-bold text-amber">{slide.cta}</span>

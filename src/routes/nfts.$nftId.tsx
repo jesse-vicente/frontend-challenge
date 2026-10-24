@@ -57,7 +57,7 @@ function NftNotFound() {
         description="Este NFT não existe ou foi removido do mercado."
         action={
           <Button asChild>
-            <Link to="/" hash="mercado">
+            <Link to="/" hash="market">
               Explorar o mercado
             </Link>
           </Button>

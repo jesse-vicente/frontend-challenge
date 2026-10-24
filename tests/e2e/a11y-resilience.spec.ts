@@ -1,7 +1,7 @@
 import { expect, type Page } from '@playwright/test'
 import { test } from './fixtures'
 
-const cards = (page: Page) => page.locator('#mercado article')
+const cards = (page: Page) => page.locator('#market article')
 const activeIsInside = (page: Page, selector: string) =>
   page.evaluate((target) => Boolean(document.activeElement?.closest(target)), selector)
 
@@ -12,7 +12,7 @@ test.describe('teclado e foco', () => {
     await page.keyboard.press('Tab')
     await expect(page.getByRole('link', { name: 'Pular para o conteúdo' })).toBeFocused()
     await page.keyboard.press('Enter')
-    await expect(page.locator('#conteudo')).toBeFocused()
+    await expect(page.locator('#content')).toBeFocused()
   })
 
   test('diálogo de busca prende o foco, fecha com Esc e devolve o foco ao gatilho', async ({ app, page }) => {
@@ -76,14 +76,14 @@ test.describe('carregamento, falha e recuperação', () => {
       window.history.pushState({}, '', '/')
       window.dispatchEvent(new PopStateEvent('popstate'))
     })
-    await expect(page.locator('#mercado [aria-busy=true]').first()).toBeAttached()
-    await expect(page.locator('#mercado .skeleton').filter({ visible: true }).first()).toBeVisible()
+    await expect(page.locator('#market [aria-busy=true]').first()).toBeAttached()
+    await expect(page.locator('#market .skeleton').filter({ visible: true }).first()).toBeVisible()
     await expect(cards(page).first()).toBeVisible({ timeout: 15_000 })
   })
 
   test('erro do servidor oferece nova tentativa que recupera o catálogo', async ({ app, page }) => {
     await app.open('/', { scenario: 'server-error' })
-    const retry = page.locator('#mercado').getByRole('button', { name: 'Tentar novamente' })
+    const retry = page.locator('#market').getByRole('button', { name: 'Tentar novamente' })
     await expect(page.getByText('Não foi possível carregar o catálogo')).toBeVisible({ timeout: 15_000 })
     await expect(
       page.getByText('O serviço está temporariamente indisponível. Tente novamente em instantes.'),

@@ -145,7 +145,7 @@ export function CheckoutView() {
           description="Adicione NFTs ao carrinho para finalizar uma compra."
           action={
             <Button asChild>
-              <Link to="/" hash="mercado">
+              <Link to="/" hash="market">
                 Explorar NFTs
               </Link>
             </Button>

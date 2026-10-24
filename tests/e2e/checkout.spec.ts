@@ -25,7 +25,7 @@ async function openReview(page: Page) {
 test.describe('compra', () => {
   test('do catálogo ao recibo confirmado @mobile', async ({ app, page }) => {
     await app.open('/')
-    const card = page.locator('#mercado article h3 a').first()
+    const card = page.locator('#market article h3 a').first()
     const name = (await card.textContent())?.trim() ?? ''
     await card.click()
     await expect(page.getByRole('heading', { level: 1 })).toContainText(name)

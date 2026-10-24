@@ -13,7 +13,7 @@ export function SearchDialog({ open, onOpenChange }: { open: boolean; onOpenChan
   const submit = (event: FormEvent) => {
     event.preventDefault()
     onOpenChange(false)
-    void navigate({ to: '/', search: { q: query.trim() || undefined }, hash: 'mercado' })
+    void navigate({ to: '/', search: { q: query.trim() || undefined }, hash: 'market' })
   }
 
   return (

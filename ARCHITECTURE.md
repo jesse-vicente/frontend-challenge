@@ -90,7 +90,7 @@ Medidas aplicadas e medidas: pré-carregamento dos chunks de boot, renderizaçã
 - Ações fora do escopo (Criadores, Aprenda, Diário, newsletter, ajuda, login social, recuperar senha, Atividade, Ofertas, Arquivos baixados, Suporte) informam "estará disponível em breve".
 - Pagamento: "Nome ENS" tem o seletor `.eth` **e** o campo do nome (o frame só mostra o seletor); os provedores aparecem como MetaMask, WalletConnect e Coinbase Wallet.
 - Perfil: um único "Salvar" para dados e senha, como no frame; o bloco de senha só é validado quando preenchido. O avatar é salvo na hora (Alterar/Remover).
-- "Lista de interesse" (favoritos) não tem frame: é uma seção de `/profile` (`#favoritos`) com os cards do catálogo; a tab bar e o rodapé apontam para ela.
+- "Lista de interesse" (favoritos) não tem frame: é uma seção de `/profile` (`#favorites`) com os cards do catálogo; a tab bar e o rodapé apontam para ela.
 - Carteiras: "Adicionar" da principal leva o foco ao formulário quando ainda não há carteira; "Igual à carteira principal" copia os dados para a secundária, exceto apelido e endereço (que precisam ser únicos).
 - Perfil e Carteiras não têm frame mobile: a sidebar vira uma linha de chips com rolagem horizontal e os campos empilham.
 - Pontos do carrossel mantêm 12 px visíveis dentro de uma área de toque de 24 px (WCAG 2.5.8); a linha ficou 12 px mais alta.

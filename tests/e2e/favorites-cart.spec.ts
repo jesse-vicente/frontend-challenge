@@ -19,10 +19,10 @@ test.describe('favoritos', () => {
 
     await page.reload()
     await expect(favoriteButton(page)).toHaveAttribute('aria-pressed', 'true')
-    await page.goto('/profile#favoritos')
+    await page.goto('/profile#favorites')
     await expect(
       page
-        .locator('#favoritos')
+        .locator('#favorites')
         .getByRole('link', { name: /\(favorito\)/ })
         .first(),
     ).toBeVisible()

@@ -55,7 +55,7 @@ export function CartView() {
         description="Explore o mercado e adicione NFTs para colecionar."
         action={
           <Button asChild>
-            <Link to="/" hash="mercado">
+            <Link to="/" hash="market">
               Explorar NFTs
             </Link>
           </Button>
@@ -93,7 +93,7 @@ export function CartView() {
             </li>
             <li aria-hidden="true">/</li>
             <li>
-              <Link to="/" hash="mercado" className="hover:text-amber">
+              <Link to="/" hash="market" className="hover:text-amber">
                 Mercado
               </Link>
             </li>
@@ -159,7 +159,7 @@ export function CartView() {
                     Ajuste os itens indisponíveis para continuar.
                   </p>
                 ) : null}
-                <Link to="/" hash="mercado" className="text-sm text-amber hover:underline max-md:hidden">
+                <Link to="/" hash="market" className="text-sm text-amber hover:underline max-md:hidden">
                   Continuar explorando
                 </Link>
               </div>

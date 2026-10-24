@@ -161,7 +161,7 @@ export function SiteHeader() {
             <NavItem>
               <Link
                 to="/"
-                hash="mercado"
+                hash="market"
                 aria-current={current === 'market' ? 'page' : undefined}
                 className={cn(navItemClass, current === 'market' && 'font-bold text-amber')}
               >

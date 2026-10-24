@@ -1,7 +1,7 @@
 import { expect, type Page } from '@playwright/test'
 import { test } from './fixtures'
 
-const catalog = (page: Page) => page.locator('#mercado')
+const catalog = (page: Page) => page.locator('#market')
 const cardTitles = (page: Page) => catalog(page).locator('article h3')
 /** The checkbox is visually hidden: the collector clicks the option label. */
 const toggleFilter = (page: Page, name: string) =>

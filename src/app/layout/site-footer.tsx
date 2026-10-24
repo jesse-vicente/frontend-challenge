@@ -157,7 +157,7 @@ export function SiteFooter() {
             <ComingSoonLink label="Minha coleção" />
             <ComingSoonLink label="Atividade" />
             <ComingSoonLink label="Estúdio do criador" />
-            <Link to="/profile" hash="favoritos" className={linkClass}>
+            <Link to="/profile" hash="favorites" className={linkClass}>
               Lista de interesse
             </Link>
           </FooterColumn>
@@ -174,7 +174,7 @@ export function SiteFooter() {
                 key={link.category}
                 to="/"
                 search={{ categories: [link.category] }}
-                hash="mercado"
+                hash="market"
                 className={linkClass}
               >
                 {link.label}

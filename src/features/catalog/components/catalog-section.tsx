@@ -108,7 +108,7 @@ export function CatalogSection({ search, onSearchChange }: CatalogSectionProps) 
   return (
     <section
       ref={sectionRef}
-      id="mercado"
+      id="market"
       aria-labelledby="catalog-title"
       className="scroll-mt-6 md:scroll-mt-24 lg:flex lg:items-start lg:gap-12"
     >

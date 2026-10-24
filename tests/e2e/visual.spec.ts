@@ -36,7 +36,7 @@ test.use({ reducedMotion: 'reduce' })
 test.describe('regressão visual @mobile', () => {
   test('início', async ({ app, page }) => {
     await app.open('/')
-    await expect(page.locator('#mercado article').first()).toBeVisible()
+    await expect(page.locator('#market article').first()).toBeVisible()
     await settle(page)
     await expect(page).toHaveScreenshot('inicio.png', shot)
   })

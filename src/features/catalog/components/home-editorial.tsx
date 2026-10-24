@@ -82,7 +82,7 @@ export function HomePromos() {
             <Link
               to="/"
               search={{ segment: promo.segment }}
-              hash="mercado"
+              hash="market"
               className="mt-auto flex h-10 w-[140px] shrink-0 items-center justify-center gap-1 rounded-md bg-primary text-sm leading-5 font-medium text-ink hover:bg-amber"
             >
               Explorar
