@@ -3,6 +3,11 @@ import chevronRight from '@/assets/icons/chevron-right.svg'
 import { cn } from '@/shared/lib/cn'
 
 const WINDOW = 4
+/** Size of a number (size-[35px]) and the gap-2 between numbers. */
+const SQUARE = 35
+const GAP = 8
+/** Room around the clipped row for the 2px focus outline (outline-offset-2). */
+const FOCUS_ROOM = 4
 
 const lastStart = (totalPages: number) => Math.max(1, totalPages - WINDOW + 1)
 
@@ -43,7 +48,8 @@ export function CatalogPagination({
   if (totalPages <= 1) return null
 
   const { start } = view
-  const numbers = Array.from({ length: Math.min(WINDOW, totalPages) }, (_, index) => start + index)
+  const numbers = Array.from({ length: totalPages }, (_, index) => index + 1)
+  const shown = Math.min(WINDOW, totalPages)
   const slide = (step: number) => {
     const next = start + step
     if (next >= 1 && next <= lastStart(totalPages)) setView({ ...view, start: next })
@@ -63,18 +69,39 @@ export function CatalogPagination({
           <img src={chevronRight} alt="" width={12} height={7} className="h-[7px] w-3 rotate-90" />
         </button>
       ) : null}
-      {numbers.map((number) => (
-        <button
-          key={number}
-          type="button"
-          onClick={() => onPageChange(number)}
-          aria-label={`Página ${number}`}
-          aria-current={number === page ? 'page' : undefined}
-          className={cn(pageClass, number === page && 'border-primary bg-primary font-bold text-ink')}
+      {/* Every number sits on one track that slides under a window of four. The ones outside turn
+          invisible (out of the tab order and the accessibility tree) once they have slid away. */}
+      <div
+        className="overflow-hidden"
+        style={{
+          width: shown * SQUARE + (shown - 1) * GAP + 2 * FOCUS_ROOM,
+          margin: -FOCUS_ROOM,
+          padding: FOCUS_ROOM,
+        }}
+      >
+        <div
+          className="flex gap-2 transition-transform duration-300 ease-out motion-reduce:transition-none"
+          style={{ transform: `translateX(-${(start - 1) * (SQUARE + GAP)}px)` }}
         >
-          {number}
-        </button>
-      ))}
+          {numbers.map((number) => (
+            <button
+              key={number}
+              type="button"
+              onClick={() => onPageChange(number)}
+              aria-label={`Página ${number}`}
+              aria-current={number === page ? 'page' : undefined}
+              className={cn(
+                pageClass,
+                'shrink-0 transition-[color,background-color,border-color,visibility] duration-300',
+                number === page && 'border-primary bg-primary font-bold text-ink',
+                (number < start || number >= start + WINDOW) && 'invisible',
+              )}
+            >
+              {number}
+            </button>
+          ))}
+        </div>
+      </div>
       {scrollable ? (
         <button
           type="button"
