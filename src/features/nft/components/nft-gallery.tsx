@@ -4,6 +4,7 @@ import { type ImageDto } from '@/shared/api/dtos/common'
 import { NftImage } from '@/shared/components/nft-image'
 import { cn } from '@/shared/lib/cn'
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/shared/ui/dialog'
+import { GALLERY_IMAGE_SIZES } from '../image-sizes'
 
 /** "Product Images": thumbnail rail, main artwork card and zoom (lightbox). */
 export function NftGallery({ name, gallery }: { name: string; gallery: readonly ImageDto[] }) {
@@ -33,12 +34,7 @@ export function NftGallery({ name, gallery }: { name: string; gallery: readonly 
         ))}
       </ul>
       <div className="relative bg-surface p-5 md:size-[444px]">
-        <NftImage
-          image={current}
-          sizes="(min-width: 768px) 404px, 100vw"
-          priority
-          className="aspect-square w-full rounded-2xl"
-        />
+        <NftImage image={current} sizes={GALLERY_IMAGE_SIZES} priority className="aspect-square w-full rounded-2xl" />
         <button
           type="button"
           onClick={() => setZoomed(true)}

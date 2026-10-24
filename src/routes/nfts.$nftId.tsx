@@ -3,15 +3,20 @@ import { createFileRoute, Link, notFound, useNavigate, useRouter } from '@tansta
 import { z } from 'zod'
 import { nftDetailQuery } from '@/features/catalog/queries'
 import { NftDetailSkeleton, NftDetailView } from '@/features/nft/components/nft-detail-view'
+import { GALLERY_IMAGE_SIZES } from '@/features/nft/image-sizes'
 import { hasErrorCode } from '@/shared/api/errors'
 import { EmptyState, ErrorState } from '@/shared/components/feedback-states'
+import { preloadNftImage } from '@/shared/components/nft-image'
 import { Button } from '@/shared/ui/button'
 
 export const Route = createFileRoute('/nfts/$nftId')({
   validateSearch: z.object({ edition: z.string().optional().catch(undefined) }),
   loader: async ({ context, params }) => {
     try {
-      return await context.queryClient.ensureQueryData(nftDetailQuery(params.nftId))
+      const nft = await context.queryClient.ensureQueryData(nftDetailQuery(params.nftId))
+      // The artwork is the page's largest element: fetch it while the page renders.
+      preloadNftImage(nft.image.url, GALLERY_IMAGE_SIZES)
+      return nft
     } catch (error) {
       if (hasErrorCode(error, 'NOT_FOUND')) throw notFound()
       throw error

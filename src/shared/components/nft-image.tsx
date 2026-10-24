@@ -1,3 +1,4 @@
+import { preload } from 'react-dom'
 import { type ImageDto } from '../api/dtos/common'
 import { cn } from '../lib/cn'
 
@@ -5,6 +6,14 @@ import { cn } from '../lib/cn'
 export function srcSetFor(url: string): string | undefined {
   if (!url.endsWith('.webp')) return undefined
   return `${url.replace(/\.webp$/, '-400.webp')} 400w, ${url} 800w`
+}
+
+/**
+ * Starts the download of an above-the-fold artwork before it renders (e.g. from a route loader,
+ * as soon as its URL is known). `sizes` must match the `<img>`'s so both pick the same file.
+ */
+export function preloadNftImage(url: string, sizes: string): void {
+  preload(url, { as: 'image', imageSrcSet: srcSetFor(url), imageSizes: sizes, fetchPriority: 'high' })
 }
 
 interface NftImageProps {
