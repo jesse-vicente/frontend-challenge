@@ -39,8 +39,10 @@ function preloadBootChunks(): Plugin {
 export default defineConfig({
   plugins: [tanstackRouter({ target: 'react', autoCodeSplitting: true }), react(), tailwindcss(), preloadBootChunks()],
   resolve: {
-    alias: {
-      '@': fileURLToPath(new URL('./src', import.meta.url)),
-    },
+    alias: [
+      { find: '@', replacement: fileURLToPath(new URL('./src', import.meta.url)) },
+      // Drops the public suffix list from the mocks chunk (see src/mocks/lib/tldts-lite.ts).
+      { find: /^tldts$/, replacement: fileURLToPath(new URL('./src/mocks/lib/tldts-lite.ts', import.meta.url)) },
+    ],
   },
 })
