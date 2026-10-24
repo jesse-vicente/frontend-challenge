@@ -8,6 +8,7 @@ import youtubeIcon from '@/assets/icons/social-youtube.svg'
 import { type NftCategory } from '@/shared/api/dtos/nft'
 import { cn } from '@/shared/lib/cn'
 import { notifyComingSoon } from '@/shared/lib/coming-soon'
+import { revealDelay, useReveal } from '@/shared/lib/use-reveal'
 
 const FEATURES = [
   {
@@ -112,15 +113,23 @@ export function SiteFooter() {
   const pathname = useRouterState({ select: (state) => state.location.pathname })
   // Mobile auth frames are full-screen, without footer.
   const hideOnMobile = /^\/(login|register)/.test(pathname)
+  const reveal = useReveal()
   return (
     <footer className={cn('page-container mt-16 pb-28 md:mt-24 md:pb-6', hideOnMobile && 'max-md:hidden')}>
-      <div className="flex flex-col gap-8 bg-surface p-6 md:p-8 lg:h-[250px] lg:flex-row lg:items-end lg:justify-between lg:gap-0">
+      <div
+        ref={reveal}
+        className="reveal flex flex-col gap-8 bg-surface p-6 md:p-8 lg:h-[250px] lg:flex-row lg:items-end lg:justify-between lg:gap-0"
+      >
         <div className="grid gap-8 sm:grid-cols-3 lg:contents">
           {FEATURES.map((feature, index) => (
             <div key={feature.initial} className="flex lg:contents">
               {index > 0 ? <div aria-hidden="true" className="hidden w-px self-stretch bg-primary lg:block" /> : null}
               {/* Phones: badge beside the text, so the three features stay compact. */}
-              <div className="grid grid-cols-[56px_1fr] gap-x-4 gap-y-2 sm:flex sm:flex-col sm:gap-3 md:px-4 lg:w-[264px] lg:first:flex-1">
+              <div
+                ref={reveal}
+                style={revealDelay(index + 1, 4, 110)}
+                className="reveal grid grid-cols-[56px_1fr] gap-x-4 gap-y-2 sm:flex sm:flex-col sm:gap-3 md:px-4 lg:w-[264px] lg:first:flex-1"
+              >
                 <div className="row-span-2 grid size-14 place-items-center rounded-full bg-primary sm:size-[74px]">
                   <span aria-hidden="true" className="text-xl font-bold text-ink sm:text-2xl">
                     {feature.initial}
@@ -138,7 +147,10 @@ export function SiteFooter() {
         <Newsletter />
       </div>
 
-      <div className="flex flex-col gap-4 bg-surface-dark p-6 text-sm leading-[22px] text-foreground md:flex-row md:items-center md:gap-8 md:p-8 lg:h-[88px] lg:gap-[92px]">
+      <div
+        ref={reveal}
+        className="reveal flex flex-col gap-4 bg-surface-dark p-6 text-sm leading-[22px] text-foreground md:flex-row md:items-center md:gap-8 md:p-8 lg:h-[88px] lg:gap-[92px]"
+      >
         <p className="flex-1 font-bold tracking-[1.4px]">KURIO</p>
         <p className="flex-1 lg:whitespace-nowrap">
           Feito para colecionadores,
@@ -153,7 +165,10 @@ export function SiteFooter() {
         </a>
       </div>
 
-      <div className="flex flex-col gap-10 bg-surface p-6 md:p-8 lg:h-[236px] lg:flex-row lg:gap-[124px]">
+      <div
+        ref={reveal}
+        className="reveal flex flex-col gap-10 bg-surface p-6 md:p-8 lg:h-[236px] lg:flex-row lg:gap-[124px]"
+      >
         <div className="grid flex-1 grid-cols-2 gap-x-6 gap-y-8 md:grid-cols-3 md:gap-8 lg:contents">
           <FooterColumn title="Meu perfil">
             <Link to="/profile" className={linkClass}>

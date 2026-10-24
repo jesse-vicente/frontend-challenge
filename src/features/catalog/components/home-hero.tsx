@@ -1,6 +1,6 @@
 import { Link } from '@tanstack/react-router'
 import { Pause, Play } from 'lucide-react'
-import { type PointerEvent, useCallback, useEffect, useRef, useState } from 'react'
+import { type CSSProperties, type PointerEvent, useCallback, useEffect, useRef, useState } from 'react'
 import arrowRightAccent from '@/assets/icons/arrow-right-accent.svg'
 import mobileHeroMask from '@/assets/mobile/hero-mask.svg'
 import { type NftSegment } from '@/shared/api/dtos/nft'
@@ -60,6 +60,9 @@ const SLIDES: readonly HeroSlide[] = [
   },
 ]
 
+/** Order of an element in the entrance cascade of the active slide (globals.css). */
+const cascade = (step: number) => ({ '--i': step }) as CSSProperties
+
 const AUTOPLAY_MS = 7000
 const SWIPE_THRESHOLD = 40
 
@@ -69,16 +72,23 @@ function DesktopSlide({ slide, first }: { slide: HeroSlide; first: boolean }) {
       <div className="flex max-w-[600px] flex-1 flex-col items-start gap-8">
         <div className="flex w-full flex-col gap-1">
           <div className="flex flex-col gap-2 text-foreground">
-            <p className="text-sm leading-4 font-medium tracking-[1.4px]">{slide.eyebrow}</p>
-            <h2 className="text-[32px] leading-[52px] font-bold lg:text-[43px] lg:leading-[70px]">
+            <p className="hero-fade text-sm leading-4 font-medium tracking-[1.4px]" style={cascade(0)}>
+              {slide.eyebrow}
+            </p>
+            <h2
+              className="hero-rise text-[32px] leading-[52px] font-bold lg:text-[43px] lg:leading-[70px]"
+              style={cascade(1)}
+            >
               {slide.title[0]}
               <br />
               {slide.title[1]}
             </h2>
           </div>
-          <p className="max-w-[557px] text-sm leading-6 text-sand">{slide.text}</p>
+          <p className="hero-fade max-w-[557px] text-sm leading-6 text-sand" style={cascade(2)}>
+            {slide.text}
+          </p>
         </div>
-        <Button asChild className="min-w-[140px] pr-9 pl-7">
+        <Button asChild className="hero-fade min-w-[140px] pr-9 pl-7" style={cascade(3)}>
           <Link to="/" search={slide.segment ? { segment: slide.segment } : {}} hash="market">
             {slide.cta}
           </Link>
@@ -88,7 +98,7 @@ function DesktopSlide({ slide, first }: { slide: HeroSlide; first: boolean }) {
         image={slide.art}
         sizes="(min-width: 1024px) 450px, 300px"
         priority={first}
-        className="aspect-square w-[300px] shrink-0 rounded-[24px] lg:w-[450px]"
+        className="hero-art aspect-square w-[300px] shrink-0 rounded-[24px] lg:w-[450px]"
       />
     </div>
   )
@@ -107,19 +117,24 @@ function MobileSlide({ slide, first }: { slide: HeroSlide; first: boolean }) {
       />
       <div className="relative flex min-w-0 flex-1 flex-col items-start">
         <div className="flex w-full flex-col gap-1.5">
-          <p className="text-xs leading-4 font-medium text-foreground">{slide.eyebrow}</p>
-          <h2 className="w-[190px] text-lg leading-[29px] font-bold text-foreground">
+          <p className="hero-fade text-xs leading-4 font-medium text-foreground" style={cascade(0)}>
+            {slide.eyebrow}
+          </p>
+          <h2 className="hero-rise w-[190px] text-lg leading-[29px] font-bold text-foreground" style={cascade(1)}>
             {slide.mobileTitle[0]}
             <br />
             {slide.mobileTitle[1]}
           </h2>
-          <p className="text-xs leading-[18px] text-sand">{slide.mobileText}</p>
+          <p className="hero-fade text-xs leading-[18px] text-sand" style={cascade(2)}>
+            {slide.mobileText}
+          </p>
         </div>
         <Link
           to="/"
           search={slide.segment ? { segment: slide.segment } : {}}
           hash="market"
-          className="flex items-center gap-2 py-1"
+          className="hero-fade flex items-center gap-2 py-1"
+          style={cascade(3)}
         >
           <span className="text-xs leading-[14px] font-bold text-amber">{slide.cta}</span>
           <img
@@ -132,7 +147,7 @@ function MobileSlide({ slide, first }: { slide: HeroSlide; first: boolean }) {
           />
         </Link>
       </div>
-      <div className="relative grid shrink-0 place-items-start">
+      <div className="hero-art relative grid shrink-0 place-items-start">
         <NftImage
           image={slide.art}
           decorative
@@ -234,6 +249,7 @@ export function HomeHero() {
               aria-label={`${slideIndex + 1} de ${SLIDES.length}`}
               aria-hidden={slideIndex !== index}
               inert={slideIndex !== index}
+              data-active={slideIndex === index ? '' : undefined}
               // Stretched to the tallest slide: every card keeps the same size and the dots stay put.
               className="flex w-full shrink-0 flex-col"
             >
@@ -275,7 +291,7 @@ function HeroControls({
   return (
     <div
       className={cn(
-        'flex items-center justify-center gap-1',
+        'hero-controls flex items-center justify-center gap-1',
         // Desktop: under the copy column, as the dots of the frame; mobile: below the card.
         'max-md:relative max-md:-mt-12 md:absolute md:bottom-0 md:left-10 md:w-[600px] md:justify-end',
       )}

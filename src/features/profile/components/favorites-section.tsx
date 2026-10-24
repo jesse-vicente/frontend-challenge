@@ -59,7 +59,7 @@ export function FavoritesSection() {
           {nfts.map((query, index) => (
             <li key={ids[index]}>
               {query.data ? (
-                <NftCard nft={query.data} favorite />
+                <NftCard nft={query.data} favorite revealIndex={index} />
               ) : (
                 <p className="text-sm text-sand">Este NFT não está mais disponível.</p>
               )}

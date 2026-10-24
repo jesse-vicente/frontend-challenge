@@ -4,6 +4,7 @@ import { useFavorites } from '@/features/favorites/queries'
 import { announce } from '@/shared/a11y/announcer'
 import { EmptyState, ErrorState } from '@/shared/components/feedback-states'
 import { cn } from '@/shared/lib/cn'
+import { useReveal } from '@/shared/lib/use-reveal'
 import { Button } from '@/shared/ui/button'
 import { nftHighlightsQuery, nftListQuery } from '../queries'
 import { type CatalogSearch, toListParams } from '../search'
@@ -26,6 +27,7 @@ function hasActiveFilters(search: CatalogSearch): boolean {
 }
 
 export function CatalogSection({ search, onSearchChange }: CatalogSectionProps) {
+  const reveal = useReveal()
   const params = toListParams(search)
   const list = useQuery(nftListQuery(params))
   const highlights = useQuery(nftHighlightsQuery())
@@ -101,7 +103,7 @@ export function CatalogSection({ search, onSearchChange }: CatalogSectionProps) 
     )
   } else {
     content = list.data.items.map((nft, index) => (
-      <NftCard key={nft.id} nft={nft} favorite={favorites.ids.has(nft.id)} priority={index < 3} />
+      <NftCard key={nft.id} nft={nft} favorite={favorites.ids.has(nft.id)} priority={index < 3} revealIndex={index} />
     ))
   }
 
@@ -116,14 +118,14 @@ export function CatalogSection({ search, onSearchChange }: CatalogSectionProps) 
         Catálogo de NFTs
       </h2>
 
-      <aside aria-label="Filtros" className="hidden w-[310px] shrink-0 flex-col gap-6 lg:flex">
+      <aside ref={reveal} aria-label="Filtros" className="reveal hidden w-[310px] shrink-0 flex-col gap-6 lg:flex">
         <CatalogFilters search={search} facets={list.data?.facets} onChange={changeFilters} className="w-[310px]" />
         <FeaturedBanner nft={highlights.data?.featured} />
       </aside>
 
       <div className="flex min-w-0 flex-1 flex-col items-center gap-14 md:items-end lg:gap-[88px]">
         <div className="flex w-full flex-col gap-4 md:gap-8">
-          <div className="flex w-full flex-wrap items-center justify-between gap-x-6 gap-y-3">
+          <div ref={reveal} className="reveal flex w-full flex-wrap items-center justify-between gap-x-6 gap-y-3">
             <SegmentTabs
               segment={search.segment ?? 'all'}
               onChange={(segment) => changeFilters({ segment: segment === 'all' ? undefined : segment })}

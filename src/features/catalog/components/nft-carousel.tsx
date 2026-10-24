@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 import { useEffect, useId, useRef, useState } from 'react'
 import { type NftListParams } from '@/shared/api/dtos/nft'
 import { cn } from '@/shared/lib/cn'
+import { useReveal } from '@/shared/lib/use-reveal'
 import { nftListQuery } from '../queries'
 import { NftCard, NftCardSkeleton } from './nft-card'
 
@@ -17,6 +18,7 @@ export function NftCarousel({ title, params }: { title: string; params: NftListP
   const trackRef = useRef<HTMLUListElement>(null)
   const titleId = useId()
   const [page, setPage] = useState(0)
+  const reveal = useReveal()
   const items = data?.items ?? []
   const pages = Math.max(1, Math.ceil(items.length / PAGE_SIZE))
 
@@ -37,7 +39,11 @@ export function NftCarousel({ title, params }: { title: string; params: NftListP
 
   return (
     <section aria-labelledby={titleId} className="flex flex-col gap-8">
-      <h2 id={titleId} className="border-b border-border pb-2 text-lg leading-7 font-bold text-amber">
+      <h2
+        ref={reveal}
+        id={titleId}
+        className="reveal border-b border-border pb-2 text-lg leading-7 font-bold text-amber"
+      >
         {title}
       </h2>
       <ul
@@ -50,9 +56,9 @@ export function NftCarousel({ title, params }: { title: string; params: NftListP
                 <NftCardSkeleton />
               </li>
             ))
-          : items.map((nft) => (
+          : items.map((nft, index) => (
               <li key={nft.id} className="snap-start">
-                <NftCard nft={nft} />
+                <NftCard nft={nft} revealIndex={index} perRow={PAGE_SIZE} />
               </li>
             ))}
       </ul>

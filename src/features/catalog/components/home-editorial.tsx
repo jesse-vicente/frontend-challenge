@@ -3,6 +3,7 @@ import promoMask from '@/assets/home/promo-mask.svg'
 import arrowRight from '@/assets/icons/arrow-right.svg'
 import { NftImage } from '@/shared/components/nft-image'
 import { notifyComingSoon } from '@/shared/lib/coming-soon'
+import { revealDelay, useReveal } from '@/shared/lib/use-reveal'
 
 const art = (index: number) => ({ url: `/images/nfts/nft-0${index}.webp`, width: 800, height: 800 })
 
@@ -54,10 +55,16 @@ const ARTICLES = [
 
 /** "Promos" frame: two promo cards linking to catalog segments. */
 export function HomePromos() {
+  const reveal = useReveal()
   return (
     <section aria-label="Lançamentos e curadoria" className="grid gap-7 lg:grid-cols-2">
-      {PROMOS.map((promo) => (
-        <article key={promo.text} className="relative flex h-[250px] overflow-hidden rounded-lg bg-surface">
+      {PROMOS.map((promo, index) => (
+        <article
+          key={promo.text}
+          ref={reveal}
+          style={revealDelay(index, 2, 140)}
+          className="reveal relative flex h-[250px] overflow-hidden rounded-lg bg-surface"
+        >
           <NftImage
             image={promo.image}
             decorative
@@ -105,9 +112,10 @@ export function HomePromos() {
 
 /** "Blog" frame: editorial content is outside the delivery scope, so links explain that. */
 export function HomeJournal() {
+  const reveal = useReveal()
   return (
     <section aria-labelledby="journal-title" className="flex flex-col items-center gap-10">
-      <header className="flex w-full flex-col items-center gap-3 text-center">
+      <header ref={reveal} className="reveal flex w-full flex-col items-center gap-3 text-center">
         <h2 id="journal-title" className="text-[28px] font-bold text-cream">
           Diário da Cunhagem
         </h2>
@@ -117,10 +125,12 @@ export function HomeJournal() {
       </header>
       {/* Phones: a swipeable row that bleeds to the screen edges (next card peeks in). */}
       <div className="flex w-[calc(100%+2rem)] snap-x snap-mandatory scroll-px-4 [scrollbar-width:none] gap-4 overflow-x-auto px-4 pb-2 sm:grid sm:w-full sm:grid-cols-2 sm:gap-6 sm:overflow-visible sm:px-0 sm:pb-0 lg:grid-cols-4">
-        {ARTICLES.map((article) => (
+        {ARTICLES.map((article, index) => (
           <article
             key={article.title}
-            className="group relative flex w-[78%] shrink-0 snap-start flex-col overflow-hidden rounded-lg bg-surface transition duration-300 ease-out hover:-translate-y-1 hover:shadow-[0_12px_28px_rgba(10,6,4,0.55)] has-[:focus-visible]:-translate-y-1 motion-reduce:transform-none sm:w-auto"
+            ref={reveal}
+            style={revealDelay(index, 4, 90)}
+            className="reveal group relative flex w-[78%] shrink-0 snap-start flex-col overflow-hidden rounded-lg bg-surface transition duration-300 ease-out hover:-translate-y-1 hover:shadow-[0_12px_28px_rgba(10,6,4,0.55)] has-[:focus-visible]:-translate-y-1 motion-reduce:transform-none sm:w-auto"
           >
             <div className="overflow-hidden">
               <NftImage

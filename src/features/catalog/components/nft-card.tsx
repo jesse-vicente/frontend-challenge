@@ -4,6 +4,7 @@ import { type NftSummaryDto, type Rarity } from '@/shared/api/dtos/nft'
 import { NftImage } from '@/shared/components/nft-image'
 import { cn } from '@/shared/lib/cn'
 import { formatEth } from '@/shared/lib/format'
+import { revealDelay, useReveal } from '@/shared/lib/use-reveal'
 import { RARITY_LABELS } from '../labels'
 
 /** "Raro" keeps the Figma tag; higher rarities get their own tones (dark text, AA on each). */
@@ -18,14 +19,29 @@ interface NftCardProps {
   favorite?: boolean
   priority?: boolean
   className?: string
+  /** Position in its grid or carousel: staggers the scroll reveal along a row. */
+  revealIndex?: number
+  perRow?: number
 }
 
 /** Product card: desktop follows the grid card (258×300), mobile the rounded "P-n" card. */
-export function NftCard({ nft, favorite = false, priority = false, className }: NftCardProps) {
+export function NftCard({
+  nft,
+  favorite = false,
+  priority = false,
+  className,
+  revealIndex = 0,
+  perRow = 3,
+}: NftCardProps) {
   const soldOut = nft.availability === 'sold-out'
+  const reveal = useReveal()
 
   return (
-    <article className={cn('group relative flex flex-col gap-2 md:gap-3', className)}>
+    <article
+      ref={reveal}
+      style={revealDelay(revealIndex, perRow)}
+      className={cn('reveal group relative flex flex-col gap-2 md:gap-3', className)}
+    >
       <div
         className={cn(
           'relative flex h-[200px] items-center justify-center overflow-hidden rounded-[20px] bg-[linear-gradient(139.5deg,#241612_12%,#2f1d15_106.6%)] px-1',
