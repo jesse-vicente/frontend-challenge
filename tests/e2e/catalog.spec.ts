@@ -75,6 +75,28 @@ test.describe('catálogo', () => {
   })
 })
 
+test.describe('início pré-renderizado', () => {
+  test('o HTML já traz o hero e o React adota essa marcação sem erros @mobile', async ({ app, page }) => {
+    const errors: string[] = []
+    page.on('pageerror', (error) => errors.push(error.message))
+    page.on('console', (message) => message.type() === 'error' && errors.push(message.text()))
+    // The hero as parsed from index.html, before any script runs.
+    await page.addInitScript(() => {
+      document.addEventListener('DOMContentLoaded', () => {
+        Object.assign(window, { __prerenderedHero: document.querySelector('#root section[aria-roledescription]') })
+      })
+    })
+    // Without parameters (no scenario or reset): the page index.html was prerendered for.
+    await app.open('/', { reset: false })
+    await expect(cardTitles(page).first()).toBeVisible()
+    const heroKept = await page.evaluate(
+      () => (window as unknown as { __prerenderedHero?: Element | null }).__prerenderedHero?.isConnected,
+    )
+    expect(heroKept).toBe(true)
+    expect(errors).toEqual([])
+  })
+})
+
 test.describe('detalhe', () => {
   test('acesso direto ao detalhe carrega o NFT e atualiza o título @mobile', async ({ app, page }) => {
     await app.open('/nfts/nft_001')
