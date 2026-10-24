@@ -8,12 +8,14 @@ import { createSocketHandler, setTokenResolver } from './realtime/server'
 import { initScenario } from './scenarios/runtime'
 import { resumePendingOrders } from './services/orders'
 import { isTokenActiveFor, userIdForToken } from './services/sessions'
+import { createWorkerKeeper } from './worker-keeper'
 
 /**
  * Starts the simulated backend (REST via service worker, Socket.IO via
- * WebSocket interception). Must resolve before the app issues any request.
+ * WebSocket interception). Must resolve before the app issues any request; the
+ * returned check keeps the worker serving this page after the tab was idle.
  */
-export async function startMocks(params: MockBootParams): Promise<void> {
+export async function startMocks(params: MockBootParams): Promise<() => Promise<void>> {
   initScenario(params.scenario)
   if (params.reset) await resetDb()
   else await initDb()
@@ -30,4 +32,5 @@ export async function startMocks(params: MockBootParams): Promise<void> {
 
   resumePendingOrders()
   installControl()
+  return createWorkerKeeper()
 }

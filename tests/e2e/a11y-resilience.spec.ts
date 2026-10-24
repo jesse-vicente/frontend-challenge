@@ -103,6 +103,23 @@ test.describe('carregamento, falha e recuperação', () => {
     await expect(page.getByRole('heading', { level: 1 })).toContainText('Emerald Ape')
   })
 
+  test('backend simulado volta a responder depois que o navegador para o service worker ocioso', async ({
+    app,
+    page,
+  }) => {
+    await app.open('/')
+    await expect(cards(page).first()).toBeVisible()
+    // What Chrome does to an idle worker of a hidden tab: the restarted worker forgets the page.
+    const cdp = await page.context().newCDPSession(page)
+    await cdp.send('ServiceWorker.enable')
+    await cdp.send('ServiceWorker.stopAllWorkers')
+    // Past the window in which a recently confirmed worker is trusted.
+    await page.waitForTimeout(11_000)
+    await cards(page).first().getByRole('link').click()
+    await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
+    await expect(page.getByText('Não foi possível carregar')).toBeHidden()
+  })
+
   test('falha ao calcular a cotação do carrinho permite tentar de novo', async ({ app, page }) => {
     await app.open('/')
     await app.buyFromDetail('nft_001')
