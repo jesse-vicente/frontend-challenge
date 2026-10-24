@@ -56,7 +56,7 @@ export function useSection(): { route: Section; current: Section } {
   return { route, current: route === 'market' || catalogInView ? 'market' : 'home' }
 }
 
-/** True once the page scrolled past the top (the sticky header switches to its compact style). */
+/** True once the page scrolled past the top (the sticky header switches to its glass background). */
 export function useScrolled(threshold = 8): boolean {
   const [scrolled, setScrolled] = useState(false)
   useEffect(() => {

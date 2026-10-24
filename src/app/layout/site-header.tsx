@@ -27,9 +27,9 @@ import { type Section, useScrolled, useSection } from './use-section'
 
 const navItemClass = 'font-normal text-base text-foreground leading-[normal] transition-colors hover:text-amber'
 
-function NavItem({ compact, children }: { compact: boolean; children: ReactNode }) {
+function NavItem({ children }: { children: ReactNode }) {
   return (
-    <div data-nav-item className={cn('flex transition-[padding] duration-300', compact ? 'pb-3' : 'pb-[21px]')}>
+    <div data-nav-item className="flex pb-[21px]">
       {children}
     </div>
   )
@@ -125,8 +125,8 @@ function AccountButton() {
 }
 
 /**
- * Desktop/tablet header ("Header With Divider" / "Header Row" components). It sticks to the top:
- * once the page scrolls it turns into a compact bar with a glass background.
+ * Desktop/tablet header ("Header With Divider" / "Header Row" components). It sticks to the top
+ * and gets a glass background once the page scrolls; its size never changes.
  */
 export function SiteHeader() {
   const { route, current } = useSection()
@@ -142,21 +142,14 @@ export function SiteHeader() {
         scrolled && 'bg-ink/70 shadow-[0_10px_30px_rgba(10,6,4,0.45)] backdrop-blur-md backdrop-saturate-150',
       )}
     >
-      <div className={cn('page-container transition-[padding] duration-300', scrolled ? 'pt-3' : 'pt-6')}>
+      <div className="page-container pt-6">
         <div className="flex items-start justify-between gap-6">
-          <Link
-            to="/"
-            aria-label="Kurio, página inicial"
-            className={cn(
-              'h-[34px] shrink-0 pt-2 transition-transform duration-300 lg:w-[160px]',
-              scrolled && 'scale-95',
-            )}
-          >
+          <Link to="/" aria-label="Kurio, página inicial" className="h-[34px] shrink-0 pt-2 lg:w-[160px]">
             <span className="text-sm font-bold tracking-[1.4px] text-foreground">KURIO</span>
           </Link>
 
           <nav ref={navRef} aria-label="Principal" className="relative hidden items-start gap-6 md:flex lg:gap-10">
-            <NavItem compact={scrolled}>
+            <NavItem>
               <Link
                 to="/"
                 aria-current={current === 'home' ? 'page' : undefined}
@@ -165,7 +158,7 @@ export function SiteHeader() {
                 Início
               </Link>
             </NavItem>
-            <NavItem compact={scrolled}>
+            <NavItem>
               <Link
                 to="/"
                 hash="mercado"
@@ -176,7 +169,7 @@ export function SiteHeader() {
               </Link>
             </NavItem>
             {['Criadores', 'Aprenda'].map((label) => (
-              <NavItem key={label} compact={scrolled}>
+              <NavItem key={label}>
                 <button type="button" className={navItemClass} onClick={() => notifyComingSoon(label)}>
                   {label}
                 </button>
@@ -185,7 +178,7 @@ export function SiteHeader() {
             <NavUnderline navRef={navRef} activeIndex={activeIndex} />
           </nav>
 
-          <div className={cn('flex items-center gap-7 transition-transform duration-300', scrolled && 'scale-95')}>
+          <div className="flex items-center gap-7">
             <button
               type="button"
               onClick={() => setSearchOpen(true)}
