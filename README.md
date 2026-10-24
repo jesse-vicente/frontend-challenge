@@ -2,6 +2,7 @@
 
 SPA do desafio frontend (enunciado em [`docs/CHALLENGE.md`](docs/CHALLENGE.md)): catálogo, detalhe, carrinho, pagamento com carteira, recibo, conta (perfil, carteiras, favoritos) e tempo real, com backend **simulado no navegador** por MSW (REST + Socket.IO).
 - **Aplicação publicada:** _(link do deploy)_
+- **Contas de teste:** `alice@nft.test` e `bob@nft.test`, senha `Senha123` (detalhes e cupons em [Credenciais](#credenciais-e-dados-fictícios))
 - **Arquitetura e decisões:** [`ARCHITECTURE.md`](ARCHITECTURE.md)
 - **Contratos REST:** [`docs/api-contracts.md`](docs/api-contracts.md) · **Eventos:** [`docs/realtime-events.md`](docs/realtime-events.md)
 
