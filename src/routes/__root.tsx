@@ -3,6 +3,7 @@ import { lazy, Suspense } from 'react'
 import { MobileTabBar } from '@/app/layout/mobile-tab-bar'
 import { SiteFooter } from '@/app/layout/site-footer'
 import { SiteHeader } from '@/app/layout/site-header'
+import { useSamePageLinks } from '@/app/layout/use-same-page-links'
 import { type RouterContext } from '@/app/router'
 import { authSearchSchema } from '@/features/auth/auth-modal'
 import { useSessionRestore } from '@/features/auth/queries'
@@ -35,6 +36,7 @@ export const Route = createRootRouteWithContext<RouterContext>()({
 
 function RootLayout() {
   useSessionRestore()
+  useSamePageLinks()
   const { auth, redirect } = Route.useSearch()
   // The /login and /register routes render their own screen.
   const onAuthRoute = useRouterState({ select: (state) => /^\/(login|register)/.test(state.location.pathname) })

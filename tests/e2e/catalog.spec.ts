@@ -73,6 +73,32 @@ test.describe('catálogo', () => {
     await expect(page).not.toHaveURL(/q=/)
     await expect(cardTitles(page).first()).toBeVisible()
   })
+
+  test('Início, logo e Mercado voltam à seção mesmo quando a URL não muda', async ({ app, page }) => {
+    await app.open('/')
+    await expect(cardTitles(page).first()).toBeVisible()
+    const header = page.getByRole('banner')
+    const scrollY = () => page.evaluate(() => window.scrollY)
+    const marketOffset = () =>
+      page.evaluate(() => Math.abs(document.getElementById('market')?.getBoundingClientRect().top ?? Number.NaN))
+    const scrollToFooter = () => page.evaluate(() => window.scrollTo(0, document.body.scrollHeight))
+
+    // Scrolling keeps the URL at "/": the router sees these clicks as navigations to the same page.
+    await scrollToFooter()
+    await header.getByRole('link', { name: 'Início' }).click()
+    await expect.poll(scrollY).toBe(0)
+
+    await scrollToFooter()
+    await header.getByRole('link', { name: 'Kurio, página inicial' }).click()
+    await expect.poll(scrollY).toBe(0)
+
+    await header.getByRole('link', { name: 'Mercado' }).click()
+    await expect(page).toHaveURL(/#market$/)
+    await expect.poll(marketOffset).toBeLessThan(200)
+    await scrollToFooter()
+    await header.getByRole('link', { name: 'Mercado' }).click()
+    await expect.poll(marketOffset).toBeLessThan(200)
+  })
 })
 
 test.describe('início pré-renderizado', () => {
