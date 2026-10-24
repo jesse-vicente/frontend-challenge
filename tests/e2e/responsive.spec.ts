@@ -48,6 +48,9 @@ async function expectFitsEveryWidth(page: Page, ready: () => Locator) {
 }
 
 test.describe('responsividade (320 a 1440 px)', () => {
+  // Every screen at every width, plus a purchase to reach the receipt.
+  test.describe.configure({ timeout: 90_000 })
+
   test('início, detalhe, páginas inexistentes, login e cadastro', async ({ app, page }) => {
     await app.open('/')
     await expect(page.locator('#market article h3').first()).toBeVisible()
