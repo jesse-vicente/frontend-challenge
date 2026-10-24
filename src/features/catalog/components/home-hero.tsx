@@ -1,5 +1,4 @@
 import { Link } from '@tanstack/react-router'
-import { Pause, Play } from 'lucide-react'
 import { type CSSProperties, type PointerEvent, useCallback, useEffect, useRef, useState } from 'react'
 import arrowRightAccent from '@/assets/icons/arrow-right-accent.svg'
 import mobileHeroMask from '@/assets/mobile/hero-mask.svg'
@@ -167,17 +166,16 @@ function MobileSlide({ slide, first }: { slide: HeroSlide; first: boolean }) {
 }
 
 /**
- * Home hero as a carousel: three slides that advance every 7 s. Autoplay pauses on hover,
- * on keyboard focus, while the tab is hidden, with the pause button and under reduced motion.
+ * Home hero as a carousel: three slides that advance every 7 s. Autoplay pauses while the mouse
+ * is over it, on keyboard focus, while the tab is hidden and under reduced motion.
  */
 export function HomeHero() {
   const [index, setIndex] = useState(0)
-  const [paused, setPaused] = useState(false)
   const [interacting, setInteracting] = useState(false)
   const reducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)')
   const pointerStart = useRef<number | null>(null)
   const swiped = useRef(false)
-  const playing = !paused && !interacting && !reducedMotion
+  const playing = !interacting && !reducedMotion
 
   const goTo = useCallback((next: number) => setIndex((next + SLIDES.length) % SLIDES.length), [])
 
@@ -203,13 +201,14 @@ export function HomeHero() {
   }
 
   return (
-    // biome-ignore lint/a11y/noNoninteractiveElementInteractions: hover/focus only pause the autoplay; the controls are the dots and the pause button.
+    // biome-ignore lint/a11y/noNoninteractiveElementInteractions: hover/focus only pause the autoplay; the controls are the dots.
     <section
       aria-roledescription="carrossel"
       aria-label="Destaques da Kurio"
       className="relative flex flex-col gap-4 md:gap-0"
-      onMouseEnter={() => setInteracting(true)}
-      onMouseLeave={() => setInteracting(false)}
+      // Mouse only: a tap fires mouseenter too and would keep the carousel paused.
+      onPointerEnter={(event) => event.pointerType === 'mouse' && setInteracting(true)}
+      onPointerLeave={(event) => event.pointerType === 'mouse' && setInteracting(false)}
       onFocus={() => setInteracting(true)}
       onBlur={(event) => {
         if (!event.currentTarget.contains(event.relatedTarget)) setInteracting(false)
@@ -218,7 +217,7 @@ export function HomeHero() {
       <h1 className="sr-only">Kurio, marketplace de NFTs</h1>
       {/* pan-y: the browser keeps vertical scrolling and leaves horizontal drags to the swipe
           (otherwise it claims the gesture and cancels the pointer before pointerup). */}
-      {/* biome-ignore lint/a11y: swiping is a pointer shortcut; the dots and the pause button are the accessible controls. */}
+      {/* biome-ignore lint/a11y: swiping is a pointer shortcut; the dots are the accessible controls. */}
       <div
         className="touch-pan-y overflow-hidden select-none"
         onPointerDown={onPointerDown}
@@ -263,31 +262,13 @@ export function HomeHero() {
           ))}
         </div>
       </div>
-      <HeroControls
-        index={index}
-        playing={playing}
-        paused={paused}
-        onSelect={goTo}
-        onTogglePause={() => setPaused((value) => !value)}
-      />
+      <HeroControls index={index} onSelect={goTo} />
     </section>
   )
 }
 
-/** Dots of the layout (8px, 7px on mobile) inside 24px targets, plus the pause control. */
-function HeroControls({
-  index,
-  playing,
-  paused,
-  onSelect,
-  onTogglePause,
-}: {
-  index: number
-  playing: boolean
-  paused: boolean
-  onSelect: (index: number) => void
-  onTogglePause: () => void
-}) {
+/** Dots of the layout (8px, 7px on mobile) inside 24px targets. */
+function HeroControls({ index, onSelect }: { index: number; onSelect: (index: number) => void }) {
   return (
     <div
       className={cn(
@@ -314,19 +295,6 @@ function HeroControls({
           />
         </button>
       ))}
-      <button
-        type="button"
-        onClick={onTogglePause}
-        aria-label={paused ? 'Retomar a troca automática dos destaques' : 'Pausar a troca automática dos destaques'}
-        aria-pressed={paused}
-        className={cn('grid size-6 place-items-center rounded-full text-amber', !playing && !paused && 'opacity-60')}
-      >
-        {paused ? (
-          <Play aria-hidden="true" className="size-3.5 fill-current" />
-        ) : (
-          <Pause aria-hidden="true" className="size-3.5 fill-current" />
-        )}
-      </button>
     </div>
   )
 }
