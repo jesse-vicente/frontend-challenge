@@ -24,15 +24,28 @@ function useFavoriteToggle(nftId: string, name: string) {
 export function FavoriteButton({ nftId, name }: { nftId: string; name: string }) {
   const { active, onToggle } = useFavoriteToggle(nftId, name)
   return (
-    <Button variant="outline" className="h-10 w-[130px] gap-2 px-3" aria-pressed={active} onClick={onToggle}>
+    <Button variant="outline" className="h-10 min-w-[130px] gap-2 px-4" aria-pressed={active} onClick={onToggle}>
       <Heart aria-hidden="true" className={cn('size-5', active && 'fill-primary')} />
       {active ? 'Favoritado' : 'Favoritar'}
     </Button>
   )
 }
 
-/** Round heart of the mobile hero. */
-export function FavoriteIconButton({ nftId, name }: { nftId: string; name: string }) {
+/**
+ * Round heart of the mobile hero and of the catalog cards. `revealOnHover`: on devices with a
+ * mouse it shows on hover or keyboard focus, and stays visible once the NFT is a favorite.
+ */
+export function FavoriteIconButton({
+  nftId,
+  name,
+  revealOnHover = false,
+  className,
+}: {
+  nftId: string
+  name: string
+  revealOnHover?: boolean
+  className?: string
+}) {
   const { active, onToggle } = useFavoriteToggle(nftId, name)
   return (
     <button
@@ -40,7 +53,13 @@ export function FavoriteIconButton({ nftId, name }: { nftId: string; name: strin
       aria-pressed={active}
       aria-label={active ? `Remover ${name} dos favoritos` : `Favoritar ${name}`}
       onClick={onToggle}
-      className="grid size-[35px] place-items-center rounded-full border border-border-soft bg-ink/80 text-amber"
+      className={cn(
+        'grid size-[35px] place-items-center rounded-full border border-border-soft bg-ink/80 text-amber transition-[opacity,background-color] duration-200 will-change-[opacity] hover:bg-ink',
+        revealOnHover &&
+          !active &&
+          '[@media(hover:hover)]:opacity-0 [@media(hover:hover)]:group-hover:opacity-100 [@media(hover:hover)]:focus-visible:opacity-100',
+        className,
+      )}
     >
       <Heart aria-hidden="true" className={cn('size-[18px]', active && 'fill-primary')} />
     </button>

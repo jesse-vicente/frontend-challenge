@@ -1,7 +1,9 @@
 import { expect, type Page } from '@playwright/test'
 import { test } from './fixtures'
 
-const favoriteButton = (page: Page) => page.getByRole('button', { name: /^Favorit/ }).filter({ visible: true })
+/** The detail page's text button (the cards of its carousels have "Favoritar <name>" hearts). */
+const favoriteButton = (page: Page) =>
+  page.getByRole('button', { name: /^(Favoritar|Favoritado)$/ }).filter({ visible: true })
 /** Waits for the server to answer the optimistic toggle before reloading. */
 const favoriteSaved = (page: Page) =>
   page.waitForResponse((response) => response.url().includes('/api/me/favorites/') && response.ok())

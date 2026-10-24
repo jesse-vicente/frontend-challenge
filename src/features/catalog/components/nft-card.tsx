@@ -1,5 +1,5 @@
 import { Link } from '@tanstack/react-router'
-import favoriteBadge from '@/assets/icons/favorite-badge.svg'
+import { FavoriteIconButton } from '@/features/nft/components/favorite-button'
 import { type NftSummaryDto, type Rarity } from '@/shared/api/dtos/nft'
 import { NftImage } from '@/shared/components/nft-image'
 import { cn } from '@/shared/lib/cn'
@@ -72,15 +72,13 @@ export function NftCard({
             {RARITY_LABELS[nft.rarity].toUpperCase()}
           </span>
         ) : null}
-        {favorite ? (
-          <img
-            src={favoriteBadge}
-            alt=""
-            width={28}
-            height={28}
-            className="absolute top-[18px] right-[10px] size-7 md:hidden"
-          />
-        ) : null}
+        {/* Above the card's stretched link, in the corner of the art. */}
+        <FavoriteIconButton
+          nftId={nft.id}
+          name={nft.name}
+          revealOnHover
+          className="absolute top-[18px] right-[10px] z-10 size-8 md:top-[35px] md:right-[14px] md:size-[35px]"
+        />
         {soldOut ? (
           <span className="absolute right-3 bottom-3 rounded-sm bg-ink/85 px-2 py-1 text-xs font-bold text-amber">
             ESGOTADO
