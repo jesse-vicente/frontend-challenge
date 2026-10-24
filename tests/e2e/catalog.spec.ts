@@ -55,6 +55,41 @@ test.describe('catálogo', () => {
     await expect(filters.getByRole('checkbox', { name: /^Arte digital/ })).toBeChecked()
   })
 
+  test('setas da paginação deslizam os números sem trocar de página', async ({ app, page }) => {
+    await app.open('/')
+    await settled(page)
+    const pagination = page.getByRole('navigation', { name: 'Paginação do catálogo' })
+    const number = (value: number) => pagination.getByRole('button', { name: `Página ${value}`, exact: true })
+    const previous = pagination.getByRole('button', { name: 'Páginas anteriores' })
+    const next = pagination.getByRole('button', { name: 'Próximas páginas' })
+    await expect(number(4)).toBeVisible()
+    await expect(previous).toHaveAttribute('aria-disabled', 'true')
+
+    // 72 NFTs, 9 per page: the arrows slide the four numbers up to page 8.
+    for (let clicks = 0; clicks < 4; clicks += 1) await next.click()
+    await expect(number(8)).toBeVisible()
+    await expect(number(4)).toBeHidden()
+    await expect(next).toHaveAttribute('aria-disabled', 'true')
+    await expect(next).toBeFocused()
+    await expect(page).not.toHaveURL(/page=/)
+    await expect(cardTitles(page)).toHaveCount(9)
+
+    await number(7).click()
+    await expect(page).toHaveURL(/page=7/)
+    await expect(number(7)).toHaveAttribute('aria-current', 'page')
+    // The numbers stay where they were under the pointer.
+    await expect(number(5)).toBeVisible()
+
+    await previous.click()
+    await expect(number(4)).toBeVisible()
+    await expect(page).toHaveURL(/page=7/)
+
+    // A page change from elsewhere brings its number back into view.
+    await page.goBack()
+    await expect(page).not.toHaveURL(/page=/)
+    await expect(number(1)).toHaveAttribute('aria-current', 'page')
+  })
+
   test('busca global leva ao catálogo com o termo na URL @mobile', async ({ app, page }) => {
     await app.open('/')
     await page.getByRole('button', { name: 'Buscar NFTs' }).filter({ visible: true }).first().click()
