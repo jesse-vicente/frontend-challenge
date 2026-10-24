@@ -43,7 +43,9 @@ const COLLECTION_LINKS: { label: string; category: NftCategory }[] = [
   { label: 'Utilidade', category: 'utility' },
 ]
 
-const linkClass = 'text-left text-foreground text-sm leading-[30px] transition-colors hover:text-amber'
+// Phones: wrapped labels keep a normal line height, with the spacing moved to padding.
+const linkClass =
+  'text-left text-foreground text-sm leading-5 py-[5px] transition-colors hover:text-amber md:py-0 md:leading-[30px]'
 
 function ComingSoonLink({ label }: { label: string }) {
   return (
@@ -56,7 +58,7 @@ function ComingSoonLink({ label }: { label: string }) {
 function FooterColumn({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <nav aria-label={title} className="flex flex-1 flex-col gap-2">
-      <h2 className="text-lg leading-4 font-bold text-foreground">{title}</h2>
+      <h2 className="text-lg leading-5 font-bold text-foreground md:leading-4">{title}</h2>
       <ul className="flex flex-col">
         {Array.isArray(children)
           ? children.map((child, index) => (
@@ -78,7 +80,7 @@ function Newsletter() {
   return (
     <form onSubmit={submit} className="flex flex-col gap-3 md:px-4 lg:w-[357px]">
       <div className="flex flex-col gap-4">
-        <h2 className="text-lg leading-4 font-bold text-foreground">Antecipe-se ao próximo lançamento</h2>
+        <h2 className="text-lg leading-6 font-bold text-foreground lg:leading-4">Antecipe-se ao próximo lançamento</h2>
         <div className="flex h-10 items-center justify-between rounded-md bg-surface-dark pl-3 drop-shadow-[0_0_10px_rgba(10,6,4,0.45)]">
           <label htmlFor={inputId} className="sr-only">
             E-mail para receber novidades
@@ -117,13 +119,16 @@ export function SiteFooter() {
           {FEATURES.map((feature, index) => (
             <div key={feature.initial} className="flex lg:contents">
               {index > 0 ? <div aria-hidden="true" className="hidden w-px self-stretch bg-primary lg:block" /> : null}
-              <div className="flex flex-col gap-3 md:px-4 lg:w-[264px] lg:first:flex-1">
-                <div className="grid size-[74px] place-items-center rounded-full bg-primary">
-                  <span aria-hidden="true" className="text-2xl font-bold text-ink">
+              {/* Phones: badge beside the text, so the three features stay compact. */}
+              <div className="grid grid-cols-[56px_1fr] gap-x-4 gap-y-2 sm:flex sm:flex-col sm:gap-3 md:px-4 lg:w-[264px] lg:first:flex-1">
+                <div className="row-span-2 grid size-14 place-items-center rounded-full bg-primary sm:size-[74px]">
+                  <span aria-hidden="true" className="text-xl font-bold text-ink sm:text-2xl">
                     {feature.initial}
                   </span>
                 </div>
-                <h2 className="text-[17px] leading-4 font-bold text-foreground">{feature.title}</h2>
+                <h2 className="self-end text-[17px] leading-5 font-bold text-foreground sm:leading-4">
+                  {feature.title}
+                </h2>
                 <p className="text-sm leading-[22px] text-sand lg:w-[204px]">{feature.text}</p>
               </div>
             </div>
@@ -149,7 +154,7 @@ export function SiteFooter() {
       </div>
 
       <div className="flex flex-col gap-10 bg-surface p-6 md:p-8 lg:h-[236px] lg:flex-row lg:gap-[124px]">
-        <div className="grid flex-1 grid-cols-2 gap-8 md:grid-cols-3 lg:contents">
+        <div className="grid flex-1 grid-cols-2 gap-x-6 gap-y-8 md:grid-cols-3 md:gap-8 lg:contents">
           <FooterColumn title="Meu perfil">
             <Link to="/profile" className={linkClass}>
               Meu perfil
@@ -216,7 +221,7 @@ export function SiteFooter() {
         </div>
       </div>
 
-      <p className="mt-6 text-center text-sm leading-[30px] text-foreground">
+      <p className="mt-6 px-4 text-center text-sm leading-6 text-foreground md:leading-[30px]">
         © 2026 Kurio. Propriedade digital para todos.
       </p>
     </footer>
