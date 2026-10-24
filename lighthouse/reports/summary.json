@@ -1,6 +1,6 @@
 {
   "environment": {
-    "date": "2026-10-24T05:16:20.271Z",
+    "date": "2026-10-24T07:22:59.181Z",
     "lighthouse": "13.5.0",
     "browser": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
     "node": "v24.9.0",
@@ -23,41 +23,41 @@
       "profile": "mobile",
       "runs": [
         {
-          "performance": 62,
+          "performance": 95,
           "accessibility": 100,
           "best-practices": 100,
           "seo": 100,
-          "lcp": 5472.835,
+          "lcp": 1892.1170000000002,
           "cls": 0,
-          "tbt": 294.86699999999973
+          "tbt": 232.0000000000001
         },
         {
-          "performance": 57,
+          "performance": 96,
           "accessibility": 100,
           "best-practices": 100,
           "seo": 100,
-          "lcp": 5458.931613052369,
+          "lcp": 1887.0987999999998,
           "cls": 0,
-          "tbt": 480
+          "tbt": 211.4999999999999
         },
         {
-          "performance": 69,
+          "performance": 96,
           "accessibility": 100,
           "best-practices": 100,
           "seo": 100,
-          "lcp": 5279.049624999998,
+          "lcp": 1886.8986999999997,
           "cls": 0,
-          "tbt": 102.20992499999966
+          "tbt": 207.4999999999999
         }
       ],
       "median": {
-        "performance": 62,
+        "performance": 96,
         "accessibility": 100,
         "best-practices": 100,
         "seo": 100,
-        "lcp": 5458.931613052369,
+        "lcp": 1887.0987999999998,
         "cls": 0,
-        "tbt": 294.86699999999973
+        "tbt": 211.4999999999999
       }
     },
     {
@@ -66,41 +66,41 @@
       "profile": "desktop",
       "runs": [
         {
-          "performance": 97,
+          "performance": 99,
           "accessibility": 100,
           "best-practices": 100,
           "seo": 100,
-          "lcp": 1104.939875,
+          "lcp": 451.4548,
           "cls": 0,
-          "tbt": 28.48150000000004
+          "tbt": 3
         },
         {
-          "performance": 96,
+          "performance": 100,
           "accessibility": 100,
           "best-practices": 100,
           "seo": 100,
-          "lcp": 1134.7608250000003,
+          "lcp": 450.0628,
           "cls": 0,
-          "tbt": 52.78413805236812
+          "tbt": 0
         },
         {
-          "performance": 97,
+          "performance": 100,
           "accessibility": 100,
           "best-practices": 100,
           "seo": 100,
-          "lcp": 1105.5872500000003,
+          "lcp": 449.112,
           "cls": 0,
-          "tbt": 43.54362500000002
+          "tbt": 0
         }
       ],
       "median": {
-        "performance": 97,
+        "performance": 100,
         "accessibility": 100,
         "best-practices": 100,
         "seo": 100,
-        "lcp": 1105.5872500000003,
+        "lcp": 450.0628,
         "cls": 0,
-        "tbt": 43.54362500000002
+        "tbt": 0
       }
     },
     {
@@ -109,41 +109,41 @@
       "profile": "mobile",
       "runs": [
         {
-          "performance": 66,
+          "performance": 76,
           "accessibility": 100,
           "best-practices": 100,
           "seo": 100,
-          "lcp": 4944.31885,
+          "lcp": 4159.004475000002,
           "cls": 0,
-          "tbt": 247.6712750000006
+          "tbt": 58.683974999999975
         },
         {
-          "performance": 65,
+          "performance": 78,
           "accessibility": 100,
           "best-practices": 100,
           "seo": 100,
-          "lcp": 4872.05815,
+          "lcp": 4072.94875,
           "cls": 0,
-          "tbt": 288.17917499999976
+          "tbt": 60.42374999999976
         },
         {
-          "performance": 65,
+          "performance": 80,
           "accessibility": 100,
           "best-practices": 100,
           "seo": 100,
-          "lcp": 4888.1038499999995,
+          "lcp": 4199.075775000001,
           "cls": 0,
-          "tbt": 277.93867500000033
+          "tbt": 187.70142499999997
         }
       ],
       "median": {
-        "performance": 65,
+        "performance": 78,
         "accessibility": 100,
         "best-practices": 100,
         "seo": 100,
-        "lcp": 4888.1038499999995,
+        "lcp": 4159.004475000002,
         "cls": 0,
-        "tbt": 277.93867500000033
+        "tbt": 60.42374999999976
       }
     },
     {
@@ -152,41 +152,41 @@
       "profile": "desktop",
       "runs": [
         {
-          "performance": 96,
+          "performance": 98,
           "accessibility": 100,
           "best-practices": 100,
           "seo": 100,
-          "lcp": 1106.9726999999998,
+          "lcp": 928.6634999999999,
           "cls": 0,
-          "tbt": 28.50455000000011
+          "tbt": 0
         },
         {
-          "performance": 97,
+          "performance": 94,
           "accessibility": 100,
           "best-practices": 100,
           "seo": 100,
-          "lcp": 1082.2621999999997,
+          "lcp": 962.1716250000002,
           "cls": 0,
-          "tbt": 26
+          "tbt": 0
         },
         {
-          "performance": 97,
+          "performance": 98,
           "accessibility": 100,
           "best-practices": 100,
           "seo": 100,
-          "lcp": 1071.3559,
+          "lcp": 940.9994999999999,
           "cls": 0,
-          "tbt": 10.607349999999997
+          "tbt": 0
         }
       ],
       "median": {
-        "performance": 97,
+        "performance": 98,
         "accessibility": 100,
         "best-practices": 100,
         "seo": 100,
-        "lcp": 1082.2621999999997,
+        "lcp": 940.9994999999999,
         "cls": 0,
-        "tbt": 26
+        "tbt": 0
       }
     }
   ]
