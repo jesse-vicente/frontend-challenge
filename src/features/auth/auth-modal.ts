@@ -24,11 +24,14 @@ export function trackCurrentPage(href: string): void {
   currentPage = href
 }
 
-const pathOf = (href: string) => new URL(href, window.location.origin).pathname
+// Only paths come out of these helpers: any base resolves app hrefs (also at build-time prerender).
+const parseHref = (href: string) => new URL(href, 'http://localhost')
+
+const pathOf = (href: string) => parseHref(href).pathname
 
 /** `page` with the sign-in modal open on top of it. */
 export function withAuthModal(page: string, mode: AuthMode, redirect?: string): string {
-  const url = new URL(page, window.location.origin)
+  const url = parseHref(page)
   url.searchParams.set('auth', mode)
   if (redirect) url.searchParams.set('redirect', redirect)
   else url.searchParams.delete('redirect')
@@ -37,7 +40,7 @@ export function withAuthModal(page: string, mode: AuthMode, redirect?: string): 
 
 /** `page` with the sign-in modal closed. */
 export function withoutAuthModal(page: string): string {
-  const url = new URL(page, window.location.origin)
+  const url = parseHref(page)
   url.searchParams.delete('auth')
   url.searchParams.delete('redirect')
   return url.pathname + url.search + url.hash

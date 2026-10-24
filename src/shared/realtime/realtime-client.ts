@@ -7,7 +7,8 @@ import { sessionStore } from '../session/session-store'
 import { applyNftUpdated, applyOrderUpdated } from './cache-sync'
 import { eventGuard, realtimeStore } from './realtime-store'
 
-const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || window.location.origin
+// Read on connect: the module is also evaluated outside the browser (build-time prerender).
+const socketUrl = () => import.meta.env.VITE_SOCKET_URL || window.location.origin
 
 /**
  * Owns the Socket.IO connection for the current session.
@@ -27,7 +28,7 @@ export function startRealtime(queryClient: QueryClient): () => void {
     const userId = sessionStore.getUser()?.id ?? null
     let disconnected = false
 
-    const next = io(SOCKET_URL, {
+    const next = io(socketUrl(), {
       transports: ['websocket'],
       // Each session gets its own Manager: no multiplexing across users.
       forceNew: true,
