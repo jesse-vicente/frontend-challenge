@@ -96,7 +96,7 @@ function DesktopSlide({ slide, first }: { slide: HeroSlide; first: boolean }) {
 
 function MobileSlide({ slide, first }: { slide: HeroSlide; first: boolean }) {
   return (
-    <div className="relative flex w-full items-center gap-2 overflow-hidden rounded-xl p-4 pb-8">
+    <div className="relative flex w-full flex-1 items-center gap-2 overflow-hidden rounded-xl p-4 pb-8">
       <img
         src={mobileHeroMask}
         alt=""
@@ -161,6 +161,7 @@ export function HomeHero() {
   const [interacting, setInteracting] = useState(false)
   const reducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)')
   const pointerStart = useRef<number | null>(null)
+  const swiped = useRef(false)
   const playing = !paused && !interacting && !reducedMotion
 
   const goTo = useCallback((next: number) => setIndex((next + SLIDES.length) % SLIDES.length), [])
@@ -175,12 +176,15 @@ export function HomeHero() {
 
   const onPointerDown = (event: PointerEvent) => {
     pointerStart.current = event.clientX
+    swiped.current = false
   }
   const onPointerUp = (event: PointerEvent) => {
     if (pointerStart.current === null) return
     const delta = event.clientX - pointerStart.current
     pointerStart.current = null
-    if (Math.abs(delta) >= SWIPE_THRESHOLD) goTo(index + (delta < 0 ? 1 : -1))
+    if (Math.abs(delta) < SWIPE_THRESHOLD) return
+    swiped.current = true
+    goTo(index + (delta < 0 ? 1 : -1))
   }
 
   return (
@@ -197,7 +201,25 @@ export function HomeHero() {
       }}
     >
       <h1 className="sr-only">Kurio, marketplace de NFTs</h1>
-      <div className="overflow-hidden" onPointerDown={onPointerDown} onPointerUp={onPointerUp}>
+      {/* pan-y: the browser keeps vertical scrolling and leaves horizontal drags to the swipe
+          (otherwise it claims the gesture and cancels the pointer before pointerup). */}
+      {/* biome-ignore lint/a11y: swiping is a pointer shortcut; the dots and the pause button are the accessible controls. */}
+      <div
+        className="touch-pan-y overflow-hidden select-none"
+        onPointerDown={onPointerDown}
+        onPointerUp={onPointerUp}
+        onPointerCancel={() => {
+          pointerStart.current = null
+        }}
+        onDragStart={(event) => event.preventDefault()}
+        onClickCapture={(event) => {
+          // A swipe that ends on the CTA must not follow the link.
+          if (!swiped.current) return
+          swiped.current = false
+          event.preventDefault()
+          event.stopPropagation()
+        }}
+      >
         <div
           aria-live={playing ? 'off' : 'polite'}
           className="flex transition-transform duration-700 ease-out motion-reduce:transition-none"
@@ -212,12 +234,13 @@ export function HomeHero() {
               aria-label={`${slideIndex + 1} de ${SLIDES.length}`}
               aria-hidden={slideIndex !== index}
               inert={slideIndex !== index}
-              className="w-full shrink-0"
+              // Stretched to the tallest slide: every card keeps the same size and the dots stay put.
+              className="flex w-full shrink-0 flex-col"
             >
               <div className="hidden md:block">
                 <DesktopSlide slide={slide} first={slideIndex === 0} />
               </div>
-              <div className="md:hidden">
+              <div className="flex flex-1 md:hidden">
                 <MobileSlide slide={slide} first={slideIndex === 0} />
               </div>
             </div>
