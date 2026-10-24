@@ -18,17 +18,18 @@ export function SearchDialog({ open, onOpenChange }: { open: boolean; onOpenChan
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-lg border-border bg-surface">
+      {/* Keeps the base side margins on phones (a plain max-w-lg would replace them). */}
+      <DialogContent className="border-border bg-surface max-sm:px-5">
         <DialogHeader>
           <DialogTitle>Buscar NFTs</DialogTitle>
           <DialogDescription className="text-sand">Pesquise por nome, criador, coleção ou atributo.</DialogDescription>
         </DialogHeader>
         <search>
-          <form onSubmit={submit} className="flex gap-2">
+          <form onSubmit={submit} className="flex flex-col gap-3 sm:flex-row sm:gap-2">
             <label htmlFor={inputId} className="sr-only">
               Termo de busca
             </label>
-            <div className="flex h-[45px] flex-1 items-center gap-2 rounded-[10px] bg-ink px-3">
+            <div className="flex h-[45px] items-center gap-2 rounded-[10px] bg-ink px-3 sm:flex-1">
               <img src={searchIcon} alt="" width={22} height={22} className="size-[22px]" />
               <input
                 id={inputId}
@@ -37,7 +38,7 @@ export function SearchDialog({ open, onOpenChange }: { open: boolean; onOpenChan
                 onChange={(event) => setQuery(event.target.value)}
                 placeholder="Explorar coleções"
                 maxLength={80}
-                className="w-full bg-transparent text-sm font-bold text-foreground outline-none placeholder:text-tan"
+                className="w-full min-w-0 bg-transparent text-sm font-bold text-foreground outline-none placeholder:text-tan"
               />
             </div>
             <Button type="submit" className="h-[45px]">
