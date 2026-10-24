@@ -1,11 +1,11 @@
 import { Link } from '@tanstack/react-router'
-import { Trash2 } from 'lucide-react'
 import { lineSubtotal } from '@/domain/cart'
 import { maxLineQuantity } from '@/domain/nft'
 import { type CartItemDto } from '@/shared/api/dtos/cart'
 import { type QuoteLineDto } from '@/shared/api/dtos/quote'
 import { NftImage } from '@/shared/components/nft-image'
 import { QuantityStepper } from '@/shared/components/quantity-stepper'
+import { TrashIcon } from '@/shared/components/trash-icon'
 import { cn } from '@/shared/lib/cn'
 import { formatEth } from '@/shared/lib/format'
 import { Button } from '@/shared/ui/button'
@@ -56,23 +56,23 @@ export function CartLine({ item, quoteLine, changed, onQuantityChange, onRemove,
       onClick={onRemove}
       disabled={removing}
       aria-label={`Remover ${item.name} do carrinho`}
-      className="grid size-8 place-items-center rounded-md text-sand hover:text-amber disabled:opacity-50"
+      className="grid size-8 place-items-center rounded-md text-tan transition-colors hover:text-amber disabled:opacity-50"
     >
-      <Trash2 aria-hidden="true" className="size-5" />
+      <TrashIcon />
     </button>
   )
 
   return (
     <li
       className={cn(
-        'relative overflow-hidden rounded-2xl bg-surface md:grid md:min-h-[54px] md:grid-cols-[236px_106px_104px_1fr_auto] md:items-center md:gap-0 md:rounded-none md:pr-6',
+        'relative overflow-hidden rounded-2xl bg-surface md:grid md:min-h-[70px] md:grid-cols-[311px_138px_137px_1fr_auto] md:items-center md:gap-0 md:rounded-none md:pr-6',
         changed && 'ring-2 ring-warning',
         removing && 'opacity-60',
       )}
     >
       {/* Desktop row */}
-      <div className="hidden items-center gap-3 md:flex">
-        <NftImage image={item.image} decorative sizes="52px" className="size-[52px] rounded-sm" />
+      <div className="hidden min-w-0 items-center gap-3 md:flex md:pr-4">
+        <NftImage image={item.image} decorative sizes="70px" className="size-[70px] shrink-0 rounded-sm" />
         <div className="min-w-0">
           <p className="truncate text-base leading-5 font-bold text-foreground">
             <Link

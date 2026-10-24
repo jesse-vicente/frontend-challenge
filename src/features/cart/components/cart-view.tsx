@@ -35,7 +35,7 @@ export function CartView() {
     body = (
       <ul aria-busy="true" title="Carregando carrinho" className="flex flex-col gap-2.5">
         {SKELETON_ROWS.map((key) => (
-          <li key={key} className="skeleton h-[100px] rounded-2xl md:h-[54px] md:rounded-none" />
+          <li key={key} className="skeleton h-[100px] rounded-2xl md:h-[70px] md:rounded-none" />
         ))}
       </ul>
     )
@@ -112,7 +112,7 @@ export function CartView() {
             <div
               aria-hidden="true"
               className={cn(
-                'hidden grid-cols-[236px_106px_104px_1fr_auto] border-b border-border pb-3 text-base leading-6 font-bold text-foreground',
+                'hidden grid-cols-[311px_138px_137px_1fr_auto] border-b border-border pb-3 text-base leading-6 font-bold text-foreground',
                 hasItems && 'md:grid',
               )}
             >
