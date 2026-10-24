@@ -82,7 +82,7 @@ export function CartView() {
 
   return (
     <main className="page-container flex flex-col gap-24 pt-6 pb-8 md:pt-8">
-      <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-3 md:gap-10">
         <MobilePageHeader title="Carrinho de NFTs" />
         <nav aria-label="Trilha de navegação" className="hidden md:block">
           <ol className="flex gap-1 text-sm leading-4 font-bold text-foreground">
@@ -104,12 +104,15 @@ export function CartView() {
         <h1 className="sr-only max-md:hidden">Carrinho de NFTs</h1>
 
         <div className="flex flex-col gap-8 lg:flex-row lg:justify-between">
-          <section aria-label="Itens" className="flex min-w-0 flex-col gap-3 lg:w-[782px]">
-            <CartNotices />
+          <section
+            aria-label="Itens"
+            className={cn('flex min-w-0 flex-col gap-3', hasItems ? 'lg:w-[782px]' : 'w-full')}
+          >
+            {/* Same height and rule as the "Resumo da carteira" heading next to it. */}
             <div
               aria-hidden="true"
               className={cn(
-                'hidden grid-cols-[236px_106px_104px_1fr_auto] border-b border-border pb-2 text-base font-bold text-foreground',
+                'hidden grid-cols-[236px_106px_104px_1fr_auto] border-b border-border pb-3 text-base leading-6 font-bold text-foreground',
                 hasItems && 'md:grid',
               )}
             >
@@ -119,6 +122,7 @@ export function CartView() {
               <span>Total</span>
               <span className="w-8" />
             </div>
+            <CartNotices />
             {body}
           </section>
 
@@ -129,7 +133,7 @@ export function CartView() {
             >
               <h2
                 id="summary-title"
-                className="border-b border-border pb-3 text-lg font-bold text-foreground max-md:sr-only"
+                className="border-b border-border pb-3 text-lg leading-6 font-bold text-foreground max-md:sr-only"
               >
                 Resumo da carteira
               </h2>
