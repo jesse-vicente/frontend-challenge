@@ -78,9 +78,9 @@ Detalhes em [`docs/realtime-events.md`](docs/realtime-events.md). Em resumo: cad
 
 ## Performance
 
-Mediana de 3 execuções (`lighthouse/reports/summary.md`): **início 96 no mobile e 100 no desktop; detalhe 78 no mobile e 98 no desktop.** Accessibility, Best Practices e SEO ficam em 100 em todos os perfis, e o CLS é 0. O detalhe mobile fica abaixo da meta de 90 (causas abaixo).
+Mediana de 3 execuções (`lighthouse/reports/summary.md`): **início 93 no mobile e 100 no desktop; detalhe 84 no mobile e 99 no desktop.** Accessibility, Best Practices e SEO ficam em 100 em todos os perfis, e o CLS é 0. O detalhe mobile fica abaixo da meta de 90 (causas abaixo). A auditoria foi feita com a máquina ociosa (`environment.benchmarkIndex` entre 1680 e 1820 nos relatórios; ver [Variação da medição](#variação-da-medição)).
 
-### Como a página inicial passou de 62 para 96
+### Como a página inicial passou de 62 para mais de 90
 
 Cada mudança foi medida em A/B intercalado (o build de antes e o de depois alternados na mesma sessão do Chrome, com a máquina ociosa, mediana de 3), porque a nota mobile varia vários pontos entre auditorias do mesmo build.
 
@@ -93,13 +93,13 @@ Cada mudança foi medida em A/B intercalado (o build de antes e o de depois alte
 | Scripts da página inicial carregados depois da primeira pintura                                                                            | O Lighthouse simula o FCP/LCP com todas as requisições iniciadas antes deles; o `modulepreload` no `<head>` colocava todo o JS nessa conta                                                                | Faz parte do resultado acima                                                                |
 | Artes dos slides 2 e 3 só depois da hidratação; `sizes` das variantes ocultas (arte desktop no mobile e vice-versa)                        | ~160 kB de imagens que não aparecem no primeiro frame baixavam antes do LCP (a arte de 800 px do desktop vinha até no mobile)                                                                             | Faz parte do resultado acima                                                                |
 
-No detalhe também entraram: a primeira carga espera os dados da rota por até 1 s e pinta uma vez (antes pintava o skeleton e depois redesenhava tudo, o que gastava CPU no caminho do LCP: 68–80 contra 80–82 em 5 execuções intercaladas); o loader pré-carrega a arte do NFT assim que os dados chegam; e os formatadores `Intl` são criados no primeiro uso. Resultado: 72 → 78–83.
+No detalhe também entraram: a primeira carga espera os dados da rota por até 1 s e pinta uma vez (antes pintava o skeleton e depois redesenhava tudo, o que gastava CPU no caminho do LCP: 68–80 contra 80–82 em 5 execuções intercaladas); o loader pré-carrega a arte do NFT assim que os dados chegam; e os formatadores `Intl` são criados no primeiro uso. Resultado: 72 → 78–83. Depois, o `index.html` passou a mostrar o header e a tab bar antes do JavaScript nas demais páginas (`prerender-shell`): no A/B o FCP do detalhe caiu de 2,4 para 0,9 s, com a nota igual (o LCP continua sendo a imagem).
 
 Testado e descartado: um chunk `vendor` único para as bibliotecas (início +4, detalhe −1: a avaliação vira uma tarefa longa maior); carregar os mocks depois do app (piorou); `content-visibility: auto` abaixo da dobra (sem efeito).
 
-### Por que o detalhe fica em 78
+### Por que o detalhe fica abaixo de 90
 
-O LCP do detalhe é a imagem do NFT, e ela só existe depois desta cadeia: o JavaScript do app e do backend simulado (~370 kB gzip) → o MSW sobe o service worker → `GET /nfts/:id` com a latência simulada de 150–350 ms → render → download da imagem. No Slow 4G simulado (~1,6 Mbps, CPU 4× mais lenta), só baixar o JavaScript leva cerca de 2 s, e o LCP fica em ~4,1 s. A regra da auditoria impede tirar os mocks ou a latência só para medir. Num produto real o detalhe seria renderizado no servidor com os dados (e sem o MSW no navegador). Pré-renderizar as 72 páginas de NFT no build traria preços e estoque congelados, que divergem do tempo real.
+O LCP do detalhe é a imagem do NFT, e ela só existe depois desta cadeia: o JavaScript do app e do backend simulado (~370 kB gzip) → o MSW sobe o service worker → `GET /nfts/:id` com a latência simulada de 150–350 ms → render → download da imagem. No Slow 4G simulado (~1,6 Mbps, CPU 4× mais lenta), só baixar o JavaScript leva cerca de 2 s, e o LCP fica em ~4,2 s. A regra da auditoria impede tirar os mocks ou a latência só para medir. Num produto real o detalhe seria renderizado no servidor com os dados (e sem o MSW no navegador). Pré-renderizar as 72 páginas de NFT no build traria preços e estoque congelados, que divergem do tempo real.
 
 ### Variação da medição
 
