@@ -1,9 +1,8 @@
 import { Link, useNavigate, useRouter } from '@tanstack/react-router'
 import { ChevronLeft, Mail, ShoppingCart, Star } from 'lucide-react'
-import linkedinIcon from '@/assets/icons/social-linkedin.svg'
-import twitterIcon from '@/assets/icons/social-twitter.svg'
 import { NftCarousel } from '@/features/catalog/components/nft-carousel'
 import { type NftDetailDto } from '@/shared/api/dtos/nft'
+import { LinkedinIcon, TwitterIcon } from '@/shared/components/brand-icons'
 import { NftImage } from '@/shared/components/nft-image'
 import { QuantityStepper } from '@/shared/components/quantity-stepper'
 import { StarRating } from '@/shared/components/star-rating'
@@ -22,17 +21,17 @@ function ShareLinks({ nft }: { nft: NftDetailDto }) {
     {
       label: 'LinkedIn',
       href: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`,
-      icon: linkedinIcon,
+      icon: <LinkedinIcon className="size-4" />,
     },
     {
       label: 'e-mail',
       href: `mailto:?subject=${encodeURIComponent(text)}&body=${encodeURIComponent(url)}`,
-      icon: null,
+      icon: <Mail aria-hidden="true" className="size-[18px]" />,
     },
     {
       label: 'X (Twitter)',
       href: `https://x.com/intent/post?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`,
-      icon: twitterIcon,
+      icon: <TwitterIcon className="h-[15px] w-[18px]" />,
     },
   ]
   return (
@@ -46,13 +45,10 @@ function ShareLinks({ nft }: { nft: NftDetailDto }) {
               target={href.startsWith('mailto:') ? undefined : '_blank'}
               rel="noopener noreferrer"
               aria-label={`Compartilhar por ${label}${href.startsWith('mailto:') ? '' : ' (abre em nova aba)'}`}
-              className="grid size-6 place-items-center rounded-sm text-foreground hover:text-amber"
+              // Plain glyphs in the text color, like the label next to them.
+              className="grid size-6 place-items-center rounded-sm text-foreground transition-[color,transform] duration-200 hover:-translate-y-0.5 hover:text-amber"
             >
-              {icon ? (
-                <img src={icon} alt="" width={22} height={22} className="size-[22px]" />
-              ) : (
-                <Mail aria-hidden="true" className="size-[18px]" />
-              )}
+              {icon}
             </a>
           </li>
         ))}
