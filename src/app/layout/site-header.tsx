@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { Link, useLinkProps, useRouterState } from '@tanstack/react-router'
+import { ChevronDown, UserRound } from 'lucide-react'
 import { type ReactNode, useLayoutEffect, useRef, useState } from 'react'
 import cartIcon from '@/assets/icons/cart.svg'
 import cartBadge from '@/assets/icons/cart-badge.svg'
@@ -131,10 +132,23 @@ function AccountButton() {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button size="sm" className="max-w-[180px] font-medium" aria-label={`Conta de ${user.displayName}`}>
-          <span className="truncate">{user.displayName.split(' ')[0]}</span>
-        </Button>
+      {/* Avatar (or a user glyph) with the first name: reads as the account, not as an action. */}
+      <DropdownMenuTrigger
+        aria-label={`Conta de ${user.displayName}`}
+        className="group flex h-10 max-w-[180px] items-center gap-2 rounded-full py-1 pr-2 pl-1 text-sm font-medium text-foreground transition-colors hover:bg-surface data-[state=open]:bg-surface"
+      >
+        <span className="grid size-8 shrink-0 place-items-center overflow-hidden rounded-full border border-primary bg-surface-dark text-amber">
+          {user.avatarUrl ? (
+            <img src={user.avatarUrl} alt="" width={32} height={32} className="size-full object-cover" />
+          ) : (
+            <UserRound aria-hidden="true" className="size-[18px]" />
+          )}
+        </span>
+        <span className="truncate">{user.displayName.split(' ')[0]}</span>
+        <ChevronDown
+          aria-hidden="true"
+          className="size-4 shrink-0 text-tan transition-transform duration-200 group-data-[state=open]:rotate-180"
+        />
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="min-w-48 border-border bg-surface text-foreground">
         <DropdownMenuLabel className="truncate text-sand">{user.email}</DropdownMenuLabel>
