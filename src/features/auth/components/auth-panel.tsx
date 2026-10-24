@@ -232,6 +232,7 @@ function SocialSignIn() {
 export function AuthPanel({ mode, redirect, layout }: AuthPanelProps) {
   const { endReason } = useSession()
   const search = redirect ? { redirect } : {}
+  // Switching forms replaces the history entry, so closing goes back past both.
 
   return (
     <div className="flex flex-col gap-6">
@@ -240,6 +241,7 @@ export function AuthPanel({ mode, redirect, layout }: AuthPanelProps) {
           <Link
             to="/login"
             search={search}
+            replace
             aria-current={mode === 'login' ? 'page' : undefined}
             className={cn('px-1', mode === 'login' ? 'text-amber' : 'text-foreground hover:text-amber')}
           >
@@ -249,6 +251,7 @@ export function AuthPanel({ mode, redirect, layout }: AuthPanelProps) {
           <Link
             to="/register"
             search={search}
+            replace
             aria-current={mode === 'register' ? 'page' : undefined}
             className={cn('px-1', mode === 'register' ? 'text-amber' : 'text-foreground hover:text-amber')}
           >
@@ -279,6 +282,7 @@ export function AuthPanel({ mode, redirect, layout }: AuthPanelProps) {
           <Link
             to={mode === 'login' ? '/register' : '/login'}
             search={search}
+            replace
             className="text-sand underline-offset-4 hover:text-amber hover:underline"
           >
             {mode === 'login' ? 'Crie uma conta' : 'Entre'}

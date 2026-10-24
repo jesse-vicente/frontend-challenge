@@ -1,4 +1,5 @@
-import { useNavigate } from '@tanstack/react-router'
+import { useCanGoBack, useNavigate, useRouter } from '@tanstack/react-router'
+import { ChevronLeft } from 'lucide-react'
 import { HomePageContent } from '@/features/catalog/components/home-page-content'
 import { useIsDesktop } from '@/shared/lib/use-media-query'
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/shared/ui/dialog'
@@ -14,11 +15,23 @@ const noop = () => undefined
 export function AuthScreen({ mode, redirect }: { mode: AuthMode; redirect: string | undefined }) {
   const isDesktop = useIsDesktop()
   const navigate = useNavigate()
-  const close = () => void navigate({ to: redirect && !redirect.startsWith('/checkout') ? redirect : '/' })
+  const router = useRouter()
+  const canGoBack = useCanGoBack()
+  // Back to the page the visitor came from: the redirect target may be a private page,
+  // which would send them straight back here.
+  const close = () => (canGoBack ? router.history.back() : void navigate({ to: '/' }))
 
   if (!isDesktop) {
     return (
-      <main className="mx-auto flex min-h-dvh w-full max-w-[414px] flex-col gap-12 px-7 pt-28 pb-12">
+      <main className="relative mx-auto flex min-h-dvh w-full max-w-[414px] flex-col gap-12 px-7 pt-28 pb-12">
+        <button
+          type="button"
+          onClick={close}
+          aria-label="Voltar"
+          className="absolute top-6 left-4 grid size-[35px] place-items-center rounded-full bg-surface-dark text-foreground"
+        >
+          <ChevronLeft aria-hidden="true" className="size-5" />
+        </button>
         <p className="text-center text-[34px] font-bold tracking-[2px] text-foreground">KURIO</p>
         <section aria-labelledby="auth-title" className="flex flex-col gap-8">
           <h1 id="auth-title" className="text-center text-xl font-bold text-foreground">
