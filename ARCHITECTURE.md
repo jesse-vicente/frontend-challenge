@@ -141,6 +141,7 @@ O LCP do detalhe é a imagem do NFT, e ela só existe depois desta cadeia: o Jav
 - O carrossel do hero e a seção de destaques tinham o mesmo nome acessível ("Destaques da Kurio"); a segunda passou a "Lançamentos e curadoria".
 - Carga direta de uma página (exceto a inicial, que vem pré-renderizada): a primeira tela espera os dados da rota por até 1 s e aparece já completa, sem skeleton piscando. Se demorar mais, o skeleton aparece. Na navegação dentro do app, o skeleton continua aparecendo após 150 ms.
 - Página inicial: o HTML pré-renderizado aparece antes do JavaScript. Até a hidratação (algumas centenas de milissegundos numa rede lenta), links e âncoras funcionam como links comuns; filtros, busca e carrossel respondem depois.
+- Larguras intermediárias (não há frame de tablet): o rodapé só fica em uma linha, como no frame de 1440 px, a partir de 1280 px; abaixo disso, destaques e links usam a grade de três colunas, com a newsletter e as redes embaixo, e as alturas se ajustam ao conteúdo. O formulário do perfil usa duas colunas a partir de 1024 px (ao lado da sidebar, em 768 px, cada coluna teria 177 px). No recibo, o nome do NFT é truncado e o botão do explorador quebra a linha nas telas estreitas. O `responsive.spec.ts` verifica todas as telas de 320 a 1440 px, incluindo as larguras de uma janela de 1280 px com zoom de 200% e 400%.
 - Paddings simétricos no botão "Enviar" da newsletter e no selo de carteiras compatíveis (no Figma o lado direito é menor); o copyright tem o mesmo espaçamento acima e abaixo.
 
 ## Limitações
@@ -148,5 +149,5 @@ O LCP do detalhe é a imagem do NFT, e ela só existe depois desta cadeia: o Jav
 - Backend, pagamento, conexão de carteira e hash de transação são simulados; nenhuma transação real acontece.
 - Os dados do mock vivem no `localStorage` de cada navegador; não há compartilhamento entre dispositivos.
 - Sessão por token em `localStorage` (ver Sessão).
-- Baselines visuais geradas em Windows; outros sistemas precisam regerá-las.
+- Baselines visuais para Windows e Linux; em macOS precisam ser geradas localmente.
 - Só a página inicial é pré-renderizada, e só no estado deslogado e sem parâmetros na URL (é o que o HTML estático consegue representar). Com sessão salva, filtros na URL ou em outras rotas, o app renderiza no navegador como uma SPA.

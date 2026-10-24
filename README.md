@@ -100,7 +100,7 @@ Selecione pela URL de qualquer rota, por exemplo `/?scenario=payment-declined`. 
 
 ## Testes E2E
 
-62 testes em Chromium, somando os dois projetos ([`tests/e2e/`](tests/e2e/)): projeto `desktop` (1440 px) roda tudo; `mobile` (390 px) roda os fluxos marcados com `@mobile`. Cada teste usa um contexto novo e reseta o backend simulado (`?mock-reset`). Cobertura dos 12 grupos do enunciado:
+65 testes em Chromium, somando os dois projetos ([`tests/e2e/`](tests/e2e/)): projeto `desktop` (1440 px) roda tudo; `mobile` (390 px) roda os fluxos marcados com `@mobile`. Cada teste usa um contexto novo e reseta o backend simulado (`?mock-reset`). Cobertura dos 12 grupos do enunciado e da responsividade:
 
 | Grupo                                                                                                                         | Spec                      |
 | ----------------------------------------------------------------------------------------------------------------------------- | ------------------------- |
@@ -111,8 +111,17 @@ Selecione pela URL de qualquer rota, por exemplo `/?scenario=payment-declined`. 
 | Perfil, avatar, senha, carteiras, validações                                                                                  | `account.spec.ts`         |
 | Teclado, foco de diálogos, validação; skeletons, falhas e nova tentativa                                                      | `a11y-resilience.spec.ts` |
 | Regressão visual de início, detalhe, carrinho e pagamento                                                                     | `visual.spec.ts`          |
+| Todas as telas em 320, 390, 640, 768, 1024 e 1440 px sem rolagem horizontal (320 e 640 = janela de 1280 px com zoom de 400% e 200%) | `responsive.spec.ts` |
 
-Falhas guardam trace, vídeo e screenshot (`test-results/`); o relatório HTML fica em `playwright-report/`. As baselines visuais (`tests/e2e/__screenshots__/`) foram geradas em Windows; em outro SO, rode `pnpm test:e2e:update` antes da primeira comparação (fontes são renderizadas de forma diferente).
+Falhas guardam trace, vídeo e screenshot (`test-results/`); o relatório HTML fica em `playwright-report/`. As fontes são renderizadas de forma diferente em cada sistema, então há um conjunto de baselines visuais por plataforma em `tests/e2e/__screenshots__/`: Windows (`-win32`) e Linux (`-linux`, geradas no container oficial do Playwright). Para rodar em Linux sem instalar o navegador:
+
+```bash
+docker run --rm --ipc=host -v "$PWD":/src:ro -w /work mcr.microsoft.com/playwright:v1.64.1-noble bash -c '
+  find /src -mindepth 1 -maxdepth 1 ! -name node_modules ! -name dist ! -name test-results ! -name playwright-report -exec cp -r {} . \;
+  corepack enable && CI=1 pnpm install --frozen-lockfile && pnpm test:e2e'
+```
+
+Em macOS, gere as baselines locais com `pnpm test:e2e:update` antes da primeira comparação.
 
 ## Lighthouse
 
