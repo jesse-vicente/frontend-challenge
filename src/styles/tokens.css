@@ -48,6 +48,9 @@
   --destructive: #ff8a7a;
   --success: #8fd19e;
   --warning: #f2c46d;
+  /* Not in Figma: rarity tags above "Raro" (which uses --primary); dark text on top. */
+  --rarity-epic: #b79ce6;
+  --rarity-legendary: #f1c75b;
   --border: var(--kurio-border);
   --input: var(--kurio-border-soft);
   --ring: var(--kurio-text-accent);

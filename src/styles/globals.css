@@ -39,6 +39,8 @@
   --color-destructive: var(--destructive);
   --color-success: var(--success);
   --color-warning: var(--warning);
+  --color-rarity-epic: var(--rarity-epic);
+  --color-rarity-legendary: var(--rarity-legendary);
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);

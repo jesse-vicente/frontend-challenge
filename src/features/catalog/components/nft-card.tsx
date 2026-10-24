@@ -1,10 +1,17 @@
 import { Link } from '@tanstack/react-router'
 import favoriteBadge from '@/assets/icons/favorite-badge.svg'
-import { type NftSummaryDto } from '@/shared/api/dtos/nft'
+import { type NftSummaryDto, type Rarity } from '@/shared/api/dtos/nft'
 import { NftImage } from '@/shared/components/nft-image'
 import { cn } from '@/shared/lib/cn'
 import { formatEth } from '@/shared/lib/format'
 import { RARITY_LABELS } from '../labels'
+
+/** "Raro" keeps the Figma tag; higher rarities get their own tones (dark text, AA on each). */
+const RARITY_TAG_CLASS: Record<Exclude<Rarity, 'common'>, string> = {
+  rare: 'bg-primary',
+  epic: 'bg-rarity-epic',
+  legendary: 'bg-rarity-legendary',
+}
 
 interface NftCardProps {
   nft: NftSummaryDto
@@ -36,7 +43,12 @@ export function NftCard({ nft, favorite = false, priority = false, className }: 
           )}
         />
         {nft.rarity !== 'common' ? (
-          <span className="absolute top-4 left-0 flex h-8 w-[68px] items-center bg-primary pl-2 text-[13px] leading-4 font-medium text-ink md:top-6">
+          <span
+            className={cn(
+              'absolute top-4 left-0 flex h-8 min-w-[68px] items-center px-2 text-[13px] leading-4 font-medium text-ink md:top-6',
+              RARITY_TAG_CLASS[nft.rarity],
+            )}
+          >
             {RARITY_LABELS[nft.rarity].toUpperCase()}
           </span>
         ) : null}
