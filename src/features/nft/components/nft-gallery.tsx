@@ -49,7 +49,12 @@ export function NftGallery({ name, gallery }: { name: string; gallery: readonly 
         </button>
       </div>
       <Dialog open={zoomed} onOpenChange={setZoomed}>
-        <DialogContent className="max-w-[min(92vw,900px)] border-border bg-surface p-4">
+        {/* As large as the viewport allows (square art), with a close button that stays readable
+            over light artwork. */}
+        <DialogContent
+          className="w-[min(92vw,calc(100dvh-3rem),900px)] max-w-none border-border bg-surface p-3 sm:max-w-none"
+          closeClassName="top-6 right-6 grid size-10 place-items-center rounded-full bg-ink/85 text-cream opacity-100 shadow-[0_4px_14px_rgba(10,6,4,0.5)] ring-1 ring-cream/25 transition-colors hover:bg-ink hover:text-amber data-[state=open]:bg-ink/85 data-[state=open]:text-cream [&_svg:not([class*='size-'])]:size-5"
+        >
           <DialogTitle className="sr-only">{name}</DialogTitle>
           <DialogDescription className="sr-only">{current.alt}</DialogDescription>
           <img src={current.url} alt={current.alt} width={800} height={800} className="w-full rounded-xl" />
