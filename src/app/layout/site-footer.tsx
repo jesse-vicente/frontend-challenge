@@ -79,9 +79,9 @@ function Newsletter() {
     notifyComingSoon('A newsletter')
   }
   return (
-    <form onSubmit={submit} className="flex flex-col gap-3 md:px-4 lg:w-[357px]">
+    <form onSubmit={submit} className="flex flex-col gap-3 md:px-4 xl:w-[357px]">
       <div className="flex flex-col gap-4">
-        <h2 className="text-lg leading-6 font-bold text-foreground lg:leading-4">Antecipe-se ao próximo lançamento</h2>
+        <h2 className="text-lg leading-6 font-bold text-foreground xl:leading-4">Antecipe-se ao próximo lançamento</h2>
         <div className="flex h-10 items-center justify-between rounded-md bg-surface-dark pl-3 drop-shadow-[0_0_10px_rgba(10,6,4,0.45)]">
           <label htmlFor={inputId} className="sr-only">
             E-mail para receber novidades
@@ -118,17 +118,17 @@ export function SiteFooter() {
     <footer className={cn('page-container mt-16 pb-28 md:mt-24 md:pb-6', hideOnMobile && 'max-md:hidden')}>
       <div
         ref={reveal}
-        className="reveal flex flex-col gap-8 bg-surface p-6 md:p-8 lg:h-[250px] lg:flex-row lg:items-end lg:justify-between lg:gap-0"
+        className="reveal flex flex-col gap-8 bg-surface p-6 md:p-8 xl:h-[250px] xl:flex-row xl:items-end xl:justify-between xl:gap-0"
       >
-        <div className="grid gap-8 sm:grid-cols-3 lg:contents">
+        <div className="grid gap-8 sm:grid-cols-3 xl:contents">
           {FEATURES.map((feature, index) => (
-            <div key={feature.initial} className="flex lg:contents">
-              {index > 0 ? <div aria-hidden="true" className="hidden w-px self-stretch bg-primary lg:block" /> : null}
+            <div key={feature.initial} className="flex xl:contents">
+              {index > 0 ? <div aria-hidden="true" className="hidden w-px self-stretch bg-primary xl:block" /> : null}
               {/* Phones: badge beside the text, so the three features stay compact. */}
               <div
                 ref={reveal}
                 style={revealDelay(index + 1, 4, 110)}
-                className="reveal grid grid-cols-[56px_1fr] gap-x-4 gap-y-2 sm:flex sm:flex-col sm:gap-3 md:px-4 lg:w-[264px] lg:first:flex-1"
+                className="reveal grid grid-cols-[56px_1fr] gap-x-4 gap-y-2 sm:flex sm:flex-col sm:gap-3 md:px-4 xl:w-[264px] xl:first:flex-1"
               >
                 <div className="row-span-2 grid size-14 place-items-center rounded-full bg-primary sm:size-[74px]">
                   <span aria-hidden="true" className="text-xl font-bold text-ink sm:text-2xl">
@@ -138,18 +138,18 @@ export function SiteFooter() {
                 <h2 className="self-end text-[17px] leading-5 font-bold text-foreground sm:leading-4">
                   {feature.title}
                 </h2>
-                <p className="text-sm leading-[22px] text-sand lg:w-[204px]">{feature.text}</p>
+                <p className="text-sm leading-[22px] text-sand xl:w-[204px]">{feature.text}</p>
               </div>
             </div>
           ))}
         </div>
-        <div aria-hidden="true" className="hidden w-px self-stretch bg-primary lg:block" />
+        <div aria-hidden="true" className="hidden w-px self-stretch bg-primary xl:block" />
         <Newsletter />
       </div>
 
       <div
         ref={reveal}
-        className="reveal flex flex-col gap-4 bg-surface-dark p-6 text-sm leading-[22px] text-foreground md:flex-row md:items-center md:gap-8 md:p-8 lg:h-[88px] lg:gap-[92px]"
+        className="reveal flex flex-col gap-4 bg-surface-dark p-6 text-sm leading-[22px] text-foreground md:flex-row md:items-center md:gap-8 md:p-8 lg:gap-[92px] xl:h-[88px]"
       >
         <p className="flex-1 font-bold tracking-[1.4px]">KURIO</p>
         <p className="flex-1 lg:whitespace-nowrap">
@@ -167,9 +167,9 @@ export function SiteFooter() {
 
       <div
         ref={reveal}
-        className="reveal flex flex-col gap-10 bg-surface p-6 md:p-8 lg:h-[236px] lg:flex-row lg:gap-[124px]"
+        className="reveal flex flex-col gap-10 bg-surface p-6 md:p-8 xl:h-[236px] xl:flex-row xl:gap-[124px]"
       >
-        <div className="grid flex-1 grid-cols-2 gap-x-6 gap-y-8 md:grid-cols-3 md:gap-8 lg:contents">
+        <div className="grid flex-1 grid-cols-2 gap-x-6 gap-y-8 md:grid-cols-3 md:gap-8 xl:contents">
           <FooterColumn title="Meu perfil">
             <Link to="/profile" className={linkClass}>
               Meu perfil
@@ -202,7 +202,7 @@ export function SiteFooter() {
             ))}
           </FooterColumn>
         </div>
-        <div className="flex flex-col gap-8 lg:w-[228px]">
+        <div className="flex flex-col gap-8 xl:w-[228px]">
           <div className="flex flex-col gap-5">
             <h2 className="text-lg leading-4 font-bold text-foreground">Redes sociais</h2>
             <ul className="flex items-center gap-2.5">
@@ -229,7 +229,7 @@ export function SiteFooter() {
           </div>
           <div className="flex flex-col gap-3">
             <h2 className="text-lg leading-4 font-bold text-foreground">Carteiras compatíveis</h2>
-            <p className="flex h-[26px] items-center justify-center rounded-md border border-border-soft bg-surface-dark px-2 text-[9px] font-bold tracking-[0.1px] whitespace-pre text-amber">
+            <p className="flex h-[26px] items-center justify-center rounded-md border border-border-soft bg-surface-dark px-2 text-[9px] font-bold tracking-[0.1px] whitespace-pre text-amber md:max-w-[228px]">
               {'METAMASK  •  WALLETCONNECT  •  COINBASE'}
             </p>
           </div>
