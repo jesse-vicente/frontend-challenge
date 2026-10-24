@@ -62,10 +62,17 @@ const SLIDES: readonly HeroSlide[] = [
 /** Order of an element in the entrance cascade of the active slide (globals.css). */
 const cascade = (step: number) => ({ '--i': step }) as CSSProperties
 
+interface SlideProps {
+  slide: HeroSlide
+  first: boolean
+  /** The art of the other slides loads after the first render, off the first paint's path. */
+  showArt: boolean
+}
+
 const AUTOPLAY_MS = 7000
 const SWIPE_THRESHOLD = 40
 
-function DesktopSlide({ slide, first }: { slide: HeroSlide; first: boolean }) {
+function DesktopSlide({ slide, first, showArt }: SlideProps) {
   return (
     <div className="flex w-full items-center justify-between gap-8 pl-10 lg:h-[450px]">
       <div className="flex max-w-[600px] flex-1 flex-col items-start gap-8">
@@ -93,17 +100,22 @@ function DesktopSlide({ slide, first }: { slide: HeroSlide; first: boolean }) {
           </Link>
         </Button>
       </div>
-      <NftImage
-        image={slide.art}
-        sizes="(min-width: 1024px) 450px, 300px"
-        priority={first}
-        className="hero-art aspect-square w-[300px] shrink-0 rounded-[24px] lg:w-[450px]"
-      />
+      {showArt ? (
+        <NftImage
+          image={slide.art}
+          // Hidden below md: the smallest rendition, shared with the mobile slide.
+          sizes="(min-width: 1024px) 450px, (min-width: 768px) 300px, 1px"
+          priority={first}
+          className="hero-art aspect-square w-[300px] shrink-0 rounded-[24px] lg:w-[450px]"
+        />
+      ) : (
+        <div className="aspect-square w-[300px] shrink-0 lg:w-[450px]" />
+      )}
     </div>
   )
 }
 
-function MobileSlide({ slide, first }: { slide: HeroSlide; first: boolean }) {
+function MobileSlide({ slide, first, showArt }: SlideProps) {
   return (
     <div className="relative flex w-full flex-1 items-center gap-2 overflow-hidden rounded-xl p-4 pb-8">
       <img
@@ -147,19 +159,26 @@ function MobileSlide({ slide, first }: { slide: HeroSlide; first: boolean }) {
         </Link>
       </div>
       <div className="hero-art relative grid shrink-0 place-items-start">
-        <NftImage
-          image={slide.art}
-          decorative
-          sizes="138px"
-          priority={first}
-          className="col-1 row-1 size-[138px] rounded-2xl"
-        />
-        <NftImage
-          image={slide.smallArt}
-          decorative
-          sizes="58px"
-          className="col-1 row-1 mt-[88px] ml-[14px] size-[58px] rounded-2xl"
-        />
+        {showArt ? (
+          <>
+            <NftImage
+              image={slide.art}
+              decorative
+              // Hidden from md up.
+              sizes="(min-width: 768px) 1px, 138px"
+              priority={first}
+              className="col-1 row-1 size-[138px] rounded-2xl"
+            />
+            <NftImage
+              image={slide.smallArt}
+              decorative
+              sizes="(min-width: 768px) 1px, 58px"
+              className="col-1 row-1 mt-[88px] ml-[14px] size-[58px] rounded-2xl"
+            />
+          </>
+        ) : (
+          <div className="col-1 row-1 size-[138px]" />
+        )}
       </div>
     </div>
   )
@@ -171,18 +190,28 @@ function MobileSlide({ slide, first }: { slide: HeroSlide; first: boolean }) {
  */
 export function HomeHero() {
   const [index, setIndex] = useState(0)
+  // The entrance motion plays from the first slide change on (globals.css).
+  const [changed, setChanged] = useState(false)
   const [interacting, setInteracting] = useState(false)
+  const [mounted, setMounted] = useState(false)
   const reducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)')
   const pointerStart = useRef<number | null>(null)
   const swiped = useRef(false)
   const playing = !interacting && !reducedMotion
 
-  const goTo = useCallback((next: number) => setIndex((next + SLIDES.length) % SLIDES.length), [])
+  useEffect(() => setMounted(true), [])
+
+  const goTo = useCallback((next: number) => {
+    setChanged(true)
+    setIndex((next + SLIDES.length) % SLIDES.length)
+  }, [])
 
   useEffect(() => {
     if (!playing) return
     const timer = window.setInterval(() => {
-      if (document.visibilityState === 'visible') setIndex((current) => (current + 1) % SLIDES.length)
+      if (document.visibilityState !== 'visible') return
+      setChanged(true)
+      setIndex((current) => (current + 1) % SLIDES.length)
     }, AUTOPLAY_MS)
     return () => window.clearInterval(timer)
   }, [playing])
@@ -205,6 +234,7 @@ export function HomeHero() {
     <section
       aria-roledescription="carrossel"
       aria-label="Destaques da Kurio"
+      data-animate={changed ? '' : undefined}
       className="relative flex flex-col gap-4 md:gap-0"
       // Mouse only: a tap fires mouseenter too and would keep the carousel paused.
       onPointerEnter={(event) => event.pointerType === 'mouse' && setInteracting(true)}
@@ -253,10 +283,10 @@ export function HomeHero() {
               className="flex w-full shrink-0 flex-col"
             >
               <div className="hidden md:block">
-                <DesktopSlide slide={slide} first={slideIndex === 0} />
+                <DesktopSlide slide={slide} first={slideIndex === 0} showArt={slideIndex === 0 || mounted} />
               </div>
               <div className="flex flex-1 md:hidden">
-                <MobileSlide slide={slide} first={slideIndex === 0} />
+                <MobileSlide slide={slide} first={slideIndex === 0} showArt={slideIndex === 0 || mounted} />
               </div>
             </div>
           ))}

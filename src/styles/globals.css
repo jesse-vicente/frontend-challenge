@@ -139,16 +139,16 @@
     }
 
     /*
-     * Home hero: the copy of the active slide rises in on the first load and on every slide
-     * change. The title and the art move without fading, so they still paint at once (LCP).
+     * Home hero: the copy of the active slide rises in on every slide change. The first slide
+     * is prerendered in index.html and paints in its final state, without waiting for motion.
      */
-    [data-active] .hero-fade {
+    [data-animate] [data-active] .hero-fade {
       animation: reveal-rise 0.8s cubic-bezier(0.22, 1, 0.36, 1) calc(var(--i, 0) * 90ms + 120ms) both;
     }
-    [data-active] .hero-rise {
+    [data-animate] [data-active] .hero-rise {
       animation: hero-rise 0.8s cubic-bezier(0.22, 1, 0.36, 1) calc(var(--i, 0) * 90ms + 120ms) both;
     }
-    [data-active] .hero-art {
+    [data-animate] [data-active] .hero-art {
       animation: hero-art 1.1s cubic-bezier(0.22, 1, 0.36, 1) both;
     }
     .hero-controls {
