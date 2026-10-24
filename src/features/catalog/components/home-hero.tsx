@@ -303,8 +303,10 @@ function HeroControls({ index, onSelect }: { index: number; onSelect: (index: nu
     <div
       className={cn(
         'hero-controls flex items-center justify-center gap-1',
-        // Desktop: under the copy column, as the dots of the frame; mobile: below the card.
-        'max-md:relative max-md:-mt-12 md:absolute md:bottom-0 md:left-10 md:w-[600px] md:justify-end',
+        // Desktop: under the copy column, as the dots of the frame; mobile: below the card. The copy
+        // column shrinks with the window (up to 600px; the slide minus pl-10, gap-8 and the art).
+        'max-md:relative max-md:-mt-12 md:absolute md:bottom-0 md:left-10 md:justify-end',
+        'md:w-[min(600px,calc(100%-372px))] lg:w-[min(600px,calc(100%-522px))]',
       )}
     >
       {SLIDES.map((slide, slideIndex) => (

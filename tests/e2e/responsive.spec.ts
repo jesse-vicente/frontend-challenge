@@ -72,6 +72,22 @@ test.describe('responsividade (320 a 1440 px)', () => {
     await expectFitsEveryWidth(page, () => page.getByPlaceholder('Confirmar senha'))
   })
 
+  test('pontos do carrossel do início ficam sob o texto, fora da arte', async ({ app, page }) => {
+    // No autoplay: the slides stay still while they are measured.
+    await page.emulateMedia({ reducedMotion: 'reduce' })
+    await app.open('/')
+    const hero = page.getByRole('region', { name: 'Destaques da Kurio' })
+    const art = hero.locator('[data-active]').getByRole('img').filter({ visible: true }).first()
+    const lastDot = hero.getByRole('button', { name: /^Mostrar destaque 3/ })
+    // From md up the dots sit under the copy column, which shrinks with the window.
+    for (const width of [768, 900, 1024, 1440]) {
+      await page.setViewportSize({ width, height: 900 })
+      await expect(art).toBeVisible()
+      const [artBox, dotBox] = await Promise.all([art.boundingBox(), lastDot.boundingBox()])
+      expect.soft((dotBox?.x ?? 0) + (dotBox?.width ?? 0), `${width}px`).toBeLessThanOrEqual(artBox?.x ?? 0)
+    }
+  })
+
   test('carrinho, pagamento, recibo, perfil e carteiras', async ({ app, page }) => {
     await app.open('/')
     await app.buyFromDetail('nft_001')
