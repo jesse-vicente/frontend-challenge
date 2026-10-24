@@ -70,7 +70,10 @@ test.describe('carregamento, falha e recuperação', () => {
   test('rede lenta mostra skeletons até os dados chegarem @mobile', async ({ app, page }) => {
     // Start elsewhere, then make the catalog requests slow enough to observe the loading state.
     await app.open('/nfts/nft_001', { scenario: 'slow' })
-    await app.mock('setLatency', 4000)
+    // Navigate from the mounted app: during the boot the router still shows the detail skeleton.
+    await expect(page.getByRole('heading', { level: 1 })).toBeVisible({ timeout: 15_000 })
+    // Well above the time the home route chunks take to load on a busy machine (up to ~3 s).
+    await app.mock('setLatency', 8000)
     // Client-side navigation keeps the in-memory latency override (a reload would reset it).
     await page.evaluate(() => {
       window.history.pushState({}, '', '/')
@@ -78,7 +81,7 @@ test.describe('carregamento, falha e recuperação', () => {
     })
     await expect(page.locator('#market [aria-busy=true]').first()).toBeAttached()
     await expect(page.locator('#market .skeleton').filter({ visible: true }).first()).toBeVisible()
-    await expect(cards(page).first()).toBeVisible({ timeout: 15_000 })
+    await expect(cards(page).first()).toBeVisible({ timeout: 20_000 })
   })
 
   test('erro do servidor oferece nova tentativa que recupera o catálogo', async ({ app, page }) => {
