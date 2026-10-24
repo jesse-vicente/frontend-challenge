@@ -1,15 +1,20 @@
 import { createRootRouteWithContext, HeadContent, Link, Outlet, useRouterState } from '@tanstack/react-router'
+import { lazy, Suspense } from 'react'
 import { MobileTabBar } from '@/app/layout/mobile-tab-bar'
 import { SiteFooter } from '@/app/layout/site-footer'
 import { SiteHeader } from '@/app/layout/site-header'
 import { type RouterContext } from '@/app/router'
 import { authSearchSchema } from '@/features/auth/auth-modal'
-import { AuthModal } from '@/features/auth/components/auth-screen'
 import { useSessionRestore } from '@/features/auth/queries'
 import { LiveRegion } from '@/shared/components/live-region'
 import { Button } from '@/shared/ui/button'
 import { Toaster } from '@/shared/ui/sonner'
 import { TooltipProvider } from '@/shared/ui/tooltip'
+
+// Loaded on demand: the forms (react-hook-form and the auth panel) stay out of the boot chunks.
+const AuthModal = lazy(() =>
+  import('@/features/auth/components/auth-screen').then((module) => ({ default: module.AuthModal })),
+)
 
 export const Route = createRootRouteWithContext<RouterContext>()({
   // `?auth=login|register` opens the sign-in modal over any page (desktop).
@@ -48,7 +53,11 @@ function RootLayout() {
       </div>
       <SiteFooter />
       <MobileTabBar />
-      {auth && !onAuthRoute ? <AuthModal mode={auth} redirect={redirect} /> : null}
+      {auth && !onAuthRoute ? (
+        <Suspense fallback={null}>
+          <AuthModal mode={auth} redirect={redirect} />
+        </Suspense>
+      ) : null}
       <Toaster />
       <LiveRegion />
     </TooltipProvider>
