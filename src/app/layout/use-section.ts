@@ -29,7 +29,9 @@ function useCatalogInView(enabled: boolean): boolean {
     const schedule = () => {
       if (!frame) frame = window.requestAnimationFrame(measure)
     }
-    measure()
+    // Not measured during the commit: reading the layout there forces the first layout of the
+    // whole page inside the boot task.
+    schedule()
     window.addEventListener('scroll', schedule, { passive: true })
     window.addEventListener('resize', schedule)
     // The catalog renders after data loads: measure again when the page grows.
@@ -62,9 +64,13 @@ export function useScrolled(threshold = 8): boolean {
   const [scrolled, setScrolled] = useState(false)
   useEffect(() => {
     const update = () => setScrolled(window.scrollY > threshold)
-    update()
+    // Reading scrollY during the commit would force a layout too (see useCatalogInView).
+    const frame = window.requestAnimationFrame(update)
     window.addEventListener('scroll', update, { passive: true })
-    return () => window.removeEventListener('scroll', update)
+    return () => {
+      window.cancelAnimationFrame(frame)
+      window.removeEventListener('scroll', update)
+    }
   }, [threshold])
   return scrolled
 }
