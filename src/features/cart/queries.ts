@@ -32,14 +32,23 @@ export function cartItemCount(cart: CartDto | undefined): number {
   return cart?.items.reduce((total, item) => total + item.quantity, 0) ?? 0
 }
 
-/** Every cart mutation answers with the full cart: write it to the cache and refresh the quote. */
+/**
+ * Every cart mutation answers with the full cart: write it to the cache and refresh the quote.
+ * While newer cart mutations are still queued, their optimistic state stays on screen: writing an
+ * older answer would roll the stepper back between rapid clicks. The last answer has the final cart.
+ */
 function useCartMutationSync() {
   const queryClient = useQueryClient()
   const owner = useCacheOwner()
+  // The mutation being settled still counts as pending.
+  const isLast = () =>
+    queryClient.isMutating({ predicate: (mutation) => mutation.options.scope?.id === CART_MUTATION_SCOPE.id }) <= 1
   return {
     owner,
     queryClient,
+    isLast,
     sync(cart: CartDto) {
+      if (!isLast()) return
       queryClient.setQueryData(queryKeys.private.cart(owner), cart)
       void queryClient.invalidateQueries({ queryKey: [...queryKeys.private.all(owner), 'quote'] })
     },
@@ -61,7 +70,7 @@ export function useAddToCart() {
 
 /** Optimistic quantity change: the stepper reacts instantly and rolls back on failure. */
 export function useUpdateCartItem() {
-  const { owner, queryClient, sync } = useCartMutationSync()
+  const { owner, queryClient, isLast, sync } = useCartMutationSync()
   const key = queryKeys.private.cart(owner)
   return useMutation({
     scope: CART_MUTATION_SCOPE,
@@ -80,6 +89,11 @@ export function useUpdateCartItem() {
     },
     onError: (_error, _variables, context) => {
       if (context?.previous) queryClient.setQueryData(key, context.previous)
+      // Answers of the changes queued before this one were skipped: reload the server cart.
+      if (isLast()) {
+        void queryClient.invalidateQueries({ queryKey: key })
+        void queryClient.invalidateQueries({ queryKey: [...queryKeys.private.all(owner), 'quote'] })
+      }
       announce('Não foi possível alterar a quantidade.', 'assertive')
     },
     onSuccess: sync,

@@ -45,7 +45,9 @@ function LineIssue({ quoteLine, onFix }: { quoteLine: QuoteLineDto | undefined; 
 
 /** Row of the "Cart Table" (desktop) / item card (mobile). */
 export function CartLine({ item, quoteLine, changed, onQuantityChange, onRemove, removing }: CartLineProps) {
-  const total = quoteLine?.lineTotal ?? lineSubtotal(item.unitPrice, item.quantity)
+  // While a quantity change is in flight the quote still has the old one: show the local subtotal.
+  const total =
+    quoteLine?.quantity === item.quantity ? quoteLine.lineTotal : lineSubtotal(item.unitPrice, item.quantity)
   const max = Math.max(maxLineQuantity(item), item.quantity)
 
   const remove = (

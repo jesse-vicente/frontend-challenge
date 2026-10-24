@@ -79,6 +79,25 @@ test.describe('carrinho', () => {
     await expect(page.getByText('Seu carrinho está vazio')).toBeVisible()
   })
 
+  test('cliques rápidos na quantidade somam sem voltar ao valor anterior', async ({ app, page }) => {
+    await app.open('/')
+    await app.buyFromDetail('nft_001')
+    const increase = visible(page, 'Aumentar quantidade').first()
+    const quantity = (units: number) => page.getByLabel(`${units} unidades`).filter({ visible: true }).first()
+
+    // No waiting for the server between clicks: each answer must not undo the clicks queued after it.
+    for (const units of [2, 3, 4]) {
+      await increase.click()
+      await expect(quantity(units)).toBeVisible()
+    }
+    await visible(page, 'Diminuir quantidade').first().click()
+    await expect(quantity(3)).toBeVisible()
+    await expect(summary(page).filter({ visible: true }).first()).toContainText('3.57 ETH')
+
+    await page.reload()
+    await expect(quantity(3)).toBeVisible()
+  })
+
   test('carrinho do visitante é mantido após o login', async ({ app, page }) => {
     await app.open('/')
     await app.buyFromDetail('nft_003')
