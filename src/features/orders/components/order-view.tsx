@@ -56,7 +56,8 @@ function OrderItemsTable({ order }: { order: OrderDto }) {
         <tbody>
           {order.items.map((item) => (
             <tr key={`${item.nftId}:${item.editionId}`}>
-              <td className="py-2">
+              {/* w-full + max-w-0: the name column takes the remaining width and truncates on phones. */}
+              <td className="w-full max-w-0 py-2">
                 <div className="flex items-center gap-3">
                   <NftImage image={item.image} decorative sizes="52px" className="size-[52px] shrink-0" />
                   <div className="min-w-0">
@@ -67,8 +68,10 @@ function OrderItemsTable({ order }: { order: OrderDto }) {
                   </div>
                 </div>
               </td>
-              <td className="py-2 text-center text-xs text-sand">(x {item.quantity})</td>
-              <td className="py-2 text-right text-base font-bold text-amber">{formatEth(item.lineTotal)}</td>
+              <td className="px-2 py-2 text-center text-xs whitespace-nowrap text-sand">(x {item.quantity})</td>
+              <td className="py-2 text-right text-base font-bold whitespace-nowrap text-amber">
+                {formatEth(item.lineTotal)}
+              </td>
             </tr>
           ))}
         </tbody>
@@ -132,7 +135,8 @@ function Receipt({ order, onClose }: { order: OrderDto; onClose: () => void }) {
           rede.
         </p>
         {order.transaction ? (
-          <Button asChild>
+          // The label wraps on narrow phones (and at high zoom) instead of overflowing.
+          <Button asChild className="h-auto min-h-10 max-w-full py-2.5 text-center whitespace-normal">
             <a href={order.transaction.explorerUrl} target="_blank" rel="noopener noreferrer">
               Ver no explorador da {network}
               <span className="sr-only"> (simulado, abre em nova aba)</span>
