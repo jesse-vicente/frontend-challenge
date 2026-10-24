@@ -55,7 +55,7 @@ const ARTICLES = [
 /** "Promos" frame: two promo cards linking to catalog segments. */
 export function HomePromos() {
   return (
-    <section aria-label="Destaques da Kurio" className="grid gap-7 lg:grid-cols-2">
+    <section aria-label="Lançamentos e curadoria" className="grid gap-7 lg:grid-cols-2">
       {PROMOS.map((promo) => (
         <article key={promo.text} className="relative flex h-[250px] overflow-hidden rounded-lg bg-surface">
           <NftImage
@@ -72,18 +72,19 @@ export function HomePromos() {
             height={250}
             className="pointer-events-none absolute inset-0 size-full max-w-none"
           />
-          <div className="relative ml-auto flex w-[55%] flex-col items-end gap-3 py-9 pr-[30px] text-right sm:w-[290px]">
-            <h2 className="text-base leading-6 font-bold text-foreground sm:text-lg">
+          {/* Phones: tighter type and padding so the text and the button fit the 250 px card. */}
+          <div className="relative ml-auto flex w-[56%] flex-col items-end gap-2 py-5 pr-4 text-right sm:w-[290px] sm:gap-3 sm:py-9 sm:pr-[30px]">
+            <h2 className="text-[15px] leading-5 font-bold text-foreground sm:text-lg sm:leading-6">
               {promo.title[0]}
               <br />
               {promo.title[1]}
             </h2>
-            <p className="text-xs leading-5 text-sand sm:text-sm sm:leading-6">{promo.text}</p>
+            <p className="text-[11px] leading-4 text-sand sm:text-sm sm:leading-6">{promo.text}</p>
             <Link
               to="/"
               search={{ segment: promo.segment }}
               hash="market"
-              className="mt-auto flex h-10 w-[140px] shrink-0 items-center justify-center gap-1 rounded-md bg-primary text-sm leading-5 font-medium text-ink hover:bg-amber"
+              className="mt-auto flex h-9 w-[140px] shrink-0 items-center justify-center gap-1 rounded-md bg-primary text-sm leading-5 font-medium text-ink hover:bg-amber sm:h-10"
             >
               Explorar
               <img
@@ -114,22 +115,23 @@ export function HomeJournal() {
           Histórias, guias e insights para colecionadores sobre o universo da propriedade digital.
         </p>
       </header>
-      <div className="grid w-full grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      {/* Phones: a swipeable row that bleeds to the screen edges (next card peeks in). */}
+      <div className="flex w-[calc(100%+2rem)] snap-x snap-mandatory scroll-px-4 [scrollbar-width:none] gap-4 overflow-x-auto px-4 pb-2 sm:grid sm:w-full sm:grid-cols-2 sm:gap-6 sm:overflow-visible sm:px-0 sm:pb-0 lg:grid-cols-4">
         {ARTICLES.map((article) => (
           <article
             key={article.title}
-            className="group relative flex flex-col overflow-hidden rounded-lg bg-surface transition duration-300 ease-out hover:-translate-y-1 hover:shadow-[0_12px_28px_rgba(10,6,4,0.55)] has-[:focus-visible]:-translate-y-1 motion-reduce:transform-none"
+            className="group relative flex w-[78%] shrink-0 snap-start flex-col overflow-hidden rounded-lg bg-surface transition duration-300 ease-out hover:-translate-y-1 hover:shadow-[0_12px_28px_rgba(10,6,4,0.55)] has-[:focus-visible]:-translate-y-1 motion-reduce:transform-none sm:w-auto"
           >
             <div className="overflow-hidden">
               <NftImage
                 image={article.image}
                 decorative
-                sizes="(min-width: 1024px) 268px, 50vw"
+                sizes="(min-width: 1024px) 268px, (min-width: 640px) 50vw, 78vw"
                 className="h-[195px] w-full transition-transform duration-500 ease-out group-hover:scale-105 motion-reduce:transform-none"
               />
             </div>
             <div className="flex flex-1 flex-col gap-2 px-4 pt-3 pb-4">
-              <p className="text-xs leading-4 font-medium whitespace-pre-wrap text-sand">
+              <p className="text-[11px] leading-4 font-medium whitespace-pre-wrap text-sand sm:text-xs">
                 {`${article.date}  |  ${article.reading}`}
               </p>
               <h3 className="text-base font-bold text-cream">{article.title}</h3>

@@ -16,7 +16,7 @@ export function HomePageContent({ search, onSearchChange }: HomePageContentProps
       <MobileCatalogBar search={search} onSearchChange={onSearchChange} />
       <HomeHero />
       <CatalogSection search={search} onSearchChange={onSearchChange} />
-      <div className="hidden flex-col gap-24 md:flex">
+      <div className="flex flex-col gap-16 pt-4 md:gap-24 md:pt-0">
         <HomePromos />
         <HomeJournal />
       </div>
