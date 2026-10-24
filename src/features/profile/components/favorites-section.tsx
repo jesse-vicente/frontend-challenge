@@ -18,7 +18,11 @@ export function FavoritesSection() {
 
   // The list loads after navigation, so the hash target is scrolled to once it has its final height.
   useEffect(() => {
-    if (targeted && loaded) section.current?.scrollIntoView({ block: 'start' })
+    if (targeted && loaded)
+      section.current?.scrollIntoView({
+        block: 'start',
+        behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+      })
   }, [targeted, loaded])
 
   return (
@@ -26,7 +30,7 @@ export function FavoritesSection() {
       ref={section}
       id="favoritos"
       aria-labelledby="favorites-title"
-      className="mt-16 scroll-mt-6 border-t border-border pt-10"
+      className="mt-16 scroll-mt-6 border-t border-border pt-10 md:scroll-mt-24"
     >
       <h2 id="favorites-title" className="mb-6 text-base font-bold text-foreground">
         Lista de interesse

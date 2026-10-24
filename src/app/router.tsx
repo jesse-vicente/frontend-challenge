@@ -6,6 +6,9 @@ export interface RouterContext {
   queryClient: QueryClient
 }
 
+const prefersReducedMotion = () =>
+  typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
 export function createAppRouter(queryClient: QueryClient) {
   return createRouter({
     routeTree,
@@ -14,6 +17,8 @@ export function createAppRouter(queryClient: QueryClient) {
     // Loaders read through the Query cache, which owns freshness.
     defaultPreloadStaleTime: 0,
     scrollRestoration: true,
+    // Anchor links (#mercado, #favoritos) glide to their section.
+    defaultHashScrollIntoView: { behavior: prefersReducedMotion() ? 'auto' : 'smooth', block: 'start' },
     defaultStructuralSharing: true,
   })
 }
