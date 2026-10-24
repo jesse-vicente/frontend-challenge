@@ -36,7 +36,7 @@ export function NftCard({ nft, favorite = false, priority = false, className }: 
           )}
         />
         {nft.rarity !== 'common' ? (
-          <span className="absolute top-4 left-0 flex h-8 w-[68px] items-center bg-primary pl-2 text-[13px] leading-4 font-medium text-ink md:hidden">
+          <span className="absolute top-4 left-0 flex h-8 w-[68px] items-center bg-primary pl-2 text-[13px] leading-4 font-medium text-ink md:top-6">
             {RARITY_LABELS[nft.rarity].toUpperCase()}
           </span>
         ) : null}
