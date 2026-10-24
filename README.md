@@ -129,10 +129,10 @@ Em macOS, gere as baselines locais com `pnpm test:e2e:update` antes da primeira 
 
 | Página  | Perfil  | Performance | Accessibility | Best Practices | SEO |    LCP | CLS |    TBT |
 | ------- | ------- | ----------: | ------------: | -------------: | --: | -----: | --: | -----: |
-| início  | mobile  |          96 |           100 |            100 | 100 | 1,89 s |   0 | 211 ms |
-| início  | desktop |         100 |           100 |            100 | 100 | 0,45 s |   0 |   0 ms |
-| detalhe | mobile  |      **78** |           100 |            100 | 100 | 4,16 s |   0 |  60 ms |
-| detalhe | desktop |          98 |           100 |            100 | 100 | 0,94 s |   0 |   0 ms |
+| início  | mobile  |          93 |           100 |            100 | 100 | 1,82 s |   0 | 303 ms |
+| início  | desktop |         100 |           100 |            100 | 100 | 0,46 s |   0 |   5 ms |
+| detalhe | mobile  |      **84** |           100 |            100 | 100 | 4,25 s |   0 | 147 ms |
+| detalhe | desktop |          99 |           100 |            100 | 100 | 0,95 s |   0 |   0 ms |
 
 Só o detalhe mobile fica abaixo da meta de 90: o LCP é a imagem do NFT, que depende do JavaScript do backend simulado, da latência simulada da API e só então do download da imagem. A nota mobile varia alguns pontos entre execuções (feche servidores de desenvolvimento antes de auditar). O que foi feito em cada página, com o efeito medido, e a análise das causas e da variação estão em [`ARCHITECTURE.md`](ARCHITECTURE.md#performance).
 
