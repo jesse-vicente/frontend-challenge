@@ -9,7 +9,8 @@ const baseURL = `http://localhost:${PORT}`
  */
 export default defineConfig({
   testDir: 'tests/e2e',
-  snapshotPathTemplate: '{testDir}/__screenshots__/{testFilePath}/{arg}-{projectName}{ext}',
+  // Fonts render differently per OS: one baseline set per platform (win32, linux).
+  snapshotPathTemplate: '{testDir}/__screenshots__/{testFilePath}/{arg}-{projectName}-{platform}{ext}',
   fullyParallel: true,
   forbidOnly: Boolean(process.env.CI),
   retries: process.env.CI ? 1 : 0,
