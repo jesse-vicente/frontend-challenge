@@ -76,7 +76,9 @@ Detalhes em [`docs/realtime-events.md`](docs/realtime-events.md). Em resumo: cad
 
 ## Performance
 
-Mediana de 3 execuções (`lighthouse/reports/summary.md`): desktop 98 em início e detalhe; Accessibility, Best Practices e SEO em 100 em todos os perfis; CLS 0. **Performance mobile fica abaixo da meta: 66 (início) e 74 (detalhe), LCP ~4,5–4,8 s.**
+Mediana de 3 execuções (`lighthouse/reports/summary.md`): desktop 97 em início e detalhe; Accessibility, Best Practices e SEO em 100 em todos os perfis; CLS 0. **Performance mobile fica abaixo da meta: 62 (início) e 65 (detalhe), LCP ~4,9–5,5 s.**
+
+O perfil mobile varia bastante nesta máquina (CPU simulada 4× mais lenta sobre um notebook): com o mesmo build, auditorias em sequência deram 53–66 no início e 65–72 no detalhe, e processos em segundo plano (um `vite dev` ocioso consumia mais de um núcleo) derrubaram a nota em até 20 pontos. Para separar ruído de regressão, os builds de antes e depois da última rodada de ajustes foram medidos intercalados, na mesma sessão do Chrome e com a máquina ociosa: detalhe 72 → 71 (sem diferença) e início 68 → 65. A queda do início é o LCP ~0,45 s mais tarde: o elemento LCP continua sendo a arte decorativa do hero mobile, mas o primeiro render agora inclui também os destaques, o Diário e o rodapé no mobile. Adiar a renderização deles com `content-visibility: auto` não mudou a nota (64 × 64) e foi descartado.
 
 Causas identificadas nos relatórios:
 1. **O backend simulado roda no navegador.** O chunk dos mocks (MSW, binding Socket.IO, fixtures e regras do servidor) tem ~175 kB gzip e é o maior custo de CPU no boot (~1,1 s de execução com a CPU 4× mais lenta do perfil mobile). Num produto real ele não existiria; aqui faz parte da entrega e a auditoria não o remove.

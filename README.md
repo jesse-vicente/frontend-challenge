@@ -120,12 +120,12 @@ Falhas guardam trace, vídeo e screenshot (`test-results/`); o relatório HTML f
 
 | Página  | Perfil  | Performance | Accessibility | Best Practices | SEO |    LCP | CLS |    TBT |
 | ------- | ------- | ----------: | ------------: | -------------: | --: | -----: | --: | -----: |
-| início  | mobile  |          66 |           100 |            100 | 100 | 4,78 s |   0 | 246 ms |
-| início  | desktop |          98 |           100 |            100 | 100 | 0,99 s |   0 |   3 ms |
-| detalhe | mobile  |          74 |           100 |            100 | 100 | 4,48 s |   0 |  97 ms |
-| detalhe | desktop |          98 |           100 |            100 | 100 | 0,95 s |   0 |   0 ms |
+| início  | mobile  |          62 |           100 |            100 | 100 | 5,46 s |   0 | 295 ms |
+| início  | desktop |          97 |           100 |            100 | 100 | 1,11 s |   0 |  44 ms |
+| detalhe | mobile  |          65 |           100 |            100 | 100 | 4,89 s |   0 | 278 ms |
+| detalhe | desktop |          97 |           100 |            100 | 100 | 1,08 s |   0 |  26 ms |
 
-Performance mobile fica abaixo da meta de 90; a análise das causas está em [`ARCHITECTURE.md`](ARCHITECTURE.md#performance).
+Performance mobile fica abaixo da meta de 90 e varia alguns pontos entre execuções (feche servidores de desenvolvimento antes de auditar); a análise das causas e da variação está em [`ARCHITECTURE.md`](ARCHITECTURE.md#performance).
 
 ## Deploy
 
