@@ -213,7 +213,7 @@ export function SiteFooter() {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={`${social.label} (abre em nova aba)`}
-                    className="block rounded-sm"
+                    className="block rounded-sm transition-[translate,filter] duration-200 ease-out hover:-translate-y-1 hover:drop-shadow-[0_6px_10px_rgba(210,138,76,0.45)] focus-visible:-translate-y-1"
                   >
                     <img
                       src={social.icon}
