@@ -63,7 +63,7 @@ function ProfileForm({ profile }: { profile: ProfileDto }) {
           Perfil do colecionador
         </h1>
         <FormAlert message={formError} />
-        <div className="grid grid-cols-1 gap-x-7 gap-y-6 md:grid-cols-2 md:gap-y-[38px]">
+        <div className="grid grid-cols-1 gap-x-7 gap-y-6 md:gap-y-[38px] lg:grid-cols-2">
           <TextFormField control={form.control} name="displayName" label="Nome de exibição" autoComplete="name" />
           <TextFormField control={form.control} name="username" label="Nome de usuário" autoComplete="username" />
           <TextFormField control={form.control} name="email" label="E-mail" type="email" autoComplete="email" />
