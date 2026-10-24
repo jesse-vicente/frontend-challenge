@@ -4,6 +4,7 @@ import { closeAllConnections, registerConnection, type SocketConnection, unregis
 
 /** Engine.IO expects a server ping within pingInterval + pingTimeout (25 s + 5 s). */
 const HEARTBEAT_MS = 20_000
+const ENGINE_IO_HANDSHAKE = { sid: 'offline', upgrades: [], pingInterval: 25_000, pingTimeout: 5_000 }
 
 let offline = false
 let connectionSeq = 0
@@ -47,7 +48,11 @@ export function createSocketHandler() {
 
   return link.addEventListener('connection', (connection) => {
     if (offline) {
-      connection.client.close()
+      // Closed before the Engine.IO handshake, the client only notices at its 20 s connect
+      // timeout: open the Engine.IO session (as the binding does), then drop the socket when
+      // the client asks to join the namespace, so it never counts as connected.
+      queueMicrotask(() => connection.client.send(`0${JSON.stringify(ENGINE_IO_HANDSHAKE)}`))
+      connection.client.addEventListener('message', () => connection.client.close())
       return
     }
 
