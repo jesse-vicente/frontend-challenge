@@ -33,3 +33,8 @@ Thumbs.db
 
 # tanstack router plugin cache
 .tanstack
+
+# internal working notes (figma exports, handoff, helper scripts)
+docs/figma/
+docs/HANDOFF.md
+docs/tools/
