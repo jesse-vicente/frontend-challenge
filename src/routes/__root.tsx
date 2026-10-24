@@ -1,8 +1,10 @@
-import { createRootRouteWithContext, HeadContent, Link, Outlet } from '@tanstack/react-router'
+import { createRootRouteWithContext, HeadContent, Link, Outlet, useRouterState } from '@tanstack/react-router'
 import { MobileTabBar } from '@/app/layout/mobile-tab-bar'
 import { SiteFooter } from '@/app/layout/site-footer'
 import { SiteHeader } from '@/app/layout/site-header'
 import { type RouterContext } from '@/app/router'
+import { authSearchSchema } from '@/features/auth/auth-modal'
+import { AuthModal } from '@/features/auth/components/auth-screen'
 import { useSessionRestore } from '@/features/auth/queries'
 import { LiveRegion } from '@/shared/components/live-region'
 import { Button } from '@/shared/ui/button'
@@ -10,6 +12,8 @@ import { Toaster } from '@/shared/ui/sonner'
 import { TooltipProvider } from '@/shared/ui/tooltip'
 
 export const Route = createRootRouteWithContext<RouterContext>()({
+  // `?auth=login|register` opens the sign-in modal over any page (desktop).
+  validateSearch: authSearchSchema,
   head: () => ({
     meta: [
       { title: 'Kurio | Marketplace de NFTs' },
@@ -26,6 +30,9 @@ export const Route = createRootRouteWithContext<RouterContext>()({
 
 function RootLayout() {
   useSessionRestore()
+  const { auth, redirect } = Route.useSearch()
+  // The /login and /register routes render their own screen.
+  const onAuthRoute = useRouterState({ select: (state) => /^\/(login|register)/.test(state.location.pathname) })
   return (
     <TooltipProvider>
       <HeadContent />
@@ -41,6 +48,7 @@ function RootLayout() {
       </div>
       <SiteFooter />
       <MobileTabBar />
+      {auth && !onAuthRoute ? <AuthModal mode={auth} redirect={redirect} /> : null}
       <Toaster />
       <LiveRegion />
     </TooltipProvider>

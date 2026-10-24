@@ -42,12 +42,14 @@ test.describe('favoritos', () => {
     await expect(favoriteButton(page)).toHaveAttribute('aria-pressed', 'true')
   })
 
-  test('visitante é levado ao login e volta ao NFT', async ({ app, page }) => {
+  test('visitante entra pelo modal sobre o NFT e continua nele', async ({ app, page }) => {
     await app.open('/nfts/nft_002')
     await favoriteButton(page).click()
-    await expect(page).toHaveURL(/\/login\?redirect=%2Fnfts%2Fnft_002/)
+    await expect(page).toHaveURL(/\/nfts\/nft_002\?auth=login$/)
+    await expect(page.getByRole('dialog', { name: 'Entrar' })).toBeVisible()
     await app.submitLogin('alice')
     await expect(page).toHaveURL(/\/nfts\/nft_002$/)
+    await expect(page.getByRole('dialog')).toBeHidden()
   })
 })
 
@@ -103,7 +105,8 @@ test.describe('carrinho', () => {
     await app.buyFromDetail('nft_003')
     await expect(page.getByRole('link', { name: 'Carrinho, 1 item' })).toBeVisible()
     await visible(page, 'Conectar e finalizar').click()
-    await expect(page).toHaveURL(/\/login\?redirect=%2Fcheckout/)
+    // Sign-in modal over the cart, continuing to the checkout.
+    await expect(page).toHaveURL(/\/cart\?auth=login&redirect=%2Fcheckout$/)
     await app.submitLogin('bob')
     await expect(page).toHaveURL(/\/checkout$/)
     await page.goto('/cart')

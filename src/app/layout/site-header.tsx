@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
-import { Link } from '@tanstack/react-router'
+import { Link, useRouterState } from '@tanstack/react-router'
 import { type ReactNode, useLayoutEffect, useRef, useState } from 'react'
 import cartIcon from '@/assets/icons/cart.svg'
 import cartBadge from '@/assets/icons/cart-badge.svg'
@@ -7,6 +7,7 @@ import headerDivider from '@/assets/icons/header-divider.svg'
 import loginIcon from '@/assets/icons/login.svg'
 import navUnderline from '@/assets/icons/nav-underline.svg'
 import searchIcon from '@/assets/icons/search.svg'
+import { useOpenAuth, withAuthModal } from '@/features/auth/auth-modal'
 import { useLogout } from '@/features/auth/queries'
 import { cartItemCount, cartQuery } from '@/features/cart/queries'
 import { cn } from '@/shared/lib/cn'
@@ -89,14 +90,24 @@ function CartLink() {
 function AccountButton() {
   const user = useSessionUser()
   const logout = useLogout()
+  const openAuth = useOpenAuth()
+  const href = useRouterState({ select: (state) => state.location.href })
 
   if (!user) {
+    // A real link (the modal lives in the URL), opened over the current page.
     return (
       <Button asChild size="sm" className="w-[100px] gap-1 font-medium">
-        <Link to="/login">
+        <a
+          href={withAuthModal(href, 'login')}
+          onClick={(event) => {
+            if (event.metaKey || event.ctrlKey || event.shiftKey || event.button !== 0) return
+            event.preventDefault()
+            openAuth('login')
+          }}
+        >
           <img src={loginIcon} alt="" width={18} height={17} className="size-5 p-[2px]" />
           Entrar
-        </Link>
+        </a>
       </Button>
     )
   }

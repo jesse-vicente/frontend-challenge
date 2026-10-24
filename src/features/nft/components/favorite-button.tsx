@@ -1,20 +1,19 @@
-import { useNavigate, useRouterState } from '@tanstack/react-router'
 import { Heart } from 'lucide-react'
+import { useOpenAuth } from '@/features/auth/auth-modal'
 import { useFavorites, useToggleFavorite } from '@/features/favorites/queries'
 import { cn } from '@/shared/lib/cn'
 import { Button } from '@/shared/ui/button'
 
-/** Favorites require a session: guests are sent to login and brought back here. */
+/** Favorites require a session: guests sign in over this page and stay on it. */
 function useFavoriteToggle(nftId: string, name: string) {
   const favorites = useFavorites()
   const toggle = useToggleFavorite()
-  const navigate = useNavigate()
-  const href = useRouterState({ select: (state) => state.location.href })
+  const openAuth = useOpenAuth()
   const active = favorites.ids.has(nftId)
 
   const onToggle = () => {
     if (!favorites.enabled) {
-      void navigate({ to: '/login', search: { redirect: href } })
+      openAuth('login')
       return
     }
     toggle.mutate({ nftId, favorite: !active, name })

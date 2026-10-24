@@ -11,16 +11,19 @@ import { applyApiErrors } from '@/shared/lib/form-errors'
 import { sessionStore, useSession } from '@/shared/session/session-store'
 import { Button } from '@/shared/ui/button'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/shared/ui/form'
+import { type AuthMode } from '../auth-modal'
 import { useLogin, useRegister } from '../queries'
 import { type LoginFormValues, loginFormSchema, type RegisterFormValues, registerFormSchema } from '../schemas'
 
-export type AuthMode = 'login' | 'register'
+export type { AuthMode }
 
 interface AuthPanelProps {
   mode: AuthMode
   redirect: string | undefined
   /** Desktop modal shows the "Entrar | Criar conta" switch; mobile uses its own heading. */
   layout: 'modal' | 'page'
+  /** Modal over the current page: switches forms in place instead of linking to the routes. */
+  onModeChange?: (mode: AuthMode) => void
 }
 
 const COPY = {
@@ -42,8 +45,9 @@ function FormAlert({ message }: { message: string | null }) {
 function useAfterSignIn(redirect: string | undefined) {
   const navigate = useNavigate()
   return () => {
-    // `redirect` is validated as an in-app path by the route search schema.
-    void navigate({ to: redirect ?? '/' })
+    // `redirect` is validated as an in-app path by the search schema. It replaces the
+    // sign-in entry, so going back afterwards skips the form.
+    void navigate({ href: redirect ?? '/', replace: true })
   }
 }
 
@@ -229,7 +233,7 @@ function SocialSignIn() {
 }
 
 /** Sign-in / sign-up content of the "Sign In Modal" and the mobile auth screens. */
-export function AuthPanel({ mode, redirect, layout }: AuthPanelProps) {
+export function AuthPanel({ mode, redirect, layout, onModeChange }: AuthPanelProps) {
   const { endReason } = useSession()
   const search = redirect ? { redirect } : {}
   // Switching forms replaces the history entry, so closing goes back past both.
@@ -238,25 +242,35 @@ export function AuthPanel({ mode, redirect, layout }: AuthPanelProps) {
     <div className="flex flex-col gap-6">
       {layout === 'modal' ? (
         <nav aria-label="Acesso à conta" className="flex items-center justify-center gap-2 text-base font-bold">
-          <Link
-            to="/login"
-            search={search}
-            replace
-            aria-current={mode === 'login' ? 'page' : undefined}
-            className={cn('px-1', mode === 'login' ? 'text-amber' : 'text-foreground hover:text-amber')}
-          >
-            Entrar
-          </Link>
-          <span aria-hidden="true" className="h-5 w-px bg-primary" />
-          <Link
-            to="/register"
-            search={search}
-            replace
-            aria-current={mode === 'register' ? 'page' : undefined}
-            className={cn('px-1', mode === 'register' ? 'text-amber' : 'text-foreground hover:text-amber')}
-          >
-            Criar conta
-          </Link>
+          {(['login', 'register'] as const).map((option, index) => {
+            const className = cn('px-1', mode === option ? 'text-amber' : 'text-foreground hover:text-amber')
+            const label = option === 'login' ? 'Entrar' : 'Criar conta'
+            return (
+              <span key={option} className="flex items-center gap-2">
+                {index > 0 ? <span aria-hidden="true" className="h-5 w-px bg-primary" /> : null}
+                {onModeChange ? (
+                  <button
+                    type="button"
+                    aria-current={mode === option ? 'page' : undefined}
+                    className={className}
+                    onClick={() => onModeChange(option)}
+                  >
+                    {label}
+                  </button>
+                ) : (
+                  <Link
+                    to={option === 'login' ? '/login' : '/register'}
+                    search={search}
+                    replace
+                    aria-current={mode === option ? 'page' : undefined}
+                    className={className}
+                  >
+                    {label}
+                  </Link>
+                )}
+              </span>
+            )
+          })}
         </nav>
       ) : null}
       <p className="text-center text-[13px] leading-4 text-foreground max-md:hidden">{COPY[mode].subtitle}</p>
