@@ -88,6 +88,10 @@ test.describe('carrinho', () => {
     await app.buyFromDetail('nft_001')
     const increase = visible(page, 'Aumentar quantidade').first()
     const quantity = (units: number) => page.getByLabel(`${units} unidades`).filter({ visible: true }).first()
+    let saved = 0
+    page.on('response', (response) => {
+      if (response.request().method() === 'PATCH' && response.url().includes('/cart/items/')) saved += 1
+    })
 
     // No waiting for the server between clicks: each answer must not undo the clicks queued after it.
     for (const units of [2, 3, 4]) {
@@ -96,6 +100,9 @@ test.describe('carrinho', () => {
     }
     await visible(page, 'Diminuir quantidade').first().click()
     await expect(quantity(3)).toBeVisible()
+    // The quote showed 3.57 ETH once already (on the way up), so it cannot tell that the last change
+    // reached the server, and a reload with a change still queued would drop it.
+    await expect.poll(() => saved).toBe(4)
     await expect(summary(page).filter({ visible: true }).first()).toContainText('3.57 ETH')
 
     await page.reload()
