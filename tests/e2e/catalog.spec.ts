@@ -76,7 +76,11 @@ test.describe('catálogo', () => {
 })
 
 test.describe('início pré-renderizado', () => {
-  test('o HTML já traz o hero e o React adota essa marcação sem erros @mobile', async ({ app, page }) => {
+  /** Opens the prerendered home page; resolves to whether React kept the hero from index.html. */
+  async function openPrerendered(
+    app: { open: (path: string, options: { reset: boolean }) => Promise<void> },
+    page: Page,
+  ) {
     const errors: string[] = []
     page.on('pageerror', (error) => errors.push(error.message))
     page.on('console', (message) => message.type() === 'error' && errors.push(message.text()))
@@ -92,8 +96,24 @@ test.describe('início pré-renderizado', () => {
     const heroKept = await page.evaluate(
       () => (window as unknown as { __prerenderedHero?: Element | null }).__prerenderedHero?.isConnected,
     )
-    expect(heroKept).toBe(true)
+    return { heroKept, errors }
+  }
+
+  test('o HTML já traz o hero e o React adota essa marcação sem erros @mobile', async ({ app, page }) => {
+    const { heroKept, errors } = await openPrerendered(app, page)
     expect(errors).toEqual([])
+    expect(heroKept).toBe(true)
+  })
+
+  test('a hidratação não perde a marcação quando a API responde antes dela', async ({ app, page }) => {
+    // A slow page chunk lets the simulated API answer before hydration (fast network, busy CPU).
+    await page.route('**/assets/home-page-content-*.js', async (route) => {
+      await new Promise((resolve) => setTimeout(resolve, 1500))
+      await route.continue()
+    })
+    const { heroKept, errors } = await openPrerendered(app, page)
+    expect(errors).toEqual([])
+    expect(heroKept).toBe(true)
   })
 })
 

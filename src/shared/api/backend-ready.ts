@@ -13,6 +13,16 @@ export function setBackendReady(start: Promise<BackendCheck | undefined>): void 
   ready = start
 }
 
+/**
+ * Also holds requests until `gate` resolves. Hydrating the prerendered page needs every query
+ * still pending, as in the markup: data that arrives earlier renders where the HTML has
+ * skeletons, and React discards the markup.
+ */
+export function holdBackendUntil(gate: Promise<unknown>): void {
+  const start = ready
+  ready = Promise.all([start, gate]).then(([check]) => check)
+}
+
 export async function backendReady(): Promise<void> {
   const check = await ready
   await check?.()
