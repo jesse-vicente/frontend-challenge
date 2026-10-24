@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 import { useEffect, useId, useRef, useState } from 'react'
 import filterIcon from '@/assets/icons/filter.svg'
 import searchIcon from '@/assets/icons/search-mobile.svg'
+import { useHydrated } from '@/shared/lib/use-hydrated'
 import { Button } from '@/shared/ui/button'
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/shared/ui/sheet'
 import { nftListQuery } from '../queries'
@@ -26,7 +27,9 @@ export function MobileCatalogBar({ search, onSearchChange }: CatalogSectionProps
   const [query, setQuery] = useState(search.q ?? '')
   const inputId = useId()
   // Same query options as the grid: facets come from the shared cache entry.
-  const { data } = useQuery(nftListQuery(toListParams(search)))
+  const { data: cached } = useQuery(nftListQuery(toListParams(search)))
+  // Hydrating the prerendered home page: keep its loading state even if the data is cached.
+  const data = useHydrated() ? cached : undefined
   const filters = activeFilterCount(search)
   const [sheetOpen, setSheetOpen] = useState(false)
   const showResults = useRef(false)

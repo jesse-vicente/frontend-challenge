@@ -1,7 +1,7 @@
 import '@/styles/globals.css'
-import { StrictMode, startTransition } from 'react'
+import { StrictMode, startTransition, useEffect } from 'react'
 import { createRoot, hydrateRoot } from 'react-dom/client'
-import { setBackendReady } from '@/shared/api/backend-ready'
+import { holdBackendUntil, setBackendReady } from '@/shared/api/backend-ready'
 
 /** Longest wait for the route data before the first render. */
 const FIRST_RENDER_WAIT_MS = 1000
@@ -26,6 +26,12 @@ function loadFirstRoute(router: FirstRouteRouter, maxWaitMs?: number): Promise<v
     })
     void router.load().finally(done)
   })
+}
+
+/** Calls `onDone` once the tree it closes has committed (after hydration). */
+function Committed({ onDone }: { onDone: () => void }) {
+  useEffect(onDone, [onDone])
+  return null
 }
 
 async function bootstrap() {
@@ -55,20 +61,32 @@ async function bootstrap() {
   )
 
   // index.html holds the prerendered home page: hydrate it when it matches, otherwise replace it.
+  // Either class means index.html already hid part of it (boot params count as search there).
   const html = document.documentElement
-  if (rootElement.hasChildNodes() && !html.classList.contains('skip-prerender') && matchesPrerender()) {
+  const prerenderShown = !html.classList.contains('skip-prerender') && !html.classList.contains('prerender-shell')
+  if (rootElement.hasChildNodes() && prerenderShown && matchesPrerender()) {
+    // The markup has every query pending: requests start once it is hydrated.
+    let hydrated = () => {}
+    holdBackendUntil(new Promise<void>((resolve) => (hydrated = resolve)))
     await loadFirstRoute(router)
     if (matchesPrerender()) {
       // As the router's SSR hydration does: no client-only Suspense around the root.
       router.ssr = { manifest: undefined }
-      hydrateRoot(rootElement, app)
+      hydrateRoot(
+        rootElement,
+        <StrictMode>
+          <App queryClient={queryClient} router={router} />
+          <Committed onDone={hydrated} />
+        </StrictMode>,
+      )
       return
     }
+    hydrated()
   } else {
     // Render once with the data when it is quick; slower loads show the route skeleton.
     await loadFirstRoute(router, FIRST_RENDER_WAIT_MS)
   }
-  html.classList.remove('skip-prerender')
+  html.classList.remove('skip-prerender', 'prerender-shell')
   rootElement.replaceChildren()
   const root = createRoot(rootElement)
   // Time-sliced first render.

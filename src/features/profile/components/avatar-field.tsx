@@ -39,7 +39,7 @@ export function AvatarField({ profile }: { profile: ProfileDto }) {
   return (
     <fieldset aria-describedby={error ? errorId : undefined} className="m-0 flex min-w-0 flex-col gap-2 border-0 p-0">
       <legend className={cn(fieldLabelClass, 'mb-2')}>Avatar</legend>
-      <div className="flex items-center gap-6">
+      <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
         <span className="grid size-[50px] shrink-0 place-items-center overflow-hidden rounded-full border border-border bg-surface text-amber">
           {profile.avatarUrl ? (
             <img src={profile.avatarUrl} alt="Avatar atual" className="size-full object-cover" />

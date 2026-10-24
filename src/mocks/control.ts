@@ -3,7 +3,14 @@ import { getDb, resetDb } from './db/store'
 import { closeAllConnections, connectionCount, deliverRaw, recentEvents, replay } from './realtime/publisher'
 import { isRealtimeOffline, setRealtimeOffline } from './realtime/server'
 import { type NetworkEffect, SCENARIOS, type ScenarioDefinition, type ScenarioName } from './scenarios/definitions'
-import { addRule, clearRules, getScenario, setLatencyOverride, setScenario } from './scenarios/runtime'
+import {
+  addRule,
+  clearRules,
+  getScenario,
+  setLatencyOverride,
+  setScenario,
+  setSettlementDelayOverride,
+} from './scenarios/runtime'
 import { type EditionPatch, findNft, updateNft } from './services/catalog'
 import { cancelAllTimers, settleOrder } from './services/orders'
 import { expireSessions } from './services/sessions'
@@ -19,6 +26,7 @@ export interface MockControl {
   getScenario(): ScenarioDefinition
   listScenarios(): ScenarioDefinition[]
   setLatency(ms: number | null): void
+  setSettlementDelay(ms: number | null): void
   failNext(method: string, path: string, effect: NetworkEffect, times?: number): void
   clearFailures(): void
   updateNft(nftId: string, patches: EditionPatch[]): void
@@ -44,6 +52,7 @@ export const mockControl: MockControl = {
   getScenario,
   listScenarios: () => Object.values(SCENARIOS),
   setLatency: setLatencyOverride,
+  setSettlementDelay: setSettlementDelayOverride,
   failNext(method, path, effect, times = 1) {
     addRule({ method, path, effect, times })
   },

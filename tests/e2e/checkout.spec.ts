@@ -81,8 +81,11 @@ test.describe('compra', () => {
   })
 
   test('pedido pendente é retomado após recarregar a página', async ({ app, page }) => {
+    // Two full page loads after the purchase flow.
+    test.setTimeout(75_000)
     await openCheckout(app)
-    await app.mock('setLatency', 200)
+    // The order stays pending until the test settles it (the delay is stored with the order).
+    await app.mock('setSettlementDelay', 120_000)
     await openReview(page)
     await reviewDialog(page).getByRole('button', { name: 'Confirmar e pagar' }).click()
     await expect(page.getByRole('heading', { name: 'Processando pagamento' })).toBeVisible()
@@ -91,6 +94,8 @@ test.describe('compra', () => {
     await page.goto('/checkout')
     await expect(page).toHaveURL(orderUrl)
     await page.reload()
+    await expect(page.getByRole('heading', { name: 'Processando pagamento' })).toBeVisible()
+    await app.mock('settleOrder', orderUrl.split('/').pop())
     await expect(receiptTitle(page)).toBeVisible({ timeout: 15_000 })
     expect(await orderCount(app)).toBe(1)
   })

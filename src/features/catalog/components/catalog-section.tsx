@@ -4,6 +4,7 @@ import { useFavorites } from '@/features/favorites/queries'
 import { announce } from '@/shared/a11y/announcer'
 import { EmptyState, ErrorState } from '@/shared/components/feedback-states'
 import { cn } from '@/shared/lib/cn'
+import { useHydrated } from '@/shared/lib/use-hydrated'
 import { useReveal } from '@/shared/lib/use-reveal'
 import { Button } from '@/shared/ui/button'
 import { nftHighlightsQuery, nftListQuery } from '../queries'
@@ -31,14 +32,17 @@ export function CatalogSection({ search, onSearchChange }: CatalogSectionProps) 
   const params = toListParams(search)
   const list = useQuery(nftListQuery(params))
   const highlights = useQuery(nftHighlightsQuery())
+  // Hydrating the prerendered home page: keep its loading state even if the data is cached.
+  const hydrated = useHydrated()
+  const listData = hydrated ? list.data : undefined
   const favorites = useFavorites()
   const sectionRef = useRef<HTMLElement>(null)
-  const page = list.data?.page ?? params.page ?? 1
-  const totalPages = list.data?.totalPages ?? 0
+  const page = listData?.page ?? params.page ?? 1
+  const totalPages = listData?.totalPages ?? 0
 
   // Announce result counts once a new query settles.
-  const total = list.data?.total
-  const settled = list.isSuccess && !list.isPlaceholderData
+  const total = listData?.total
+  const settled = hydrated && list.isSuccess && !list.isPlaceholderData
   useEffect(() => {
     if (settled && total !== undefined) {
       announce(
@@ -59,7 +63,7 @@ export function CatalogSection({ search, onSearchChange }: CatalogSectionProps) 
   }
 
   let content: React.ReactNode
-  if (list.isPending) {
+  if (!hydrated || list.isPending) {
     content = SKELETON_KEYS.map((key) => <NftCardSkeleton key={key} />)
   } else if (list.isError) {
     content = (
@@ -119,8 +123,8 @@ export function CatalogSection({ search, onSearchChange }: CatalogSectionProps) 
       </h2>
 
       <aside ref={reveal} aria-label="Filtros" className="reveal hidden w-[310px] shrink-0 flex-col gap-6 lg:flex">
-        <CatalogFilters search={search} facets={list.data?.facets} onChange={changeFilters} className="w-[310px]" />
-        <FeaturedBanner nft={highlights.data?.featured} />
+        <CatalogFilters search={search} facets={listData?.facets} onChange={changeFilters} className="w-[310px]" />
+        <FeaturedBanner nft={hydrated ? highlights.data?.featured : undefined} />
       </aside>
 
       <div className="flex min-w-0 flex-1 flex-col items-center gap-14 md:items-end lg:gap-[88px]">
