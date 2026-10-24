@@ -84,27 +84,27 @@ Selecione pela URL de qualquer rota, por exemplo `/?scenario=payment-declined`. 
 
 ## Comandos
 
-| Comando                         | Descrição                                                                   |
-| ------------------------------- | --------------------------------------------------------------------------- |
-| `pnpm dev`                      | desenvolvimento com mocks                                                   |
-| `pnpm build`                    | verificação de tipos + build de produção (`dist/`)                          |
-| `pnpm preview`                  | serve o build (porta 4173)                                                  |
-| `pnpm typecheck`                | TypeScript sem emitir                                                       |
-| `pnpm check` / `pnpm check:fix` | Biome (lint + formatação)                                                   |
-| `pnpm test:unit`                | Vitest (domínio, contratos cliente↔mock, sincronização de cache)            |
-| `pnpm test:e2e`                 | Playwright (build + preview automáticos; desktop e mobile)                  |
-| `pnpm test:e2e:update`          | regenera as baselines visuais                                               |
-| `pnpm test:e2e:report`          | abre o relatório HTML                                                       |
-| `pnpm lighthouse`               | build + 3 auditorias por página/perfil, relatórios em `lighthouse/reports/` |
-| `pnpm images:optimize`          | regenera os WebP a partir de `design/source/`                               |
+| Comando                         | Descrição                                                                                |
+| ------------------------------- | ---------------------------------------------------------------------------------------- |
+| `pnpm dev`                      | desenvolvimento com mocks                                                                |
+| `pnpm build`                    | verificação de tipos + build de produção (`dist/`, com a página inicial pré-renderizada) |
+| `pnpm preview`                  | serve o build (porta 4173)                                                               |
+| `pnpm typecheck`                | TypeScript sem emitir                                                                    |
+| `pnpm check` / `pnpm check:fix` | Biome (lint + formatação)                                                                |
+| `pnpm test:unit`                | Vitest (domínio, contratos cliente↔mock, sincronização de cache)                         |
+| `pnpm test:e2e`                 | Playwright (build + preview automáticos; desktop e mobile)                               |
+| `pnpm test:e2e:update`          | regenera as baselines visuais                                                            |
+| `pnpm test:e2e:report`          | abre o relatório HTML                                                                    |
+| `pnpm lighthouse`               | build + 3 auditorias por página/perfil, relatórios em `lighthouse/reports/`              |
+| `pnpm images:optimize`          | regenera os WebP a partir de `design/source/`                                            |
 
 ## Testes E2E
 
-56 testes em Chromium ([`tests/e2e/`](tests/e2e/)): projeto `desktop` (1440 px) roda tudo; `mobile` (390 px) roda os fluxos marcados com `@mobile`. Cada teste usa um contexto novo e reseta o backend simulado (`?mock-reset`). Cobertura dos 12 grupos do enunciado:
+62 testes em Chromium, somando os dois projetos ([`tests/e2e/`](tests/e2e/)): projeto `desktop` (1440 px) roda tudo; `mobile` (390 px) roda os fluxos marcados com `@mobile`. Cada teste usa um contexto novo e reseta o backend simulado (`?mock-reset`). Cobertura dos 12 grupos do enunciado:
 
 | Grupo                                                                                                                         | Spec                      |
 | ----------------------------------------------------------------------------------------------------------------------------- | ------------------------- |
-| Busca, filtros, ordenação, paginação, histórico; detalhe e 404                                                                | `catalog.spec.ts`         |
+| Busca, filtros, ordenação, paginação, histórico; detalhe e 404; hidratação da página inicial pré-renderizada                  | `catalog.spec.ts`         |
 | Cadastro, login, expiração (relógio controlado com `page.clock`), logout, troca de usuário                                    | `auth.spec.ts`            |
 | Favoritos (falha e recuperação); carrinho, cupom, persistência após refresh/login                                             | `favorites-cart.spec.ts`  |
 | Compra completa, recusa, clique repetido, timeout, pedido pendente; Socket.IO (preço, esgotado, duplicado/antigo, desconexão) | `checkout.spec.ts`        |
@@ -120,12 +120,12 @@ Falhas guardam trace, vídeo e screenshot (`test-results/`); o relatório HTML f
 
 | Página  | Perfil  | Performance | Accessibility | Best Practices | SEO |    LCP | CLS |    TBT |
 | ------- | ------- | ----------: | ------------: | -------------: | --: | -----: | --: | -----: |
-| início  | mobile  |          62 |           100 |            100 | 100 | 5,46 s |   0 | 295 ms |
-| início  | desktop |          97 |           100 |            100 | 100 | 1,11 s |   0 |  44 ms |
-| detalhe | mobile  |          65 |           100 |            100 | 100 | 4,89 s |   0 | 278 ms |
-| detalhe | desktop |          97 |           100 |            100 | 100 | 1,08 s |   0 |  26 ms |
+| início  | mobile  |          96 |           100 |            100 | 100 | 1,89 s |   0 | 211 ms |
+| início  | desktop |         100 |           100 |            100 | 100 | 0,45 s |   0 |   0 ms |
+| detalhe | mobile  |      **78** |           100 |            100 | 100 | 4,16 s |   0 |  60 ms |
+| detalhe | desktop |          98 |           100 |            100 | 100 | 0,94 s |   0 |   0 ms |
 
-Performance mobile fica abaixo da meta de 90 e varia alguns pontos entre execuções (feche servidores de desenvolvimento antes de auditar); a análise das causas e da variação está em [`ARCHITECTURE.md`](ARCHITECTURE.md#performance).
+Só o detalhe mobile fica abaixo da meta de 90: o LCP é a imagem do NFT, que depende do JavaScript do backend simulado, da latência simulada da API e só então do download da imagem. A nota mobile varia alguns pontos entre execuções (feche servidores de desenvolvimento antes de auditar). O que foi feito em cada página, com o efeito medido, e a análise das causas e da variação estão em [`ARCHITECTURE.md`](ARCHITECTURE.md#performance).
 
 ## Deploy
 
