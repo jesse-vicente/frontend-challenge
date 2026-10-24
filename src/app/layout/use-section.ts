@@ -8,7 +8,7 @@ const MARKET_PATHS = [/^\/nfts\//, /^\/cart/, /^\/checkout/, /^\/orders\//]
 /** Height of the sticky header plus some slack: a section counts as current once it reaches it. */
 const SECTION_OFFSET = 120
 
-/** On the home page, follows the scroll: "Mercado" while the catalog (#market) is under the header. */
+/** On the home page, follows the scroll: "Mercado" once the catalog (#market) reaches the header. */
 function useCatalogInView(enabled: boolean): boolean {
   const [inView, setInView] = useState(false)
 
@@ -22,8 +22,9 @@ function useCatalogInView(enabled: boolean): boolean {
       frame = 0
       const catalog = document.getElementById('market')
       if (!catalog) return setInView(false)
-      const { top, bottom } = catalog.getBoundingClientRect()
-      setInView(top <= SECTION_OFFSET && bottom > SECTION_OFFSET)
+      const { top } = catalog.getBoundingClientRect()
+      // Everything below the catalog (promos, journal, footer) still belongs to the market.
+      setInView(top <= SECTION_OFFSET)
     }
     const schedule = () => {
       if (!frame) frame = window.requestAnimationFrame(measure)

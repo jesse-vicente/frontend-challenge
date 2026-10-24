@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
-import { Link, useRouterState } from '@tanstack/react-router'
+import { Link, useLinkProps, useRouterState } from '@tanstack/react-router'
 import { type ReactNode, useLayoutEffect, useRef, useState } from 'react'
 import cartIcon from '@/assets/icons/cart.svg'
 import cartBadge from '@/assets/icons/cart-badge.svg'
@@ -33,6 +33,23 @@ function NavItem({ children }: { children: ReactNode }) {
     <div data-nav-item className="flex pb-[21px]">
       {children}
     </div>
+  )
+}
+
+/**
+ * Menu link to a home section. The router would mark every link to "/" as the current page;
+ * here the current section (from the scroll position) decides.
+ */
+function SectionLink({ hash, active, children }: { hash?: string; active: boolean; children: ReactNode }) {
+  const { 'aria-current': _routerCurrent, className: _routerClass, ...linkProps } = useLinkProps({ to: '/', hash })
+  return (
+    <a
+      {...linkProps}
+      aria-current={active ? 'page' : undefined}
+      className={cn(navItemClass, active && 'font-bold text-amber')}
+    >
+      {children}
+    </a>
   )
 }
 
@@ -161,23 +178,12 @@ export function SiteHeader() {
 
           <nav ref={navRef} aria-label="Principal" className="relative hidden items-start gap-6 md:flex lg:gap-10">
             <NavItem>
-              <Link
-                to="/"
-                aria-current={current === 'home' ? 'page' : undefined}
-                className={cn(navItemClass, current === 'home' && 'font-bold text-amber')}
-              >
-                Início
-              </Link>
+              <SectionLink active={current === 'home'}>Início</SectionLink>
             </NavItem>
             <NavItem>
-              <Link
-                to="/"
-                hash="market"
-                aria-current={current === 'market' ? 'page' : undefined}
-                className={cn(navItemClass, current === 'market' && 'font-bold text-amber')}
-              >
+              <SectionLink hash="market" active={current === 'market'}>
                 Mercado
-              </Link>
+              </SectionLink>
             </NavItem>
             {['Criadores', 'Aprenda'].map((label) => (
               <NavItem key={label}>
