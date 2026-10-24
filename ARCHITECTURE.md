@@ -31,13 +31,14 @@ As fronteiras são verificadas pelo lint (`noRestrictedImports` em [`biome.json`
 
 - Login/cadastro devolvem `{ token, expiresAt, user }`. O **token é o único segredo guardado no cliente** (`localStorage`, chave `nft:session`); senhas nunca são persistidas. Escolha consciente para uma SPA sem backend próprio: um backend real usaria cookie `HttpOnly`.
 - No boot, `GET /auth/session` valida o token. Qualquer `401 SESSION_EXPIRED/UNAUTHENTICATED` numa requisição que levou token encerra a sessão local (`sessionStore.end`), o router reavalia as guardas e a rota privada vai para `/login?redirect=<rota>` com o aviso "Sua sessão expirou".
+- Entrar no desktop é um modal sobre a página atual, guiado pela URL (`?auth=login|register&redirect=…`, validados na rota raiz): o header, o "Favoritar" e as rotas privadas abrem o modal sem sair da página. A guarda de rota usa a última página resolvida (`router.subscribe('onResolved')`), porque a URL já mudou quando ela roda. Ao entrar, segue para `redirect` ou fica na página; fechar volta no histórico. No mobile, e em links diretos para rota privada, continua a tela `/login` (com a página inicial atrás no desktop).
 - O checkout guarda um rascunho do formulário em `sessionStorage` por usuário: após expirar e entrar de novo, o colecionador volta aos mesmos dados.
 - Logout e troca de usuário removem **todo** o cache privado do dono anterior e recriam o socket. Todas as chaves privadas começam com `['private', owner]`, então uma única `removeQueries` limpa o escopo.
 
 ## Estado do carrinho
 
 - O carrinho pertence ao servidor. Visitantes têm um id gerado no cliente (`X-Cart-Id`); no login/cadastro o servidor mescla o carrinho do visitante no da conta e o id local é descartado.
-- Toda mutação responde com o carrinho completo, gravado direto no cache. A alteração de quantidade é **otimista** com rollback; as mutations do carrinho compartilham um `scope`, então cliques rápidos são aplicados em ordem.
+- Toda mutação responde com o carrinho completo, gravado direto no cache. A alteração de quantidade é **otimista** com rollback; as mutations do carrinho compartilham um `scope`, então cliques rápidos são aplicados em ordem. Enquanto houver mutations do carrinho na fila, a resposta de uma anterior não é gravada (voltaria o contador para um valor antigo): só a última grava o carrinho e invalida a cotação. Se a última falhar, o carrinho é recarregado do servidor. O total da linha usa a cotação apenas quando ela já reflete a quantidade atual.
 - A cotação (`POST /quote`, por rede) é invalidada a cada mudança de carrinho ou evento de preço. Ela informa linhas com problema (`sold-out`, `quantity-reduced`), cupom rejeitado e `purchasable`; o botão de finalizar respeita isso.
 - No checkout, "Confirmar compra" busca uma cotação nova e compara com a exibida (`diffQuotes`): diferenças aparecem na revisão e exigem nova confirmação. O servidor revalida tudo de novo no `POST /orders` e responde `409 QUOTE_STALE` com a cotação nova se algo mudou.
 
@@ -60,6 +61,8 @@ As fronteiras são verificadas pelo lint (`noRestrictedImports` em [`biome.json`
 
 Queries só repetem falhas transitórias (rede, timeout, 5xx), até 2 vezes com backoff. Erros aparecem com mensagem e "Tentar novamente".
 
+Requisições sem interação, todas intencionais: ao voltar para a aba (`visibilitychange`), queries vencidas são refeitas (o carrinho sempre, o catálogo após 30 s); passar o mouse num link pré-carrega a rota (`defaultPreload: 'intent'`), e o loader só busca o que estiver vencido; numa reconexão do socket, as queries ativas são refeitas. Com a aba parada e visível não há polling (exceto o pedido pendente). Em `pnpm dev`, o `StrictMode` monta a página duas vezes e as primeiras buscas aparecem duplicadas (uma cancelada); no build de produção cada uma sai uma vez.
+
 ## Reconciliação REST × Socket.IO
 
 Detalhes em [`docs/realtime-events.md`](docs/realtime-events.md). Em resumo: cada recurso tem `version`; o `eventGuard` descarta eventos duplicados (`eventId`) e antigos (`version` ≤ última conhecida), e as respostas REST também registram versões. Patches de cache comparam versões antes de aplicar. Após uma reconexão, as queries ativas são invalidadas para buscar o que se perdeu. Eventos privados são filtrados por `userId` no servidor e no cliente.
@@ -69,6 +72,7 @@ Detalhes em [`docs/realtime-events.md`](docs/realtime-events.md). Em resumo: cad
 1. `main.tsx` lê e remove `?scenario`/`?mock-reset` da URL **antes** de o router existir.
 2. O chunk dos mocks e o do app são baixados em paralelo (`modulepreload`); o app renderiza sem esperar o MSW.
 3. Requisições REST e o socket aguardam `backendReady()` (início do worker). `socket.io-client` só é importado depois disso, porque o Engine.IO captura o construtor `WebSocket` ao ser avaliado — e o MSW precisa ter aplicado o patch. Por isso o import de tipos desse pacote é `import type` (um `import { type … }` manteria um import de efeito colateral).
+4. O navegador encerra service workers ociosos (numa aba oculta os timers são estrangulados e o keepalive do MSW para de chegar). O worker reiniciado esquece a página e deixa as requisições irem para a rede (404 até recarregar). Por isso `startMocks` devolve uma verificação que o `backendReady()` roda antes de cada requisição: se o worker não foi confirmado nos últimos 10 s, a página se registra de novo (`MOCK_ACTIVATE`) antes de seguir (`src/mocks/worker-keeper.ts`). O socket não depende do worker (a interceptação de WebSocket roda na página).
 
 ## Performance
 
@@ -95,10 +99,22 @@ Medidas aplicadas e medidas: pré-carregamento dos chunks de boot, renderizaçã
 - Perfil e Carteiras não têm frame mobile: a sidebar vira uma linha de chips com rolagem horizontal e os campos empilham.
 - Pontos do carrossel mantêm 12 px visíveis dentro de uma área de toque de 24 px (WCAG 2.5.8); a linha ficou 12 px mais alta.
 - O conteúdo ocupa no mínimo a altura da viewport, então o rodapé de páginas curtas (ex.: pagamento) fica um pouco mais abaixo que no frame.
-- Hero da home virou carrossel: o slide do Figma e mais duas variações (lançamentos e em alta) com a mesma estrutura. Troca a cada 7 s e pausa com hover, foco, aba oculta e `prefers-reduced-motion`; há um botão de pausar ao lado dos pontos (WCAG 2.2.2) e swipe no mobile. O título do slide passou a `h2`, e a página tem um `h1` visualmente oculto.
-- Header desktop fixo no topo: ao rolar, fica compacto com fundo translúcido (glass) e o sublinhado do menu desliza para a seção visível (Início ou Mercado). Âncoras rolam suavemente e as seções têm margem para o header.
-- Tag de raridade (RARO/ÉPICO/LENDÁRIO) também no card desktop.
+- Hero da home virou carrossel: o slide do Figma e mais duas variações (lançamentos e em alta) com a mesma estrutura. Troca a cada 7 s e pausa com o mouse sobre o carrossel, com foco do teclado, com a aba oculta e com `prefers-reduced-motion` (sem botão de pausar, a pedido; no toque não há pausa, só swipe e pontos). Swipe no mobile. O título do slide passou a `h2`, e a página tem um `h1` visualmente oculto.
+- Header desktop fixo no topo, sempre do mesmo tamanho: ao rolar, ganha fundo translúcido (glass) e o sublinhado do menu desliza para "Mercado" quando o catálogo chega ao header, e fica nele até o fim da página (destaques, Diário e rodapé fazem parte do mercado). Só o item da seção atual tem `aria-current` (o router marcaria "Início" junto). Âncoras rolam suavemente e as seções têm margem para o header.
+- Âncoras da URL em inglês, como as rotas (`#market`, `#favorites`, `#content` do link "pular para o conteúdo").
+- Tag de raridade (RARO/ÉPICO/LENDÁRIO) também no card desktop. Só RARO aparece no Figma (cor primária); ÉPICO usa lilás (`--rarity-epic`) e LENDÁRIO dourado (`--rarity-legendary`), ambos com texto escuro. A tag tem largura mínima do Figma (68 px) e cresce com o texto.
+- Carrinho: cabeçalho da tabela com a mesma altura e linha do título "Resumo da carteira" (alinhados) e 40 px entre a trilha de navegação e o conteúdo (no frame ficam colados). Carrinho vazio: o aviso ocupa toda a largura. Linhas da tabela com 70 px, arte 70×70 e colunas do frame (311/138/137 px); lixeira do layout como componente (`TrashIcon`, em `currentColor`).
 - Cards do Diário da Cunhagem são clicáveis por inteiro e animam no hover.
+- Card do catálogo no hover: a moldura fica fixa e só a arte aproxima (escala 1,08 rumo ao rosto, dentro de `overflow-hidden`); o `sizes` prevê a ampliação para a imagem não perder nitidez. Ícones das redes sociais do rodapé sobem com um brilho no hover.
+- Destaques do desktop: coluna de texto de 298 px (no Figma, 290) para "Arte digital selecionada" caber em 3 linhas, como o card ao lado, alinhando os botões "Explorar".
+- "Compartilhar este NFT": LinkedIn e X sem moldura, na cor do texto (o frame reaproveitava os ícones laranja do rodapé).
+- Imagem ampliada do detalhe: ocupa até 900 px (limitada pela altura da janela), e o fechar é um botão circular escuro, visível sobre artes claras.
+- Mobile: os cards de destaque ("Lançamentos gênesis…", "Arte digital selecionada…") e o Diário da Cunhagem também aparecem (o frame mobile não os tem). Os destaques usam tipografia menor para caber nos 250 px; o Diário vira uma linha com rolagem horizontal e snap. A paginação do catálogo fica centralizada.
+- Rodapé mobile: os três destaques ficam com o selo ao lado do texto, os links mantêm altura de linha normal quando quebram e o copyright não tem mais o entrelinha de 30 px.
+- Hero mobile: os três slides têm a altura do maior (o primeiro), então os pontos ficam sempre dentro do card. O swipe usa `touch-action: pan-y` (sem isso o navegador assume o gesto e cancela o ponteiro) e um swipe que termina no link não o abre.
+- Microanimações (só sem `prefers-reduced-motion`): seções e cards sobem e aparecem na primeira vez que entram na tela, em sequência nas grades (`useReveal`, um único `IntersectionObserver`); o slide ativo do hero entra em cascata no carregamento e a cada troca. Título e arte do hero animam só com `transform`, sem opacidade, para não atrasar o LCP. As baselines visuais são capturadas com movimento reduzido.
+- Login/cadastro: modal sobre a página atual no desktop (ver Sessão). Fechar (X, Esc ou "Voltar" na tela cheia mobile, que não tem botão no frame) volta à página anterior, ou ao início sem histórico. Antes ia para o `redirect`, e uma rota privada mandava de volta ao login. Alternar entre Entrar e Criar conta substitui a entrada do histórico.
+- O carrossel do hero e a seção de destaques tinham o mesmo nome acessível ("Destaques da Kurio"); a segunda passou a "Lançamentos e curadoria".
 - Paddings simétricos no botão "Enviar" da newsletter e no selo de carteiras compatíveis (no Figma o lado direito é menor); o copyright tem o mesmo espaçamento acima e abaixo.
 
 ## Limitações
