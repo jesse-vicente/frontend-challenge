@@ -83,7 +83,7 @@ export function HomePromos() {
               to="/"
               search={{ segment: promo.segment }}
               hash="mercado"
-              className="mt-auto flex h-10 w-[140px] items-center justify-center gap-1 rounded-md bg-primary text-sm leading-5 font-medium text-ink hover:bg-amber"
+              className="mt-auto flex h-10 w-[140px] shrink-0 items-center justify-center gap-1 rounded-md bg-primary text-sm leading-5 font-medium text-ink hover:bg-amber"
             >
               Explorar
               <img
@@ -116,13 +116,18 @@ export function HomeJournal() {
       </header>
       <div className="grid w-full grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
         {ARTICLES.map((article) => (
-          <article key={article.title} className="flex flex-col overflow-hidden rounded-lg bg-surface">
-            <NftImage
-              image={article.image}
-              decorative
-              sizes="(min-width: 1024px) 268px, 50vw"
-              className="h-[195px] w-full"
-            />
+          <article
+            key={article.title}
+            className="group relative flex flex-col overflow-hidden rounded-lg bg-surface transition duration-300 ease-out hover:-translate-y-1 hover:shadow-[0_12px_28px_rgba(10,6,4,0.55)] has-[:focus-visible]:-translate-y-1 motion-reduce:transform-none"
+          >
+            <div className="overflow-hidden">
+              <NftImage
+                image={article.image}
+                decorative
+                sizes="(min-width: 1024px) 268px, 50vw"
+                className="h-[195px] w-full transition-transform duration-500 ease-out group-hover:scale-105 motion-reduce:transform-none"
+              />
+            </div>
             <div className="flex flex-1 flex-col gap-2 px-4 pt-3 pb-4">
               <p className="text-xs leading-4 font-medium whitespace-pre-wrap text-sand">
                 {`${article.date}  |  ${article.reading}`}
@@ -132,10 +137,13 @@ export function HomeJournal() {
               <button
                 type="button"
                 onClick={() => notifyComingSoon('O Diário da Cunhagem')}
-                className="flex items-start gap-1 self-start rounded-sm text-xs text-amber hover:underline"
+                // The whole card is the click target (stretched pseudo-element over the article).
+                className="flex items-start gap-1 self-start rounded-sm text-xs text-amber outline-none group-hover:underline after:absolute after:inset-0 after:rounded-lg focus-visible:after:outline-2 focus-visible:after:outline-ring"
               >
                 <span className="leading-[14px] font-bold">Ler mais</span>
-                <span aria-hidden="true">→</span>
+                <span aria-hidden="true" className="transition-transform duration-300 group-hover:translate-x-1">
+                  →
+                </span>
                 <span className="sr-only">: {article.title}</span>
               </button>
             </div>
