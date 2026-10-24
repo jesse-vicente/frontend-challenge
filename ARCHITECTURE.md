@@ -95,6 +95,11 @@ Medidas aplicadas e medidas: pré-carregamento dos chunks de boot, renderizaçã
 - Perfil e Carteiras não têm frame mobile: a sidebar vira uma linha de chips com rolagem horizontal e os campos empilham.
 - Pontos do carrossel mantêm 12 px visíveis dentro de uma área de toque de 24 px (WCAG 2.5.8); a linha ficou 12 px mais alta.
 - O conteúdo ocupa no mínimo a altura da viewport, então o rodapé de páginas curtas (ex.: pagamento) fica um pouco mais abaixo que no frame.
+- Hero da home virou carrossel: o slide do Figma e mais duas variações (lançamentos e em alta) com a mesma estrutura. Troca a cada 7 s e pausa com hover, foco, aba oculta e `prefers-reduced-motion`; há um botão de pausar ao lado dos pontos (WCAG 2.2.2) e swipe no mobile. O título do slide passou a `h2`, e a página tem um `h1` visualmente oculto.
+- Header desktop fixo no topo: ao rolar, fica compacto com fundo translúcido (glass) e o sublinhado do menu desliza para a seção visível (Início ou Mercado). Âncoras rolam suavemente e as seções têm margem para o header.
+- Tag de raridade (RARO/ÉPICO/LENDÁRIO) também no card desktop.
+- Cards do Diário da Cunhagem são clicáveis por inteiro e animam no hover.
+- Paddings simétricos no botão "Enviar" da newsletter e no selo de carteiras compatíveis (no Figma o lado direito é menor); o copyright tem o mesmo espaçamento acima e abaixo.
 
 ## Limitações
 
