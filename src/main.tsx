@@ -61,8 +61,10 @@ async function bootstrap() {
   )
 
   // index.html holds the prerendered home page: hydrate it when it matches, otherwise replace it.
+  // Either class means index.html already hid part of it (boot params count as search there).
   const html = document.documentElement
-  if (rootElement.hasChildNodes() && !html.classList.contains('skip-prerender') && matchesPrerender()) {
+  const prerenderShown = !html.classList.contains('skip-prerender') && !html.classList.contains('prerender-shell')
+  if (rootElement.hasChildNodes() && prerenderShown && matchesPrerender()) {
     // The markup has every query pending: requests start once it is hydrated.
     let hydrated = () => {}
     holdBackendUntil(new Promise<void>((resolve) => (hydrated = resolve)))
@@ -84,7 +86,7 @@ async function bootstrap() {
     // Render once with the data when it is quick; slower loads show the route skeleton.
     await loadFirstRoute(router, FIRST_RENDER_WAIT_MS)
   }
-  html.classList.remove('skip-prerender')
+  html.classList.remove('skip-prerender', 'prerender-shell')
   rootElement.replaceChildren()
   const root = createRoot(rootElement)
   // Time-sliced first render.

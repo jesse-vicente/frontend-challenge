@@ -13,8 +13,9 @@ const MODULE_PRELOAD = /\s*<link rel="modulepreload" crossorigin href="([^"]+)">
 
 /**
  * Runs in the page (serialized into index.html): loads the app scripts. Over the prerendered
- * home page they start once it has painted, so the first paint competes with nothing for the
- * network or the main thread; any other page (`skip-prerender`) needs them at once.
+ * home page, or its layout on other pages (`prerender-shell`), they start once it has painted,
+ * so the first paint competes with nothing for the network or the main thread; a hidden root
+ * (`skip-prerender`) paints nothing, so it needs them at once.
  */
 function loadAppScripts(entry: string, preloads: string[]) {
   let started = false
