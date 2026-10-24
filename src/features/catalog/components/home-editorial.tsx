@@ -80,7 +80,7 @@ export function HomePromos() {
             className="pointer-events-none absolute inset-0 size-full max-w-none"
           />
           {/* Phones: tighter type and padding so the text and the button fit the 250 px card. */}
-          <div className="relative ml-auto flex w-[56%] flex-col items-end gap-2 py-5 pr-4 text-right sm:w-[290px] sm:gap-3 sm:py-9 sm:pr-[30px]">
+          <div className="relative ml-auto flex w-[56%] flex-col items-end gap-2 py-5 pr-4 text-right sm:w-[298px] sm:gap-3 sm:py-9 sm:pr-6">
             <h2 className="text-[15px] leading-5 font-bold text-foreground sm:text-lg sm:leading-6">
               {promo.title[0]}
               <br />
