@@ -8,6 +8,20 @@
     <meta name="theme-color" content="#140d0a" />
     <link rel="preload" href="/fonts/roboto-mono-latin.woff2" as="font" type="font/woff2" crossorigin />
     <title>Kurio | Marketplace de NFTs</title>
+    <script>
+      // #root holds the prerendered home page (vite.config.ts). Another page, search parameters or
+      // a stored session render differently: hide it before the first paint (src/main.tsx).
+      try {
+        if (location.pathname !== '/' || location.search || localStorage.getItem('nft:session')) {
+          document.documentElement.classList.add('skip-prerender')
+        }
+      } catch {}
+    </script>
+    <style>
+      .skip-prerender #root {
+        display: none;
+      }
+    </style>
   </head>
   <body>
     <div id="root"></div>

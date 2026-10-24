@@ -1,5 +1,5 @@
 import { type QueryClient } from '@tanstack/react-query'
-import { createRouter } from '@tanstack/react-router'
+import { createRouter, type RouterHistory } from '@tanstack/react-router'
 import { routeTree } from '@/routeTree.gen'
 
 export interface RouterContext {
@@ -9,9 +9,11 @@ export interface RouterContext {
 const prefersReducedMotion = () =>
   typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
-export function createAppRouter(queryClient: QueryClient) {
+/** `history` defaults to the browser history; the build-time prerender passes a memory one. */
+export function createAppRouter(queryClient: QueryClient, history?: RouterHistory) {
   return createRouter({
     routeTree,
+    history,
     context: { queryClient },
     defaultPreload: 'intent',
     // Loaders read through the Query cache, which owns freshness.
