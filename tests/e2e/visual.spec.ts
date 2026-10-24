@@ -30,6 +30,9 @@ async function settle(page: Page) {
 
 const shot = { fullPage: true, animations: 'disabled' as const }
 
+// Reduced motion also turns off the hero autoplay, so every capture shows the first slide.
+test.use({ reducedMotion: 'reduce' })
+
 test.describe('regressão visual @mobile', () => {
   test('início', async ({ app, page }) => {
     await app.open('/')
