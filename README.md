@@ -102,16 +102,16 @@ Selecione pela URL de qualquer rota, por exemplo `/?scenario=payment-declined`. 
 
 65 testes em Chromium, somando os dois projetos ([`tests/e2e/`](tests/e2e/)): projeto `desktop` (1440 px) roda tudo; `mobile` (390 px) roda os fluxos marcados com `@mobile`. Cada teste usa um contexto novo e reseta o backend simulado (`?mock-reset`). Cobertura dos 12 grupos do enunciado e da responsividade:
 
-| Grupo                                                                                                                         | Spec                      |
-| ----------------------------------------------------------------------------------------------------------------------------- | ------------------------- |
-| Busca, filtros, ordenação, paginação, histórico; detalhe e 404; hidratação da página inicial pré-renderizada                  | `catalog.spec.ts`         |
-| Cadastro, login, expiração (relógio controlado com `page.clock`), logout, troca de usuário                                    | `auth.spec.ts`            |
-| Favoritos (falha e recuperação); carrinho, cupom, persistência após refresh/login                                             | `favorites-cart.spec.ts`  |
-| Compra completa, recusa, clique repetido, timeout, pedido pendente; Socket.IO (preço, esgotado, duplicado/antigo, desconexão) | `checkout.spec.ts`        |
-| Perfil, avatar, senha, carteiras, validações                                                                                  | `account.spec.ts`         |
-| Teclado, foco de diálogos, validação; skeletons, falhas e nova tentativa                                                      | `a11y-resilience.spec.ts` |
-| Regressão visual de início, detalhe, carrinho e pagamento                                                                     | `visual.spec.ts`          |
-| Todas as telas em 320, 390, 640, 768, 1024 e 1440 px sem rolagem horizontal (320 e 640 = janela de 1280 px com zoom de 400% e 200%) | `responsive.spec.ts` |
+| Grupo                                                                                                                               | Spec                      |
+| ----------------------------------------------------------------------------------------------------------------------------------- | ------------------------- |
+| Busca, filtros, ordenação, paginação, histórico; detalhe e 404; hidratação da página inicial pré-renderizada                        | `catalog.spec.ts`         |
+| Cadastro, login, expiração (relógio controlado com `page.clock`), logout, troca de usuário                                          | `auth.spec.ts`            |
+| Favoritos (falha e recuperação); carrinho, cupom, persistência após refresh/login                                                   | `favorites-cart.spec.ts`  |
+| Compra completa, recusa, clique repetido, timeout, pedido pendente; Socket.IO (preço, esgotado, duplicado/antigo, desconexão)       | `checkout.spec.ts`        |
+| Perfil, avatar, senha, carteiras, validações                                                                                        | `account.spec.ts`         |
+| Teclado, foco de diálogos, validação; skeletons, falhas e nova tentativa                                                            | `a11y-resilience.spec.ts` |
+| Regressão visual de início, detalhe, carrinho e pagamento                                                                           | `visual.spec.ts`          |
+| Todas as telas em 320, 390, 640, 768, 1024 e 1440 px sem rolagem horizontal (320 e 640 = janela de 1280 px com zoom de 400% e 200%) | `responsive.spec.ts`      |
 
 Falhas guardam trace, vídeo e screenshot (`test-results/`); o relatório HTML fica em `playwright-report/`. As fontes são renderizadas de forma diferente em cada sistema, então há um conjunto de baselines visuais por plataforma em `tests/e2e/__screenshots__/`: Windows (`-win32`) e Linux (`-linux`, geradas no container oficial do Playwright). Para rodar em Linux sem instalar o navegador:
 
