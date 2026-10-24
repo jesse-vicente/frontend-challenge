@@ -79,6 +79,12 @@
     @apply min-h-dvh bg-background font-sans text-foreground antialiased;
   }
 
+  /* Tailwind's preflight resets buttons to the default cursor. */
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]) {
+    cursor: pointer;
+  }
+
   :focus-visible {
     @apply outline-2 outline-offset-2 outline-ring;
   }
